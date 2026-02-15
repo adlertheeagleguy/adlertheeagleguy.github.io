@@ -72,6 +72,7 @@
     <button class="tab active" onclick="showTab('add')">Add Expense</button>
     <button class="tab" onclick="showTab('list')">Expenses</button>
     <button class="tab" onclick="showTab('balances')">Balances</button>
+    <button class="tab" onclick="showTab('trips')">Trips</button>
   </div>
 
   <!-- Create Trip Modal -->
@@ -125,6 +126,19 @@
     </div>
   </div>
 
+  <!-- Trips Tab -->
+  <div id="trips-tab" class="hidden">
+    <div class="card">
+      <button onclick="showCreateTripModal()" style="margin-bottom:0;">+ Create New Trip</button>
+    </div>
+    <div class="card">
+      <h3>Your Trips</h3>
+      <div id="trips-list">
+        <p class="empty">No trips yet</p>
+      </div>
+    </div>
+  </div>
+
   <script>
     let trips = JSON.parse(localStorage.getItem('iou-trips') || '[]');
     let expenses = JSON.parse(localStorage.getItem('iou-expenses') || '[]');
@@ -142,6 +156,7 @@
       if (tab === 'add') onGlobalTripChange();
       if (tab === 'list') renderExpenses();
       if (tab === 'balances') renderBalances();
+      if (tab === 'trips') renderTrips();
     }
 
     function onGlobalTripChange() {
@@ -242,6 +257,60 @@
       }
       
       alert('Trip created!');
+    }
+
+    function renderTrips() {
+      const list = document.getElementById('trips-list');
+      if (trips.length === 0) {
+        list.innerHTML = '<p class="empty">No trips yet</p>';
+        return;
+      }
+      
+      // Get expense counts per trip
+      const expenseCounts = {};
+      expenses.forEach(e => {
+        expenseCounts[e.tripId] = (expenseCounts[e.tripId] || 0) + 1;
+      });
+      
+      list.innerHTML = trips.map(t => `
+        <div class="expense-item">
+          <div class="expense-info">
+            <strong>${t.name}</strong><br>
+            <small>${t.participants.join(', ')}</small><br>
+            <small style="color:#666;">${expenseCounts[t.id] || 0} expenses</small>
+          </div>
+          <button class="danger small" onclick="deleteTrip('${t.id}')">Delete</button>
+        </div>
+      `).join('');
+    }
+
+    function deleteTrip(tripId) {
+      const trip = trips.find(t => t.id === tripId);
+      if (!trip) return;
+      
+      const expenseCount = expenses.filter(e => e.tripId === tripId).length;
+      const msg = expenseCount > 0 
+        ? `Delete "${trip.name}" and ${expenseCount} associated expense(s)? This cannot be undone.`
+        : `Delete "${trip.name}"? This cannot be undone.`;
+      
+      if (!confirm(msg)) return;
+      
+      // Remove trip
+      trips = trips.filter(t => t.id !== tripId);
+      // Remove associated expenses
+      expenses = expenses.filter(e => e.tripId !== tripId);
+      
+      saveTrips();
+      saveExpenses();
+      
+      // Update global select if needed
+      if (selectedTripId === tripId) {
+        selectedTripId = '';
+        updateGlobalTripSelect();
+      }
+      
+      renderTrips();
+      updateGlobalTripSelect();
     }
 
     // Expense functions
