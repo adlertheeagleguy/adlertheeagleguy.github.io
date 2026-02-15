@@ -33,11 +33,17 @@
     .empty { text-align: center; color: #666; padding: 20px; }
     .trip-tag { display: inline-block; background: #4a90d9; color: white; padding: 4px 12px; border-radius: 16px; font-size: 14px; margin-right: 8px; }
     .trip-list { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-    .trip-item { background: #e9ecef; padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; gap: 8px; }
+    .trip-item { background: #e9ecef; padding: 8px 12px; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; }
+    .trip-item:hover { background: #d9e2e8; }
     .trip-item.active { background: #4a90d9; color: white; }
     .trip-select { margin-bottom: 16px; }
     .form-row { display: flex; gap: 8px; }
     .form-row > * { flex: 1; }
+    .checkbox-group { border: 1px solid #ddd; border-radius: 8px; max-height: 150px; overflow-y: auto; padding: 8px; }
+    .checkbox-item { display: flex; align-items: center; gap: 8px; padding: 6px; }
+    .checkbox-item input { width: auto; margin: 0; }
+    .checkbox-item label { flex: 1; cursor: pointer; }
+    .trip-header { display: flex; justify-content: space-between; align-items: center; }
   </style>
 </head>
 <body>
@@ -69,14 +75,23 @@
   <!-- Add Expense Tab -->
   <div id="add-tab" class="hidden">
     <div class="card">
-      <select id="expenseTrip" class="trip-select">
+      <select id="expenseTrip" class="trip-select" onchange="onTripChange()">
         <option value="">Select trip...</option>
       </select>
       <input type="text" id="description" placeholder="What was it for?">
       <input type="number" id="amount" placeholder="Amount ($)" step="0.01">
-      <input type="text" id="payer" placeholder="Who paid?">
-      <input type="text" id="splitWith" placeholder="Split with (comma separated)">
-      <button onclick="addExpense()">Add Expense</button>
+      
+      <label style="display:block; margin-bottom:4px; color:#555;">Who paid?</label>
+      <select id="payer">
+        <option value="">Select who paid...</option>
+      </select>
+      
+      <label style="display:block; margin-bottom:4px; color:#555;">Split with:</label>
+      <div id="splitWithGroup" class="checkbox-group">
+        <p class="empty" style="padding:10px;">Select a trip first</p>
+      </div>
+      
+      <button onclick="addExpense()" style="margin-top:10px;">Add Expense</button>
     </div>
   </div>
 
@@ -125,6 +140,22 @@
       if (tab === 'balances') renderBalances();
     }
 
+    function goToAddExpense(tripId) {
+      // Switch to add tab
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('[id$="-tab"]').forEach(t => t.classList.add('hidden'));
+      document.querySelectorAll('.tab')[1].classList.add('active');
+      document.getElementById('add-tab').classList.remove('hidden');
+      
+      updateTripSelect();
+      
+      // Set the trip and update dropdowns
+      setTimeout(() => {
+        document.getElementById('expenseTrip').value = tripId;
+        onTripChange();
+      }, 0);
+    }
+
     // Trip functions
     function createTrip() {
       const name = document.getElementById('tripName').value.trim();
@@ -158,9 +189,9 @@
       }
       
       list.innerHTML = trips.map(t => `
-        <div class="trip-item">
+        <div class="trip-item" onclick="goToAddExpense('${t.id}')">
           <span><strong>${t.name}</strong> (${t.participants.join(', ')})</span>
-          <button class="danger small" onclick="deleteTrip('${t.id}')">×</button>
+          <button class="danger small" onclick="event.stopPropagation(); deleteTrip('${t.id}')">×</button>
         </div>
       `).join('');
     }
@@ -180,16 +211,59 @@
         trips.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
     }
 
+    function onTripChange() {
+      const tripId = document.getElementById('expenseTrip').value;
+      const payerSelect = document.getElementById('payer');
+      const splitWithGroup = document.getElementById('splitWithGroup');
+      
+      if (!tripId) {
+        payerSelect.innerHTML = '<option value="">Select who paid...</option>';
+        splitWithGroup.innerHTML = '<p class="empty" style="padding:10px;">Select a trip first</p>';
+        return;
+      }
+      
+      const trip = trips.find(t => t.id === tripId);
+      if (!trip) return;
+      
+      // Update payer dropdown
+      payerSelect.innerHTML = '<option value="">Select who paid...</option>' + 
+        trip.participants.map(p => `<option value="${p}">${p}</option>`).join('');
+      
+      // Update split with checkboxes
+      splitWithGroup.innerHTML = trip.participants.map(p => `
+        <div class="checkbox-item">
+          <input type="checkbox" id="split-${p}" value="${p}" checked>
+          <label for="split-${p}">${p}</label>
+        </div>
+      `).join('');
+    }
+
     // Expense functions
     function addExpense() {
       const tripId = document.getElementById('expenseTrip').value;
       const description = document.getElementById('description').value.trim();
       const amount = parseFloat(document.getElementById('amount').value);
-      const payer = document.getElementById('payer').value.trim();
-      const splitWith = document.getElementById('splitWith').value.split(',').map(s => s.trim()).filter(s => s);
+      const payer = document.getElementById('payer').value;
+      
+      // Get selected split with
+      const splitWith = [];
+      const trip = trips.find(t => t.id === tripId);
+      if (trip) {
+        trip.participants.forEach(p => {
+          const checkbox = document.getElementById('split-' + p);
+          if (checkbox && checkbox.checked) {
+            splitWith.push(p);
+          }
+        });
+      }
 
       if (!description || isNaN(amount) || !payer) {
         alert('Please fill in description, amount, and who paid');
+        return;
+      }
+
+      if (splitWith.length === 0) {
+        alert('Please select at least one person to split with');
         return;
       }
 
@@ -214,8 +288,6 @@
       document.getElementById('description').value = '';
       document.getElementById('amount').value = '';
       document.getElementById('payer').value = '';
-      document.getElementById('splitWith').value = '';
-      
       alert('Expense added!');
     }
 
