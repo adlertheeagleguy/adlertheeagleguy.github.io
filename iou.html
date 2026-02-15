@@ -92,7 +92,7 @@
   <!-- Global Trip Selector -->
   <div class="header-bar">
     <select id="globalTripSelect" onchange="onGlobalTripChange()">
-      <option value="">All Trips</option>
+      <option value="">Create a trip to start</option>
     </select>
     <button onclick="showCreateTripModal()" class="small">+ New Trip</button>
   </div>
@@ -142,7 +142,7 @@
       <div id="expense-list">
         <p class="empty">No expenses yet</p>
       </div>
-      <button class="secondary" onclick="clearExpenses()" style="margin-top: 10px;">Clear Expenses</button>
+      <button class="secondary" onclick="clearExpenses()" style="margin-top: 10px;">Clear Trip Expenses</button>
     </div>
   </div>
 
@@ -173,8 +173,14 @@
     let selectedTripId = '';
     let currentView = 'tracker';
 
-    // Initialize
+    // Initialize - auto-select first trip if exists
+    if (trips.length > 0) {
+      selectedTripId = trips[0].id;
+    }
     updateGlobalTripSelect();
+    if (selectedTripId) {
+      onGlobalTripChange();
+    }
 
     // Menu functions
     function toggleMenu() {
@@ -231,29 +237,43 @@
       if (!selectedTripId) {
         payerSelect.innerHTML = '<option value="">Select a trip first...</option>';
         splitWithGroup.innerHTML = '<p class="empty" style="padding:10px;">Select a trip first</p>';
-        return;
+      } else {
+        const trip = trips.find(t => t.id === selectedTripId);
+        if (trip) {
+          payerSelect.innerHTML = '<option value="">Select who paid...</option>' + 
+            trip.participants.map(p => `<option value="${p}">${p}</option>`).join('');
+          
+          splitWithGroup.innerHTML = trip.participants.map(p => `
+            <div class="checkbox-item">
+              <input type="checkbox" id="split-${p}" value="${p}" checked>
+              <label for="split-${p}">${p}</label>
+            </div>
+          `).join('');
+        }
       }
       
-      const trip = trips.find(t => t.id === selectedTripId);
-      if (!trip) return;
-      
-      payerSelect.innerHTML = '<option value="">Select who paid...</option>' + 
-        trip.participants.map(p => `<option value="${p}">${p}</option>`).join('');
-      
-      splitWithGroup.innerHTML = trip.participants.map(p => `
-        <div class="checkbox-item">
-          <input type="checkbox" id="split-${p}" value="${p}" checked>
-          <label for="split-${p}">${p}</label>
-        </div>
-      `).join('');
+      // Refresh visible tabs
+      renderExpenses();
+      renderBalances();
     }
 
     function updateGlobalTripSelect() {
       const select = document.getElementById('globalTripSelect');
-      const options = '<option value="">All Trips</option>' + 
-        trips.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
-      select.innerHTML = options;
-      select.value = selectedTripId;
+      if (trips.length === 0) {
+        select.innerHTML = '<option value="">Create a trip to start</option>';
+        select.disabled = true;
+      } else {
+        select.disabled = false;
+        const options = trips.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+        select.innerHTML = options;
+        // If current selection is invalid, select the first trip
+        if (!selectedTripId || !trips.find(t => t.id === selectedTripId)) {
+          selectedTripId = trips[0].id;
+        }
+        select.value = selectedTripId;
+        // Trigger change to update UI
+        onGlobalTripChange();
+      }
     }
 
     // Modal functions
@@ -359,8 +379,8 @@
       saveExpenses();
       
       if (selectedTripId === tripId) {
-        selectedTripId = '';
-        updateGlobalTripSelect();
+        // Select another trip if available, or clear
+        selectedTripId = trips.length > 0 ? trips[0].id : '';
       }
       
       renderTrips();
@@ -400,10 +420,6 @@
         return;
       }
 
-      // FIX: The split amount should be divided among splitWith, NOT including the payer
-      // The payer already paid the full amount, so others reimburse the payer
-      const splitAmount = amount / splitWith.length;
-
       const expense = {
         id: Date.now(),
         tripId,
@@ -411,7 +427,7 @@
         amount,
         payer,
         people: splitWith,  // Only the people who need to reimburse
-        splitAmount,
+        totalParticipants: trip.participants.length,  // Store total for proper calculation
         date: new Date().toISOString()
       };
 
@@ -428,9 +444,8 @@
     function renderExpenses() {
       const list = document.getElementById('expense-list');
       
-      const filteredExpenses = selectedTripId 
-        ? expenses.filter(e => e.tripId === selectedTripId)
-        : expenses;
+      // Only show expenses for the currently selected trip
+      const filteredExpenses = expenses.filter(e => e.tripId === selectedTripId);
 
       if (filteredExpenses.length === 0) {
         list.innerHTML = '<p class="empty">No expenses yet</p>';
@@ -442,12 +457,14 @@
       
       list.innerHTML = filteredExpenses.map(e => {
         const tripName = e.tripId ? tripMap[e.tripId] || 'Unknown' : 'No trip';
+        const participantCount = e.people.length;
+        const splitAmount = e.amount / participantCount;
         return `
           <div class="expense-item">
             <div class="expense-info">
               ${e.tripId ? `<span class="expense-trip">${tripName}</span><br>` : ''}
               <strong>${e.description}</strong><br>
-              <small>${e.payer} paid $${e.amount.toFixed(2)} • owes $${e.splitAmount.toFixed(2)} each from ${e.people.join(', ')}</small>
+              <small>${e.payer} paid $${e.amount.toFixed(2)} • split ${participantCount} ways: $${splitAmount.toFixed(2)} each (${e.people.join(', ')})</small>
             </div>
             <button class="danger small" onclick="deleteExpense(${e.id})">×</button>
           </div>
@@ -458,23 +475,26 @@
     function renderBalances() {
       const settlement = document.getElementById('settlement');
       
-      const filteredExpenses = selectedTripId 
-        ? expenses.filter(e => e.tripId === selectedTripId)
-        : expenses;
+      // Only calculate balances for the currently selected trip
+      const filteredExpenses = expenses.filter(e => e.tripId === selectedTripId);
 
       if (filteredExpenses.length === 0) {
         settlement.innerHTML = '<p class="empty">No balances yet</p>';
         return;
       }
 
-      // Calculate balances: payer gets credit, people in splitWith owe their share
+      // Calculate balances: payer gets credit, selected participants owe equal share
       const bal = {};
       filteredExpenses.forEach(e => {
+        // Split equally among SELECTED participants (those in e.people array)
+        const participantCount = e.people.length;
+        const splitAmount = e.amount / participantCount;
+        
         // Payer is owed the full amount
         bal[e.payer] = (bal[e.payer] || 0) + e.amount;
-        // Each person in the split owes their share
+        // Each selected participant owes their equal share
         e.people.forEach(p => {
-          bal[p] = (bal[p] || 0) - e.splitAmount;
+          bal[p] = (bal[p] || 0) - splitAmount;
         });
       });
 
@@ -516,18 +536,15 @@
       expenses = expenses.filter(e => e.id !== id);
       saveExpenses();
       renderExpenses();
+      renderBalances();
     }
 
     function clearExpenses() {
-      if (!selectedTripId) {
-        if (!confirm('Clear ALL expenses across all trips?')) return;
-        expenses = [];
-      } else {
-        if (!confirm('Clear all expenses for this trip?')) return;
-        expenses = expenses.filter(e => e.tripId !== selectedTripId);
-      }
+      if (!confirm('Clear all expenses for this trip?')) return;
+      expenses = expenses.filter(e => e.tripId !== selectedTripId);
       saveExpenses();
       renderExpenses();
+      renderBalances();
     }
 
     function saveTrips() {
