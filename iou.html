@@ -44,40 +44,51 @@
     .checkbox-item input { width: auto; margin: 0; }
     .checkbox-item label { flex: 1; cursor: pointer; }
     .trip-header { display: flex; justify-content: space-between; align-items: center; }
+    .header-bar { display: flex; gap: 8px; align-items: center; margin-bottom: 16px; }
+    .header-bar select { margin-bottom: 0; }
+    .header-bar button { width: auto; margin-bottom: 0; }
+    
+    /* Modal */
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+    .modal { background: white; border-radius: 12px; padding: 20px; width: 90%; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
+    .modal h2 { margin-bottom: 16px; }
+    .modal-buttons { display: flex; gap: 8px; margin-top: 16px; }
+    .modal-buttons button { flex: 1; }
   </style>
 </head>
 <body>
   <h1>🦅 IOU Tracker</h1>
   
+  <!-- Global Trip Selector -->
+  <div class="header-bar">
+    <select id="globalTripSelect" onchange="onGlobalTripChange()">
+      <option value="">All Trips</option>
+    </select>
+    <button onclick="showCreateTripModal()" class="small">+ New Trip</button>
+  </div>
+
   <div class="tabs">
-    <button class="tab active" onclick="showTab('trips')">Trips</button>
-    <button class="tab" onclick="showTab('add')">Add Expense</button>
+    <button class="tab active" onclick="showTab('add')">Add Expense</button>
     <button class="tab" onclick="showTab('list')">Expenses</button>
     <button class="tab" onclick="showTab('balances')">Balances</button>
   </div>
 
-  <!-- Trips Tab -->
-  <div id="trips-tab">
-    <div class="card">
+  <!-- Create Trip Modal -->
+  <div id="tripModal" class="modal-overlay hidden">
+    <div class="modal">
       <h2>Create New Trip</h2>
       <input type="text" id="tripName" placeholder="Trip name (e.g., 'Paris 2026')">
       <input type="text" id="tripParticipants" placeholder="Participants (comma separated)">
-      <button onclick="createTrip()">Create Trip</button>
-    </div>
-    <div class="card">
-      <h2>Your Trips</h2>
-      <div id="trip-list">
-        <p class="empty">No trips yet</p>
+      <div class="modal-buttons">
+        <button class="secondary" onclick="hideCreateTripModal()">Cancel</button>
+        <button onclick="createTrip()">Create Trip</button>
       </div>
     </div>
   </div>
 
   <!-- Add Expense Tab -->
-  <div id="add-tab" class="hidden">
+  <div id="add-tab">
     <div class="card">
-      <select id="expenseTrip" class="trip-select" onchange="onTripChange()">
-        <option value="">Select trip...</option>
-      </select>
       <input type="text" id="description" placeholder="What was it for?">
       <input type="number" id="amount" placeholder="Amount ($)" step="0.01">
       
@@ -101,22 +112,12 @@
       <div id="expense-list">
         <p class="empty">No expenses yet</p>
       </div>
-      <button class="secondary" onclick="clearAll()" style="margin-top: 10px;">Clear All</button>
+      <button class="secondary" onclick="clearExpenses()" style="margin-top: 10px;">Clear Expenses</button>
     </div>
   </div>
 
   <!-- Balances Tab -->
   <div id="balances-tab" class="hidden">
-    <div class="card">
-      <h3>Overall Balances</h3>
-      <div id="overall-balances">
-        <p class="empty">No balances yet</p>
-      </div>
-    </div>
-    <div class="card">
-      <h3>Per-Trip Balances</h3>
-      <div id="trip-balances"></div>
-    </div>
     <div class="card">
       <h3>Settlement Suggestions</h3>
       <div id="settlement"></div>
@@ -126,7 +127,10 @@
   <script>
     let trips = JSON.parse(localStorage.getItem('iou-trips') || '[]');
     let expenses = JSON.parse(localStorage.getItem('iou-expenses') || '[]');
-    let currentTripId = '';
+    let selectedTripId = '';
+
+    // Initialize
+    updateGlobalTripSelect();
 
     function showTab(tab) {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -134,26 +138,58 @@
       event.target.classList.add('active');
       document.getElementById(tab + '-tab').classList.remove('hidden');
       
-      if (tab === 'trips') renderTrips();
-      if (tab === 'add') updateTripSelect();
+      if (tab === 'add') onGlobalTripChange();
       if (tab === 'list') renderExpenses();
       if (tab === 'balances') renderBalances();
     }
 
-    function goToAddExpense(tripId) {
-      // Switch to add tab
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('[id$="-tab"]').forEach(t => t.classList.add('hidden'));
-      document.querySelectorAll('.tab')[1].classList.add('active');
-      document.getElementById('add-tab').classList.remove('hidden');
+    function onGlobalTripChange() {
+      selectedTripId = document.getElementById('globalTripSelect').value;
       
-      updateTripSelect();
+      // Update payer and split with based on selected trip
+      const payerSelect = document.getElementById('payer');
+      const splitWithGroup = document.getElementById('splitWithGroup');
       
-      // Set the trip and update dropdowns
-      setTimeout(() => {
-        document.getElementById('expenseTrip').value = tripId;
-        onTripChange();
-      }, 0);
+      if (!selectedTripId) {
+        payerSelect.innerHTML = '<option value="">Select a trip first...</option>';
+        splitWithGroup.innerHTML = '<p class="empty" style="padding:10px;">Select a trip first</p>';
+        return;
+      }
+      
+      const trip = trips.find(t => t.id === selectedTripId);
+      if (!trip) return;
+      
+      // Update payer dropdown
+      payerSelect.innerHTML = '<option value="">Select who paid...</option>' + 
+        trip.participants.map(p => `<option value="${p}">${p}</option>`).join('');
+      
+      // Update split with checkboxes
+      splitWithGroup.innerHTML = trip.participants.map(p => `
+        <div class="checkbox-item">
+          <input type="checkbox" id="split-${p}" value="${p}" checked>
+          <label for="split-${p}">${p}</label>
+        </div>
+      `).join('');
+    }
+
+    function updateGlobalTripSelect() {
+      const select = document.getElementById('globalTripSelect');
+      const options = '<option value="">All Trips</option>' + 
+        trips.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
+      select.innerHTML = options;
+      select.value = selectedTripId;
+    }
+
+    // Modal functions
+    function showCreateTripModal() {
+      document.getElementById('tripModal').classList.remove('hidden');
+      document.getElementById('tripName').focus();
+    }
+
+    function hideCreateTripModal() {
+      document.getElementById('tripModal').classList.add('hidden');
+      document.getElementById('tripName').value = '';
+      document.getElementById('tripParticipants').value = '';
     }
 
     // Trip functions
@@ -175,76 +211,36 @@
       trips.push(trip);
       saveTrips();
       
-      document.getElementById('tripName').value = '';
-      document.getElementById('tripParticipants').value = '';
-      renderTrips();
+      // Select the new trip
+      selectedTripId = trip.id;
+      updateGlobalTripSelect();
+      
+      hideCreateTripModal();
+      
+      // Refresh current view
+      if (!document.getElementById('add-tab').classList.contains('hidden')) {
+        onGlobalTripChange();
+      } else if (!document.getElementById('list-tab').classList.contains('hidden')) {
+        renderExpenses();
+      } else if (!document.getElementById('balances-tab').classList.contains('hidden')) {
+        renderBalances();
+      }
+      
       alert('Trip created!');
-    }
-
-    function renderTrips() {
-      const list = document.getElementById('trip-list');
-      if (trips.length === 0) {
-        list.innerHTML = '<p class="empty">No trips yet</p>';
-        return;
-      }
-      
-      list.innerHTML = trips.map(t => `
-        <div class="trip-item" onclick="goToAddExpense('${t.id}')">
-          <span><strong>${t.name}</strong> (${t.participants.join(', ')})</span>
-          <button class="danger small" onclick="event.stopPropagation(); deleteTrip('${t.id}')">×</button>
-        </div>
-      `).join('');
-    }
-
-    function deleteTrip(id) {
-      if (!confirm('Delete this trip? Expenses will become unassigned.')) return;
-      trips = trips.filter(t => t.id !== id);
-      expenses.forEach(e => { if (e.tripId === id) e.tripId = ''; });
-      saveTrips();
-      saveExpenses();
-      renderTrips();
-    }
-
-    function updateTripSelect() {
-      const select = document.getElementById('expenseTrip');
-      select.innerHTML = '<option value="">Select trip...</option>' + 
-        trips.map(t => `<option value="${t.id}">${t.name}</option>`).join('');
-    }
-
-    function onTripChange() {
-      const tripId = document.getElementById('expenseTrip').value;
-      const payerSelect = document.getElementById('payer');
-      const splitWithGroup = document.getElementById('splitWithGroup');
-      
-      if (!tripId) {
-        payerSelect.innerHTML = '<option value="">Select who paid...</option>';
-        splitWithGroup.innerHTML = '<p class="empty" style="padding:10px;">Select a trip first</p>';
-        return;
-      }
-      
-      const trip = trips.find(t => t.id === tripId);
-      if (!trip) return;
-      
-      // Update payer dropdown
-      payerSelect.innerHTML = '<option value="">Select who paid...</option>' + 
-        trip.participants.map(p => `<option value="${p}">${p}</option>`).join('');
-      
-      // Update split with checkboxes
-      splitWithGroup.innerHTML = trip.participants.map(p => `
-        <div class="checkbox-item">
-          <input type="checkbox" id="split-${p}" value="${p}" checked>
-          <label for="split-${p}">${p}</label>
-        </div>
-      `).join('');
     }
 
     // Expense functions
     function addExpense() {
-      const tripId = document.getElementById('expenseTrip').value;
+      const tripId = document.getElementById('globalTripSelect').value;
       const description = document.getElementById('description').value.trim();
       const amount = parseFloat(document.getElementById('amount').value);
       const payer = document.getElementById('payer').value;
       
+      if (!tripId) {
+        alert('Please select a trip first');
+        return;
+      }
+
       // Get selected split with
       const splitWith = [];
       const trip = trips.find(t => t.id === tripId);
@@ -288,12 +284,19 @@
       document.getElementById('description').value = '';
       document.getElementById('amount').value = '';
       document.getElementById('payer').value = '';
+      
       alert('Expense added!');
     }
 
     function renderExpenses() {
       const list = document.getElementById('expense-list');
-      if (expenses.length === 0) {
+      
+      // Filter by selected trip
+      const filteredExpenses = selectedTripId 
+        ? expenses.filter(e => e.tripId === selectedTripId)
+        : expenses;
+
+      if (filteredExpenses.length === 0) {
         list.innerHTML = '<p class="empty">No expenses yet</p>';
         return;
       }
@@ -301,7 +304,7 @@
       const tripMap = {};
       trips.forEach(t => tripMap[t.id] = t.name);
       
-      list.innerHTML = expenses.map(e => {
+      list.innerHTML = filteredExpenses.map(e => {
         const tripName = e.tripId ? tripMap[e.tripId] || 'Unknown' : 'No trip';
         return `
           <div class="expense-item">
@@ -317,69 +320,28 @@
     }
 
     function renderBalances() {
-      const overallBal = document.getElementById('overall-balances');
-      const tripBal = document.getElementById('trip-balances');
       const settlement = document.getElementById('settlement');
+      
+      // Filter by selected trip
+      const filteredExpenses = selectedTripId 
+        ? expenses.filter(e => e.tripId === selectedTripId)
+        : expenses;
 
-      if (expenses.length === 0) {
-        overallBal.innerHTML = '<p class="empty">No balances yet</p>';
-        tripBal.innerHTML = '';
-        settlement.innerHTML = '';
+      if (filteredExpenses.length === 0) {
+        settlement.innerHTML = '<p class="empty">No balances yet</p>';
         return;
       }
 
-      // Overall balances
+      // Calculate balances for filtered expenses
       const bal = {};
-      expenses.forEach(e => {
+      filteredExpenses.forEach(e => {
         bal[e.payer] = (bal[e.payer] || 0) + e.amount;
         e.people.forEach(p => {
           bal[p] = (bal[p] || 0) - e.splitAmount;
         });
       });
 
-      let html = '';
-      for (const [person, amount] of Object.entries(bal)) {
-        if (Math.abs(amount) > 0.01) {
-          const cls = amount > 0 ? 'positive' : 'negative';
-          const sign = amount > 0 ? '+' : '';
-          html += `<div class="balance ${cls}"><span>${person}</span><span>$${sign}${amount.toFixed(2)}</span></div>`;
-        }
-      }
-      overallBal.innerHTML = html || '<p class="empty">All settled!</p>';
-
-      // Per-trip balances
-      const tripMap = {};
-      trips.forEach(t => tripMap[t.id] = t);
-      
-      let tripHtml = '';
-      trips.forEach(trip => {
-        const tripExpenses = expenses.filter(e => e.tripId === trip.id);
-        if (tripExpenses.length === 0) return;
-
-        const tBal = {};
-        tripExpenses.forEach(e => {
-          tBal[e.payer] = (tBal[e.payer] || 0) + e.amount;
-          e.people.forEach(p => {
-            tBal[p] = (tBal[p] || 0) - e.splitAmount;
-          });
-        });
-
-        let tHtml = '';
-        for (const [person, amount] of Object.entries(tBal)) {
-          if (Math.abs(amount) > 0.01) {
-            const cls = amount > 0 ? 'positive' : 'negative';
-            const sign = amount > 0 ? '+' : '';
-            tHtml += `<div class="balance ${cls}"><span>${person}</span><span>$${sign}${amount.toFixed(2)}</span></div>`;
-          }
-        }
-        
-        if (tHtml) {
-          tripHtml += `<div class="card"><h4>${trip.name}</h4>${tHtml || '<p class="empty">All settled!</p>'}</div>`;
-        }
-      });
-      tripBal.innerHTML = tripHtml || '<p class="empty">No trip expenses yet</p>';
-
-      // Settlement suggestions (overall)
+      // Settlement suggestions
       const debtors = [];
       const creditors = [];
       for (const [person, amount] of Object.entries(bal)) {
@@ -400,7 +362,18 @@
         if (debtor.amount < 0.01) debtors.shift();
         if (creditor.amount < 0.01) creditors.shift();
       }
-      settlement.innerHTML = settleHtml || '<p class="empty">All settled!</p>';
+      
+      // Also show individual balances
+      let balHtml = '<h4 style="margin:16px 0 8px;">Current Balances</h4>';
+      for (const [person, amount] of Object.entries(bal)) {
+        if (Math.abs(amount) > 0.01) {
+          const cls = amount > 0 ? 'positive' : 'negative';
+          const sign = amount > 0 ? '+' : '';
+          balHtml += `<div class="balance ${cls}"><span>${person}</span><span>$${sign}${amount.toFixed(2)}</span></div>`;
+        }
+      }
+      
+      settlement.innerHTML = balHtml + (settleHtml ? '<h4 style="margin:16px 0 8px;">Settle Up</h4>' + settleHtml : '<p class="empty">All settled!</p>');
     }
 
     function deleteExpense(id) {
@@ -409,12 +382,16 @@
       renderExpenses();
     }
 
-    function clearAll() {
-      if (confirm('Clear all expenses?')) {
+    function clearExpenses() {
+      if (!selectedTripId) {
+        if (!confirm('Clear ALL expenses across all trips?')) return;
         expenses = [];
-        saveExpenses();
-        renderExpenses();
+      } else {
+        if (!confirm('Clear all expenses for this trip?')) return;
+        expenses = expenses.filter(e => e.tripId !== selectedTripId);
       }
+      saveExpenses();
+      renderExpenses();
     }
 
     function saveTrips() {
