@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IOU Tracker</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+    h1 { text-align: center; margin-bottom: 20px; color: #333; }
+    .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+    input, select, button { width: 100%; padding: 12px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; }
+    button { background: #4a90d9; color: white; border: none; cursor: pointer; font-weight: 600; }
+    button:hover { background: #357abd; }
+    button.secondary { background: #6c757d; }
+    button.danger { background: #dc3545; }
+    .expense { display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid #eee; }
+    .expense:last-child { border-bottom: none; }
+    .expense-amount { font-weight: bold; color: #28a745; }
+    .expense-owes { color: #dc3545; }
+    .expense-paid { color: #28a745; }
+    .balances { margin-top: 20px; }
+    .balance { display: flex; justify-content: space-between; padding: 10px; margin: 8px 0; background: #f8f9fa; border-radius: 8px; }
+    .balance.positive { background: #d4edda; }
+    .balance.negative { background: #f8d7da; }
+    .tabs { display: flex; margin-bottom: 16px; }
+    .tab { flex: 1; padding: 12px; text-align: center; background: #e9ecef; cursor: pointer; border: none; }
+    .tab.active { background: #4a90d9; color: white; }
+    .hidden { display: none; }
+    .empty { text-align: center; color: #666; padding: 20px; }
+  </style>
+</head>
+<body>
+  <h1>🦅 IOU Tracker</h1>
+  
+  <div class="tabs">
+    <button class="tab active" onclick="showTab('add')">Add Expense</button>
+    <button class="tab" onclick="showTab('list')">Expenses</button>
+    <button class="tab" onclick="showTab('balances')">Balances</button>
+  </div>
+
+  <div id="add-tab">
+    <div class="card">
+      <input type="text" id="description" placeholder="What was it for?">
+      <input type="number" id="amount" placeholder="Amount ($)" step="0.01">
+      <input type="text" id="payer" placeholder="Who paid?">
+      <input type="text" id="splitWith" placeholder="Split with (comma separated)">
+      <button onclick="addExpense()">Add Expense</button>
+    </div>
+  </div>
+
+  <div id="list-tab" class="hidden">
+    <div class="card">
+      <div id="expense-list">
+        <p class="empty">No expenses yet</p>
+      </div>
+      <button class="secondary" onclick="clearAll()" style="margin-top: 10px;">Clear All</button>
+    </div>
+  </div>
+
+  <div id="balances-tab" class="hidden">
+    <div class="card">
+      <h3>Who Owes Who</h3>
+      <div id="balances">
+        <p class="empty">No balances yet</p>
+      </div>
+    </div>
+    <div class="card">
+      <h3>Settlement Suggestions</h3>
+      <div id="settlement"></div>
+    </div>
+  </div>
+
+  <script>
+    let expenses = JSON.parse(localStorage.getItem('iou-expenses') || '[]');
+
+    function showTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('[id$="-tab"]').forEach(t => t.classList.add('hidden'));
+      event.target.classList.add('active');
+      document.getElementById(tab + '-tab').classList.remove('hidden');
+      if (tab === 'list') renderExpenses();
+      if (tab === 'balances') renderBalances();
+    }
+
+    function addExpense() {
+      const description = document.getElementById('description').value.trim();
+      const amount = parseFloat(document.getElementById('amount').value);
+      const payer = document.getElementById('payer').value.trim();
+      const splitWith = document.getElementById('splitWith').value.split(',').map(s => s.trim()).filter(s => s);
+
+      if (!description || isNaN(amount) || !payer) {
+        alert('Please fill in description, amount, and who paid');
+        return;
+      }
+
+      const people = [payer, ...splitWith];
+      const splitAmount = amount / people.length;
+
+      const expense = {
+        id: Date.now(),
+        description,
+        amount,
+        payer,
+        people,
+        splitAmount,
+        date: new Date().toISOString()
+      };
+
+      expenses.push(expense);
+      save();
+      
+      // Clear form
+      document.getElementById('description').value = '';
+      document.getElementById('amount').value = '';
+      document.getElementById('payer').value = '';
+      document.getElementById('splitWith').value = '';
+      
+      alert('Expense added!');
+    }
+
+    function renderExpenses() {
+      const list = document.getElementById('expense-list');
+      if (expenses.length === 0) {
+        list.innerHTML = '<p class="empty">No expenses yet</p>';
+        return;
+      }
+      
+      list.innerHTML = expenses.map(e => `
+        <div class="expense">
+          <div>
+            <strong>${e.description}</strong><br>
+            <small>${e.payer} paid $${e.amount.toFixed(2)} • ${e.people.join(', ')}</small>
+          </div>
+          <button class="danger" style="width:auto;padding:6px 12px;" onclick="deleteExpense(${e.id})">×</button>
+        </div>
+      `).join('');
+    }
+
+    function renderBalances() {
+      const balances = document.getElementById('balances');
+      const settlement = document.getElementById('settlement');
+      
+      if (expenses.length === 0) {
+        balances.innerHTML = '<p class="empty">No balances yet</p>';
+        settlement.innerHTML = '';
+        return;
+      }
+
+      // Calculate balances
+      const bal = {};
+      expenses.forEach(e => {
+        bal[e.payer] = (bal[e.payer] || 0) + e.amount;
+        e.people.forEach(p => {
+          bal[p] = (bal[p] || 0) - e.splitAmount;
+        });
+      });
+
+      // Show individual balances
+      let html = '';
+      for (const [person, amount] of Object.entries(bal)) {
+        if (Math.abs(amount) > 0.01) {
+          const cls = amount > 0 ? 'positive' : 'negative';
+          const sign = amount > 0 ? '+' : '';
+          html += `<div class="balance ${cls}"><span>${person}</span><span>$${sign}${amount.toFixed(2)}</span></div>`;
+        }
+      }
+      balances.innerHTML = html || '<p class="empty">All settled!</p>';
+
+      // Settlement suggestions (debt simplification)
+      const debtors = [];
+      const creditors = [];
+      for (const [person, amount] of Object.entries(bal)) {
+        if (amount < -0.01) debtors.push({ person, amount: -amount });
+        if (amount > 0.01) creditors.push({ person, amount });
+      }
+      debtors.sort((a, b) => b.amount - a.amount);
+      creditors.sort((a, b) => b.amount - a.amount);
+
+      let settleHtml = '';
+      while (debtors.length && creditors.length) {
+        const debtor = debtors[0];
+        const creditor = creditors[0];
+        const amount = Math.min(debtor.amount, creditor.amount);
+        settleHtml += `<div class="expense"><span>${debtor.person} owes ${creditor.person}</span><span class="expense-owes">$${amount.toFixed(2)}</span></div>`;
+        debtor.amount -= amount;
+        creditor.amount -= amount;
+        if (debtor.amount < 0.01) debtors.shift();
+        if (creditor.amount < 0.01) creditors.shift();
+      }
+      settlement.innerHTML = settleHtml || '<p class="empty">All settled!</p>';
+    }
+
+    function deleteExpense(id) {
+      expenses = expenses.filter(e => e.id !== id);
+      save();
+      renderExpenses();
+    }
+
+    function clearAll() {
+      if (confirm('Clear all expenses?')) {
+        expenses = [];
+        save();
+        renderExpenses();
+      }
+    }
+
+    function save() {
+      localStorage.setItem('iou-expenses', JSON.stringify(expenses));
+    }
+  </script>
+</body>
+</html>
