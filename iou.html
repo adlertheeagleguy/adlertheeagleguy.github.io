@@ -50,6 +50,7 @@
     
     /* Modal */
     .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+    .modal-overlay.hidden { display: none; }
     .modal { background: white; border-radius: 12px; padding: 20px; width: 90%; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
     .modal h2 { margin-bottom: 16px; }
     .modal-buttons { display: flex; gap: 8px; margin-top: 16px; }
@@ -74,8 +75,8 @@
   </div>
 
   <!-- Create Trip Modal -->
-  <div id="tripModal" class="modal-overlay hidden">
-    <div class="modal">
+  <div id="tripModal" class="modal-overlay hidden" onclick="if(event.target === this) hideCreateTripModal()">
+    <div class="modal" onclick="event.stopPropagation()">
       <h2>Create New Trip</h2>
       <input type="text" id="tripName" placeholder="Trip name (e.g., 'Paris 2026')">
       <input type="text" id="tripParticipants" placeholder="Participants (comma separated)">
@@ -191,6 +192,20 @@
       document.getElementById('tripName').value = '';
       document.getElementById('tripParticipants').value = '';
     }
+
+    // Close modal on overlay click
+    document.getElementById('tripModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        hideCreateTripModal();
+      }
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        hideCreateTripModal();
+      }
+    });
 
     // Trip functions
     function createTrip() {
