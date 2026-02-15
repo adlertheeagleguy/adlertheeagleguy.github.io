@@ -48,8 +48,20 @@
     .header-bar select { margin-bottom: 0; }
     .header-bar button { width: auto; margin-bottom: 0; }
     
+    /* Hamburger Menu */
+    .hamburger { position: absolute; top: 20px; left: 20px; cursor: pointer; padding: 8px; background: none; border: none; width: auto; }
+    .hamburger div { width: 24px; height: 2px; background: #333; margin: 5px 0; }
+    .menu-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 999; }
+    .menu-overlay.hidden { display: none; }
+    .menu { position: fixed; top: 0; left: 0; width: 250px; height: 100%; background: white; box-shadow: 2px 0 10px rgba(0,0,0,0.2); z-index: 1000; transform: translateX(-100%); transition: transform 0.3s; }
+    .menu.open { transform: translateX(0); }
+    .menu-header { padding: 20px; border-bottom: 1px solid #eee; font-weight: bold; font-size: 18px; }
+    .menu-item { padding: 16px 20px; border-bottom: 1px solid #eee; cursor: pointer; }
+    .menu-item:hover { background: #f5f5f5; }
+    .menu-item.active { background: #e8f4fd; color: #4a90d9; }
+    
     /* Modal */
-    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+    .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1001; }
     .modal-overlay.hidden { display: none; }
     .modal { background: white; border-radius: 12px; padding: 20px; width: 90%; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); }
     .modal h2 { margin-bottom: 16px; }
@@ -58,8 +70,25 @@
   </style>
 </head>
 <body>
+  <!-- Hamburger Menu -->
+  <button class="hamburger" onclick="toggleMenu()">
+    <div></div>
+    <div></div>
+    <div></div>
+  </button>
+  
   <h1>🦅 IOU Tracker</h1>
   
+  <!-- Menu Overlay -->
+  <div id="menuOverlay" class="menu-overlay hidden" onclick="closeMenu()"></div>
+  
+  <!-- Menu -->
+  <div id="menu" class="menu">
+    <div class="menu-header">Menu</div>
+    <div class="menu-item active" onclick="selectMenuItem('tracker'); closeMenu();">Tracker</div>
+    <div class="menu-item" onclick="selectMenuItem('trips'); closeMenu();">Trips</div>
+  </div>
+
   <!-- Global Trip Selector -->
   <div class="header-bar">
     <select id="globalTripSelect" onchange="onGlobalTripChange()">
@@ -72,7 +101,6 @@
     <button class="tab active" onclick="showTab('add')">Add Expense</button>
     <button class="tab" onclick="showTab('list')">Expenses</button>
     <button class="tab" onclick="showTab('balances')">Balances</button>
-    <button class="tab" onclick="showTab('trips')">Trips</button>
   </div>
 
   <!-- Create Trip Modal -->
@@ -143,14 +171,49 @@
     let trips = JSON.parse(localStorage.getItem('iou-trips') || '[]');
     let expenses = JSON.parse(localStorage.getItem('iou-expenses') || '[]');
     let selectedTripId = '';
+    let currentView = 'tracker';
 
     // Initialize
     updateGlobalTripSelect();
 
+    // Menu functions
+    function toggleMenu() {
+      document.getElementById('menu').classList.toggle('open');
+      document.getElementById('menuOverlay').classList.toggle('hidden');
+    }
+
+    function closeMenu() {
+      document.getElementById('menu').classList.remove('open');
+      document.getElementById('menuOverlay').classList.add('hidden');
+    }
+
+    function selectMenuItem(item) {
+      currentView = item;
+      // Update menu highlighting
+      document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      // Show appropriate tab
+      if (item === 'trips') {
+        showTab('trips');
+        // Hide header bar for trips view
+        document.querySelector('.header-bar').style.display = 'none';
+      } else {
+        document.querySelector('.header-bar').style.display = 'flex';
+        showTab('add');
+      }
+    }
+
     function showTab(tab) {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('[id$="-tab"]').forEach(t => t.classList.add('hidden'));
-      event.target.classList.add('active');
+      
+      // Find and activate the correct tab button
+      const tabMap = {'add': 0, 'list': 1, 'balances': 2, 'trips': 3};
+      if (tab !== 'trips') {
+        document.querySelectorAll('.tab')[tabMap[tab]].classList.add('active');
+      }
+      
       document.getElementById(tab + '-tab').classList.remove('hidden');
       
       if (tab === 'add') onGlobalTripChange();
@@ -162,7 +225,6 @@
     function onGlobalTripChange() {
       selectedTripId = document.getElementById('globalTripSelect').value;
       
-      // Update payer and split with based on selected trip
       const payerSelect = document.getElementById('payer');
       const splitWithGroup = document.getElementById('splitWithGroup');
       
@@ -175,11 +237,9 @@
       const trip = trips.find(t => t.id === selectedTripId);
       if (!trip) return;
       
-      // Update payer dropdown
       payerSelect.innerHTML = '<option value="">Select who paid...</option>' + 
         trip.participants.map(p => `<option value="${p}">${p}</option>`).join('');
       
-      // Update split with checkboxes
       splitWithGroup.innerHTML = trip.participants.map(p => `
         <div class="checkbox-item">
           <input type="checkbox" id="split-${p}" value="${p}" checked>
@@ -241,20 +301,18 @@
       trips.push(trip);
       saveTrips();
       
-      // Select the new trip
       selectedTripId = trip.id;
       updateGlobalTripSelect();
       
       hideCreateTripModal();
       
-      // Refresh current view
-      if (!document.getElementById('add-tab').classList.contains('hidden')) {
-        onGlobalTripChange();
-      } else if (!document.getElementById('list-tab').classList.contains('hidden')) {
-        renderExpenses();
-      } else if (!document.getElementById('balances-tab').classList.contains('hidden')) {
-        renderBalances();
-      }
+      // Switch to tracker view with the new trip
+      currentView = 'tracker';
+      document.querySelector('.header-bar').style.display = 'flex';
+      document.querySelectorAll('.menu-item')[0].classList.add('active');
+      document.querySelectorAll('.menu-item')[1].classList.remove('active');
+      showTab('add');
+      onGlobalTripChange();
       
       alert('Trip created!');
     }
@@ -266,7 +324,6 @@
         return;
       }
       
-      // Get expense counts per trip
       const expenseCounts = {};
       expenses.forEach(e => {
         expenseCounts[e.tripId] = (expenseCounts[e.tripId] || 0) + 1;
@@ -295,15 +352,12 @@
       
       if (!confirm(msg)) return;
       
-      // Remove trip
       trips = trips.filter(t => t.id !== tripId);
-      // Remove associated expenses
       expenses = expenses.filter(e => e.tripId !== tripId);
       
       saveTrips();
       saveExpenses();
       
-      // Update global select if needed
       if (selectedTripId === tripId) {
         selectedTripId = '';
         updateGlobalTripSelect();
@@ -325,7 +379,6 @@
         return;
       }
 
-      // Get selected split with
       const splitWith = [];
       const trip = trips.find(t => t.id === tripId);
       if (trip) {
@@ -347,8 +400,9 @@
         return;
       }
 
-      const people = [payer, ...splitWith];
-      const splitAmount = amount / people.length;
+      // FIX: The split amount should be divided among splitWith, NOT including the payer
+      // The payer already paid the full amount, so others reimburse the payer
+      const splitAmount = amount / splitWith.length;
 
       const expense = {
         id: Date.now(),
@@ -356,7 +410,7 @@
         description,
         amount,
         payer,
-        people,
+        people: splitWith,  // Only the people who need to reimburse
         splitAmount,
         date: new Date().toISOString()
       };
@@ -364,7 +418,6 @@
       expenses.push(expense);
       saveExpenses();
       
-      // Clear form
       document.getElementById('description').value = '';
       document.getElementById('amount').value = '';
       document.getElementById('payer').value = '';
@@ -375,7 +428,6 @@
     function renderExpenses() {
       const list = document.getElementById('expense-list');
       
-      // Filter by selected trip
       const filteredExpenses = selectedTripId 
         ? expenses.filter(e => e.tripId === selectedTripId)
         : expenses;
@@ -395,7 +447,7 @@
             <div class="expense-info">
               ${e.tripId ? `<span class="expense-trip">${tripName}</span><br>` : ''}
               <strong>${e.description}</strong><br>
-              <small>${e.payer} paid $${e.amount.toFixed(2)} • ${e.people.join(', ')}</small>
+              <small>${e.payer} paid $${e.amount.toFixed(2)} • owes $${e.splitAmount.toFixed(2)} each from ${e.people.join(', ')}</small>
             </div>
             <button class="danger small" onclick="deleteExpense(${e.id})">×</button>
           </div>
@@ -406,7 +458,6 @@
     function renderBalances() {
       const settlement = document.getElementById('settlement');
       
-      // Filter by selected trip
       const filteredExpenses = selectedTripId 
         ? expenses.filter(e => e.tripId === selectedTripId)
         : expenses;
@@ -416,10 +467,12 @@
         return;
       }
 
-      // Calculate balances for filtered expenses
+      // Calculate balances: payer gets credit, people in splitWith owe their share
       const bal = {};
       filteredExpenses.forEach(e => {
+        // Payer is owed the full amount
         bal[e.payer] = (bal[e.payer] || 0) + e.amount;
+        // Each person in the split owes their share
         e.people.forEach(p => {
           bal[p] = (bal[p] || 0) - e.splitAmount;
         });
@@ -447,7 +500,6 @@
         if (creditor.amount < 0.01) creditors.shift();
       }
       
-      // Also show individual balances
       let balHtml = '<h4 style="margin:16px 0 8px;">Current Balances</h4>';
       for (const [person, amount] of Object.entries(bal)) {
         if (Math.abs(amount) > 0.01) {
