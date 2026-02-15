@@ -243,12 +243,8 @@
           payerSelect.innerHTML = '<option value="">Select who paid...</option>' + 
             trip.participants.map(p => `<option value="${p}">${p}</option>`).join('');
           
-          splitWithGroup.innerHTML = trip.participants.map(p => `
-            <div class="checkbox-item">
-              <input type="checkbox" id="split-${p}" value="${p}" checked>
-              <label for="split-${p}">${p}</label>
-            </div>
-          `).join('');
+          // Clear split list until payer is selected
+          splitWithGroup.innerHTML = '<p class="empty" style="padding:10px;">Select who paid first</p>';
         }
       }
       
@@ -301,6 +297,34 @@
         hideCreateTripModal();
       }
     });
+
+    // Update split list when payer changes
+    document.getElementById('payer').addEventListener('change', updateSplitList);
+
+    function updateSplitList() {
+      const tripId = document.getElementById('globalTripSelect').value;
+      const payer = document.getElementById('payer').value;
+      const splitWithGroup = document.getElementById('splitWithGroup');
+      
+      if (!tripId) return;
+      
+      const trip = trips.find(t => t.id === tripId);
+      if (!trip) return;
+      
+      // Filter out the payer from the split list
+      const splitParticipants = trip.participants.filter(p => p !== payer);
+      
+      if (splitParticipants.length === 0) {
+        splitWithGroup.innerHTML = '<p class="empty" style="padding:10px;">No one else to split with</p>';
+      } else {
+        splitWithGroup.innerHTML = splitParticipants.map(p => `
+          <div class="checkbox-item">
+            <input type="checkbox" id="split-${p}" value="${p}" checked>
+            <label for="split-${p}">${p}</label>
+          </div>
+        `).join('');
+      }
+    }
 
     // Trip functions
     function createTrip() {
