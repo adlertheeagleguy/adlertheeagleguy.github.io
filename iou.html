@@ -444,14 +444,17 @@
         return;
       }
 
+      // Add payer to the split (payer is always part of the split)
+      const allSplitParticipants = [payer, ...splitWith];
+      
       const expense = {
         id: Date.now(),
         tripId,
         description,
         amount,
         payer,
-        people: splitWith,  // Only the people who need to reimburse
-        totalParticipants: trip.participants.length,  // Store total for proper calculation
+        people: allSplitParticipants,  // Payer + selected people to split with
+        totalParticipants: allSplitParticipants.length,  // Total including payer
         date: new Date().toISOString()
       };
 
