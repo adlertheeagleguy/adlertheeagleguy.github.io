@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Who goes first?</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html {
+      background: #667eea;
+      height: 100%;
+      overflow: hidden;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #667eea;
+      background: linear-gradient(to bottom, #667eea 0%, #764ba2 100%);
+      min-height: 200vh;
+      min-height: 200dvh;
+      overflow: hidden;
+      touch-action: none;
+      width: 100%;
+      position: relative;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(to bottom, #667eea 0%, #764ba2 100%);
+      z-index: -1;
+    }
+    
+    #setup-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 20px;
+      text-align: center;
+    }
+    
+    h1 {
+      color: white;
+      font-size: 42px;
+      margin-bottom: 60px;
+      margin-top: -80px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+    
+    .subtitle {
+      color: rgba(255,255,255,0.9);
+      font-size: 18px;
+      margin-bottom: 40px;
+    }
+    
+    .player-buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+      max-width: 400px;
+    }
+    
+    .player-btn {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: 3px solid white;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.2s;
+      backdrop-filter: blur(10px);
+    }
+    
+    .player-btn:hover {
+      background: rgba(255,255,255,0.4);
+      transform: scale(1.1);
+    }
+    
+    .player-btn:active {
+      transform: scale(0.95);
+    }
+    
+    #game-screen {
+      display: none;
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
+    
+    .dot {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #ff6b6b, #ee5a6f);
+      box-shadow: 0 8px 32px rgba(238, 90, 111, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 36px;
+      font-weight: bold;
+      color: white;
+      transition: transform 0.3s, opacity 0.5s;
+      touch-action: none;
+      user-select: none;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+    
+    .dot.touched {
+      background: linear-gradient(145deg, #51cf66, #40c057);
+      box-shadow: 0 8px 32px rgba(64, 192, 87, 0.4);
+      animation: none;
+      transform: scale(1.1);
+    }
+    
+    .dot.winner {
+      background: linear-gradient(145deg, #ffd43b, #fcc419);
+      box-shadow: 0 8px 32px rgba(252, 196, 25, 0.6);
+      animation: winnerPulse 0.5s ease-in-out infinite;
+      z-index: 100;
+    }
+    
+    .dot.eliminated {
+      opacity: 0 !important;
+      transform: scale(0) !important;
+      animation: none !important;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    @keyframes winnerPulse {
+      0%, 100% { transform: scale(1.2); }
+      50% { transform: scale(1.3); }
+    }
+    
+    #status {
+      position: absolute;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      z-index: 1000;
+      text-align: center;
+    }
+    
+    #countdown {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 120px;
+      font-weight: bold;
+      color: white;
+      text-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+      z-index: 1000;
+      display: none;
+    }
+    
+    #reset-btn {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 15px 40px;
+      font-size: 18px;
+      border: none;
+      border-radius: 30px;
+      background: white;
+      color: #667eea;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      display: none;
+      z-index: 1000;
+    }
+    
+    #reset-btn:hover {
+      transform: translateX(-50%) scale(1.05);
+    }
+    
+    .sparkle {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: white;
+      border-radius: 50%;
+      pointer-events: none;
+      animation: sparkle 1s ease-out forwards;
+    }
+    
+    @keyframes sparkle {
+      0% {
+        transform: translate(0, 0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translate(var(--tx), var(--ty)) scale(0);
+        opacity: 0;
+      }
+    }
+    
+    .install-prompt {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(255,255,255,0.95);
+      padding: 16px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      text-align: center;
+      z-index: 1000;
+      max-width: 320px;
+      display: none;
+    }
+    
+    .install-prompt.show {
+      display: block;
+      animation: slideUp 0.3s ease-out;
+    }
+    
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+    }
+    
+    .install-prompt h3 {
+      color: #333;
+      margin-bottom: 8px;
+      font-size: 16px;
+    }
+    
+    .install-prompt p {
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+    
+    .install-prompt button {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .install-prompt button:hover {
+      background: #5a6fd6;
+    }
+  </style>
+</head>
+<body>
+  <div id="setup-screen">
+    <h1>How many players?</h1>
+    <div class="player-buttons">
+      <button class="player-btn" onclick="startGame(2)">2</button>
+      <button class="player-btn" onclick="startGame(3)">3</button>
+      <button class="player-btn" onclick="startGame(4)">4</button>
+      <button class="player-btn" onclick="startGame(5)">5</button>
+      <button class="player-btn" onclick="startGame(6)">6</button>
+      <button class="player-btn" onclick="startGame(7)">7</button>
+      <button class="player-btn" onclick="startGame(8)">8</button>
+      <button class="player-btn" onclick="startGame(9)">9</button>
+    </div>
+  </div>
+  
+  <div id="game-screen">
+    <div id="status"></div>
+    <div id="countdown"></div>
+    <div id="dots-container"></div>
+    <button id="reset-btn" onclick="resetGame()">Choose Again</button>
+  </div>
+  
+  <!-- Install Prompt - only shown in browser, not in installed PWA -->
+  <div id="install-prompt" class="install-prompt">
+    <h3>📱 Install This App</h3>
+    <p id="install-text">Add to your home screen for the best experience!</p>
+    <button id="install-btn" onclick="installApp()">Install</button>
+  </div>
+
+  <script>
+    // Check if running as installed PWA
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                         window.navigator.standalone === true;
+    
+    let deferredPrompt = null;
+    
+    // Listen for beforeinstallprompt (Android/Chrome)
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+    });
+    
+    // Show install prompt if not in standalone mode
+    if (!isStandalone) {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      const installPrompt = document.getElementById('install-prompt');
+      const installText = document.getElementById('install-text');
+      const installBtn = document.getElementById('install-btn');
+      
+      if (isIOS) {
+        installText.innerHTML = 'Tap <span class="material-icons" style="font-size:20px;vertical-align:middle;">ios_share</span> then "Add to Home Screen"';
+        installBtn.style.display = 'none';
+      }
+      
+      // Show prompt after a short delay
+      setTimeout(() => {
+        installPrompt.classList.add('show');
+      }, 1000);
+    }
+    
+    function installApp() {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('User installed the app');
+          }
+          deferredPrompt = null;
+          document.getElementById('install-prompt').classList.remove('show');
+        });
+      }
+    }
+    
+
+    
+    let numPlayers = 0;
+    let dots = [];
+    let touchedDots = new Set();
+    let gameStarted = false;
+    let autoStartMode = false;
+    
+    function startGame(players) {
+      numPlayers = players;
+      autoStartMode = players > 5;
+      
+      document.getElementById('setup-screen').style.display = 'none';
+      document.getElementById('game-screen').style.display = 'block';
+      
+      createDots();
+      
+      if (autoStartMode) {
+        // For 6-9 players, start countdown immediately
+        document.getElementById('status').textContent = 'Get ready!';
+        setTimeout(() => startCountdown(), 1000);
+      } else {
+        // For 2-5 players, wait for all fingers
+        document.getElementById('status').textContent = `Touch all ${numPlayers} dots!`;
+      }
+    }
+    
+    function createDots() {
+      const container = document.getElementById('dots-container');
+      container.innerHTML = '';
+      dots = [];
+      
+      const positions = getDotPositions(numPlayers);
+      
+      positions.forEach((pos, index) => {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        dot.textContent = index + 1;
+        dot.style.left = pos.x + 'px';
+        dot.style.top = pos.y + 'px';
+        dot.dataset.index = index;
+        
+        // Center the dot
+        dot.style.marginLeft = '-50px';
+        dot.style.marginTop = '-50px';
+        
+        container.appendChild(dot);
+        dots.push(dot);
+      });
+      
+      // Add touch event listeners
+      document.addEventListener('touchstart', handleTouch, { passive: false });
+      document.addEventListener('touchmove', handleTouch, { passive: false });
+      document.addEventListener('touchend', handleTouchEnd);
+      document.addEventListener('touchcancel', handleTouchEnd);
+    }
+    
+    function getDotPositions(count) {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const margin = 120;
+      
+      const positions = [];
+      
+      if (count === 2) {
+        positions.push(
+          { x: width * 0.3, y: height * 0.5 },
+          { x: width * 0.7, y: height * 0.5 }
+        );
+      } else if (count === 3) {
+        positions.push(
+          { x: width * 0.5, y: height * 0.25 },
+          { x: width * 0.25, y: height * 0.7 },
+          { x: width * 0.75, y: height * 0.7 }
+        );
+      } else if (count === 4) {
+        positions.push(
+          { x: width * 0.25, y: height * 0.25 },
+          { x: width * 0.75, y: height * 0.25 },
+          { x: width * 0.25, y: height * 0.75 },
+          { x: width * 0.75, y: height * 0.75 }
+        );
+      } else if (count === 5) {
+        positions.push(
+          { x: width * 0.5, y: height * 0.2 },
+          { x: width * 0.2, y: height * 0.45 },
+          { x: width * 0.8, y: height * 0.45 },
+          { x: width * 0.3, y: height * 0.8 },
+          { x: width * 0.7, y: height * 0.8 }
+        );
+      } else if (count === 6) {
+        positions.push(
+          { x: width * 0.25, y: height * 0.2 },
+          { x: width * 0.75, y: height * 0.2 },
+          { x: width * 0.15, y: height * 0.5 },
+          { x: width * 0.85, y: height * 0.5 },
+          { x: width * 0.25, y: height * 0.8 },
+          { x: width * 0.75, y: height * 0.8 }
+        );
+      } else if (count === 7) {
+        positions.push(
+          { x: width * 0.5, y: height * 0.15 },
+          { x: width * 0.2, y: height * 0.35 },
+          { x: width * 0.8, y: height * 0.35 },
+          { x: width * 0.15, y: height * 0.6 },
+          { x: width * 0.85, y: height * 0.6 },
+          { x: width * 0.35, y: height * 0.85 },
+          { x: width * 0.65, y: height * 0.85 }
+        );
+      } else if (count === 8) {
+        positions.push(
+          { x: width * 0.25, y: height * 0.15 },
+          { x: width * 0.75, y: height * 0.15 },
+          { x: width * 0.1, y: height * 0.38 },
+          { x: width * 0.9, y: height * 0.38 },
+          { x: width * 0.1, y: height * 0.62 },
+          { x: width * 0.9, y: height * 0.62 },
+          { x: width * 0.25, y: height * 0.85 },
+          { x: width * 0.75, y: height * 0.85 }
+        );
+      } else if (count >= 9) {
+        // Clock face distribution for 9+ players
+        // Distribute evenly around the edge like a clock
+        const margin = 70; // Margin from edge
+        const effectiveWidth = width - (margin * 2);
+        const effectiveHeight = height - (margin * 2);
+        
+        for (let i = 0; i < count; i++) {
+          // Start from top (12 o'clock) and go clockwise
+          // -90 degrees puts us at 12 o'clock
+          const angle = ((i / count) * 2 * Math.PI) - (Math.PI / 2);
+          
+          // Use an ellipse that fits within the screen with margin
+          const x = margin + effectiveWidth / 2 + (effectiveWidth / 2) * Math.cos(angle);
+          const y = margin + effectiveHeight / 2 + (effectiveHeight / 2) * Math.sin(angle);
+          
+          positions.push({ x: x, y: y });
+        }
+      }
+      
+      return positions;
+    }
+    
+    function handleTouch(e) {
+      if (gameStarted || autoStartMode) return;
+      e.preventDefault();
+      
+      const touches = e.touches;
+      
+      for (let i = 0; i < touches.length; i++) {
+        const touch = touches[i];
+        const element = document.elementFromPoint(touch.clientX, touch.clientY);
+        
+        if (element && element.classList.contains('dot') && !element.classList.contains('touched')) {
+          const index = parseInt(element.dataset.index);
+          if (!touchedDots.has(index)) {
+            touchedDots.add(index);
+            element.classList.add('touched');
+            createSparkles(touch.clientX, touch.clientY);
+          }
+        }
+      }
+      
+      // Check if all dots are touched (only if game hasn't started yet)
+      if (touchedDots.size === numPlayers && !gameStarted && !autoStartMode) {
+        document.getElementById('status').textContent = 'Everyone ready!';
+        setTimeout(() => {
+          if (!gameStarted) {
+            startCountdown();
+          }
+        }, 500);
+      } else if (!autoStartMode && !gameStarted) {
+        document.getElementById('status').textContent = 
+          `${touchedDots.size} of ${numPlayers} players ready`;
+      }
+    }
+    
+    function handleTouchEnd(e) {
+      if (gameStarted) return;
+      
+      // Remove touches that ended
+      const changedTouches = e.changedTouches;
+      
+      // For simplicity, we'll check remaining touches
+      // In a real app, you'd track which touch ID was on which dot
+    }
+    
+    function createSparkles(x, y) {
+      for (let i = 0; i < 8; i++) {
+        const sparkle = document.createElement('div');
+        sparkle.className = 'sparkle';
+        sparkle.style.left = x + 'px';
+        sparkle.style.top = y + 'px';
+        
+        const angle = (i / 8) * Math.PI * 2;
+        const distance = 50 + Math.random() * 50;
+        sparkle.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+        sparkle.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+        
+        document.body.appendChild(sparkle);
+        
+        setTimeout(() => sparkle.remove(), 1000);
+      }
+    }
+    
+    function startCountdown() {
+      gameStarted = true;
+      const countdownEl = document.getElementById('countdown');
+      const statusEl = document.getElementById('status');
+      
+      countdownEl.style.display = 'block';
+      statusEl.textContent = 'Who will be first?';
+      
+      let count = 3;
+      countdownEl.textContent = count;
+      
+      const interval = setInterval(() => {
+        count--;
+        if (count > 0) {
+          countdownEl.textContent = count;
+          countdownEl.style.transform = 'translate(-50%, -50%) scale(1.5)';
+          setTimeout(() => {
+            countdownEl.style.transform = 'translate(-50%, -50%) scale(1)';
+          }, 100);
+        } else {
+          clearInterval(interval);
+          countdownEl.style.display = 'none';
+          eliminatePlayers();
+        }
+      }, 1000);
+    }
+    
+    function eliminatePlayers() {
+      // Prevent multiple executions
+      if (eliminatePlayers.executed) return;
+      eliminatePlayers.executed = true;
+      
+      const statusEl = document.getElementById('status');
+      statusEl.textContent = 'Eliminating...';
+      
+      // Shuffle the dots array to randomize elimination order
+      const indices = dots.map((_, i) => i);
+      for (let i = indices.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+      }
+      
+      // Keep the last one as winner
+      const winnerIndex = indices[indices.length - 1];
+      
+      // Eliminate one by one with delay
+      let delay = 0;
+      for (let i = 0; i < indices.length - 1; i++) {
+        delay += 400 + Math.random() * 400;
+        const dotIndex = indices[i]; // Capture in local scope
+        const dotElement = dots[dotIndex]; // Capture element reference
+        setTimeout(() => {
+          if (dotElement && dotElement.classList) {
+            dotElement.classList.remove('touched');
+            dotElement.classList.add('eliminated');
+            createSparkles(
+              parseInt(dotElement.style.left),
+              parseInt(dotElement.style.top)
+            );
+          }
+        }, delay);
+      }
+      
+      // Show winner
+      setTimeout(() => {
+        const winnerElement = dots[winnerIndex];
+        if (winnerElement && winnerElement.classList) {
+          winnerElement.classList.remove('touched');
+          winnerElement.classList.add('winner');
+          statusEl.innerHTML = `<span style="font-size: 48px;">Player ${winnerIndex + 1} goes first!</span>`;
+          document.getElementById('reset-btn').style.display = 'block';
+          
+          // Celebration sparkles
+          for (let i = 0; i < 5; i++) {
+            setTimeout(() => {
+              createSparkles(
+                parseInt(winnerElement.style.left),
+                parseInt(winnerElement.style.top)
+              );
+            }, i * 200);
+          }
+        }
+      }, delay + 500);
+    }
+    
+    function resetGame() {
+      gameStarted = false;
+      eliminatePlayers.executed = false; // Reset the flag
+      touchedDots.clear();
+      document.getElementById('game-screen').style.display = 'none';
+      document.getElementById('setup-screen').style.display = 'flex';
+      document.getElementById('reset-btn').style.display = 'none';
+      document.getElementById('status').textContent = '';
+      
+      // Remove event listeners
+      document.removeEventListener('touchstart', handleTouch);
+      document.removeEventListener('touchmove', handleTouch);
+      document.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener('touchcancel', handleTouchEnd);
+    }
+  </script>
+</body>
+</html>

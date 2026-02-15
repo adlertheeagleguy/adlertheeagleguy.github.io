@@ -177,6 +177,14 @@
     if (trips.length > 0) {
       selectedTripId = trips[0].id;
     }
+    
+    // Check for shared trip in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const shareData = urlParams.get('share');
+    if (shareData) {
+      importSharedTrip(shareData);
+    }
+    
     updateGlobalTripSelect();
     if (selectedTripId) {
       onGlobalTripChange();
@@ -380,7 +388,10 @@
             <small>${t.participants.join(', ')}</small><br>
             <small style="color:#666;">${expenseCounts[t.id] || 0} expenses</small>
           </div>
-          <button class="danger small" onclick="deleteTrip('${t.id}')">Delete</button>
+          <div style="display:flex; gap:8px;">
+            <button class="small" onclick="shareTrip('${t.id}')" title="Share trip">Share</button>
+            <button class="danger small" onclick="deleteTrip('${t.id}')">Delete</button>
+          </div>
         </div>
       `).join('');
     }
@@ -409,6 +420,144 @@
       
       renderTrips();
       updateGlobalTripSelect();
+    }
+
+    async function shareTrip(tripId) {
+      const trip = trips.find(t => t.id === tripId);
+      if (!trip) return;
+      
+      const tripExpenses = expenses.filter(e => e.tripId === tripId);
+      
+      // Create share data object
+      const shareData = {
+        trip: trip,
+        expenses: tripExpenses
+      };
+      
+      // Encode to base64
+      const encoded = btoa(JSON.stringify(shareData));
+      
+      // Create shareable URL
+      const baseUrl = window.location.origin + window.location.pathname;
+      const shareUrl = `${baseUrl}?share=${encoded}`;
+      
+      // Try native share API first (best for mobile)
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: `Share Trip: ${trip.name}`,
+            text: `Check out this IOU trip "${trip.name}" with ${tripExpenses.length} expense(s)`,
+            url: shareUrl
+          });
+          return;
+        } catch (err) {
+          // User cancelled or share failed, continue to clipboard fallback
+        }
+      }
+      
+      // iOS-friendly clipboard copy using execCommand
+      // Must happen synchronously within the click handler
+      const textarea = document.createElement('textarea');
+      textarea.value = shareUrl;
+      textarea.setAttribute('readonly', '');
+      textarea.style.cssText = 'position:absolute;left:-9999px;top:0;';
+      document.body.appendChild(textarea);
+      
+      // Use textarea's select method for better iOS compatibility
+      textarea.select();
+      
+      let copied = false;
+      try {
+        copied = document.execCommand('copy');
+      } catch (err) {
+        copied = false;
+      }
+      
+      document.body.removeChild(textarea);
+      
+      if (copied) {
+        alert(`Share link copied!\n\nPaste this link to share "${trip.name}" with all ${tripExpenses.length} expense(s).`);
+      } else {
+        // Final fallback - show prompt
+        prompt('Copy this link to share the trip:', shareUrl);
+      }
+    }
+
+    function importSharedTrip(encodedData) {
+      try {
+        // Decode from base64
+        const decoded = atob(encodedData);
+        const shareData = JSON.parse(decoded);
+        
+        if (!shareData.trip || !shareData.expenses) {
+          alert('Invalid share link');
+          return;
+        }
+        
+        const importedTrip = shareData.trip;
+        const importedExpenses = shareData.expenses;
+        
+        // Check if trip already exists (by name and participants)
+        const existingTrip = trips.find(t => 
+          t.name === importedTrip.name && 
+          JSON.stringify(t.participants.sort()) === JSON.stringify(importedTrip.participants.sort())
+        );
+        
+        if (existingTrip) {
+          const confirmImport = confirm(
+            `A trip named "${importedTrip.name}" already exists.\n\n` +
+            `Would you like to import the expenses from the shared trip into the existing trip?\n\n` +
+            `This will add ${importedExpenses.length} expense(s) to your existing trip.`
+          );
+          
+          if (!confirmImport) return;
+          
+          // Import expenses with new IDs and linked to existing trip
+          importedExpenses.forEach(expense => {
+            const newExpense = {
+              ...expense,
+              id: Date.now() + Math.random(), // New unique ID
+              tripId: existingTrip.id // Link to existing trip
+            };
+            expenses.push(newExpense);
+          });
+          
+          selectedTripId = existingTrip.id;
+          alert(`Imported ${importedExpenses.length} expense(s) into "${existingTrip.name}"`);
+        } else {
+          // Create new trip with new ID
+          const newTripId = Date.now().toString();
+          const newTrip = {
+            ...importedTrip,
+            id: newTripId
+          };
+          trips.push(newTrip);
+          
+          // Import expenses with new IDs
+          importedExpenses.forEach(expense => {
+            const newExpense = {
+              ...expense,
+              id: Date.now() + Math.random(), // New unique ID
+              tripId: newTripId
+            };
+            expenses.push(newExpense);
+          });
+          
+          selectedTripId = newTripId;
+          alert(`Imported trip "${newTrip.name}" with ${importedExpenses.length} expense(s)`);
+        }
+        
+        saveTrips();
+        saveExpenses();
+        updateGlobalTripSelect();
+        
+        // Clear the URL parameter
+        window.history.replaceState({}, document.title, window.location.pathname);
+        
+      } catch (error) {
+        console.error('Import error:', error);
+        alert('Failed to import shared trip. The link may be invalid or corrupted.');
+      }
     }
 
     // Expense functions
