@@ -271,6 +271,13 @@
     .install-prompt button:hover {
       background: #5a6fd6;
     }
+    
+    /* Hide install prompt on desktop */
+    @media (min-width: 769px) {
+      .install-prompt {
+        display: none !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -354,9 +361,13 @@
     let gameStarted = false;
     let autoStartMode = false;
     
+    // Detect touch support
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    
     function startGame(players) {
       numPlayers = players;
-      autoStartMode = players > 5;
+      // Auto-start if more than 5 players OR if device doesn't support touch
+      autoStartMode = players > 5 || !isTouchDevice;
       
       document.getElementById('setup-screen').style.display = 'none';
       document.getElementById('game-screen').style.display = 'block';
@@ -364,11 +375,11 @@
       createDots();
       
       if (autoStartMode) {
-        // For 6-9 players, start countdown immediately
+        // Auto-start countdown (for 6+ players or non-touch devices)
         document.getElementById('status').textContent = 'Get ready!';
         setTimeout(() => startCountdown(), 1000);
       } else {
-        // For 2-5 players, wait for all fingers
+        // Wait for all fingers (only on touch devices with 2-5 players)
         document.getElementById('status').textContent = `Touch all ${numPlayers} dots!`;
       }
     }
