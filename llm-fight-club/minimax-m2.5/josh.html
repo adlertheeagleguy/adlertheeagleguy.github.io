@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Josh Wilhelm - Salesforce Certified Platform Developer II | Indianapolis, Indiana">
+    <meta name="keywords" content="Salesforce, Platform Developer, Apex, LWC, Lightning Web Components, CRM">
+    <meta name="author" content="Josh Wilhelm">
+    <meta name="theme-color" content="#4f46e5">
+    
+    <meta property="og:title" content="Josh Wilhelm - Salesforce Developer">
+    <meta property="og:description" content="Salesforce Certified Platform Developer II based in Indianapolis, Indiana">
+    <meta property="og:type" content="profile">
+    <meta property="og:locale" content="en_US">
+    
+    <title>Josh Wilhelm | Salesforce Developer</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --slate-900: #0f172a;
+            --slate-800: #1e293b;
+            --slate-700: #334155;
+            --slate-600: #475569;
+            --slate-500: #64748b;
+            --slate-400: #94a3b8;
+            --slate-300: #cbd5e1;
+            --slate-200: #e2e8f0;
+            --slate-100: #f1f5f9;
+            --slate-50: #f8fafc;
+            
+            --indigo-600: #4f46e5;
+            --indigo-500: #6366f1;
+            --indigo-400: #818cf8;
+            --indigo-300: #a5b4fc;
+            
+            --zinc-800: #27272a;
+            --zinc-700: #3f3f46;
+            
+            --glass-bg: rgba(15, 23, 42, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            
+            --gradient-primary: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #ec4899 100%);
+            --gradient-hero: radial-gradient(ellipse at top, #1e1b4b 0%, #0f172a 50%, #0f172a 100%);
+        }
+        
+        html {
+            scroll-behavior: smooth;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--slate-900);
+            color: var(--slate-100);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+        
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-link {
+            font-weight: 500;
+            color: var(--slate-400);
+            transition: color 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--indigo-400);
+        }
+        
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        .nav-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .nav-toggle span {
+            width: 25px;
+            height: 2px;
+            background: var(--slate-100);
+            transition: all 0.3s ease;
+        }
+        
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--gradient-hero);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(79, 70, 229, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(124, 58, 237, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(236, 72, 153, 0.1) 0%, transparent 40%);
+            animation: heroGlow 20s ease-in-out infinite;
+        }
+        
+        @keyframes heroGlow {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(2%, 2%) rotate(1deg); }
+            66% { transform: translate(-1%, 1%) rotate(-1deg); }
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 2rem;
+            max-width: 900px;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: var(--indigo-400);
+            margin-bottom: 1.5rem;
+            backdrop-filter: blur(10px);
+        }
+        
+        .hero-badge::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #10b981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        
+        .hero-title {
+            font-size: clamp(3rem, 8vw, 5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+        
+        .hero-title span {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(1.125rem, 2vw, 1.5rem);
+            color: var(--slate-400);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: 0 4px 20px rgba(79, 70, 229, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(79, 70, 229, 0.5);
+        }
+        
+        .btn-secondary {
+            background: var(--glass-bg);
+            color: var(--slate-100);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--slate-800);
+            border-color: var(--indigo-500);
+        }
+        
+        .section {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .section-label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--indigo-400);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+        }
+        
+        .section-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        
+        .section-subtitle {
+            color: var(--slate-400);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            align-items: start;
+        }
+        
+        .about-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+        }
+        
+        .about-avatar {
+            width: 120px;
+            height: 120px;
+            background: var(--gradient-primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+        }
+        
+        .about-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        
+        .about-info-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--slate-400);
+            font-size: 0.9rem;
+        }
+        
+        .about-info-item svg {
+            width: 18px;
+            height: 18px;
+            color: var(--indigo-400);
+        }
+        
+        .about-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .about-content p {
+            color: var(--slate-400);
+            margin-bottom: 1.5rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-item {
+            background: var(--slate-800);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            color: var(--slate-400);
+            font-size: 0.875rem;
+        }
+        
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .skill-category {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            transition: all 0.4s ease;
+        }
+        
+        .skill-category:hover {
+            transform: translateY(-8px);
+            border-color: var(--indigo-500);
+            box-shadow: 0 20px 40px rgba(79, 70, 229, 0.2);
+        }
+        
+        .skill-category-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .skill-icon {
+            width: 48px;
+            height: 48px;
+            background: var(--slate-800);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--indigo-400);
+        }
+        
+        .skill-category-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .skill-tag {
+            padding: 0.5rem 1rem;
+            background: var(--slate-800);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            color: var(--slate-300);
+            transition: all 0.3s ease;
+            cursor: default;
+        }
+        
+        .skill-tag:hover {
+            background: var(--indigo-600);
+            color: white;
+            transform: scale(1.05);
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 3rem;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--indigo-600), var(--indigo-300), var(--indigo-600));
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 3rem;
+        }
+        
+        .timeline-item:last-child {
+            padding-bottom: 0;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            left: -3rem;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            background: var(--indigo-500);
+            border-radius: 50%;
+            border: 3px solid var(--slate-900);
+            box-shadow: 0 0 0 3px var(--indigo-500);
+        }
+        
+        .timeline-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-card:hover {
+            border-color: var(--indigo-500);
+            transform: translateX(10px);
+        }
+        
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .timeline-company {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .company-logo {
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        
+        .timeline-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+        
+        .timeline-company-name {
+            color: var(--indigo-400);
+            font-weight: 500;
+        }
+        
+        .timeline-date {
+            color: var(--slate-500);
+            font-size: 0.875rem;
+            background: var(--slate-800);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+        }
+        
+        .timeline-description {
+            color: var(--slate-400);
+            margin-bottom: 1rem;
+        }
+        
+        .timeline-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        
+        .timeline-tag {
+            padding: 0.375rem 0.75rem;
+            background: var(--slate-800);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            color: var(--slate-300);
+        }
+        
+        .certs-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .cert-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            backdrop-filter: blur(20px);
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start;
+            transition: all 0.3s ease;
+        }
+        
+        .cert-card:hover {
+            border-color: var(--indigo-500);
+            transform: translateY(-4px);
+        }
+        
+        .cert-icon {
+            width: 56px;
+            height: 56px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .cert-icon svg {
+            width: 28px;
+            height: 28px;
+        }
+        
+        .cert-content h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+        
+        .cert-issuer {
+            color: var(--indigo-400);
+            font-size: 0.875rem;
+            margin-bottom: 0.25rem;
+        }
+        
+        .cert-date {
+            color: var(--slate-500);
+            font-size: 0.75rem;
+        }
+        
+        .volunteer-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 2rem;
+            backdrop-filter: blur(20px);
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .volunteer-logo {
+            width: 80px;
+            height: 80px;
+            background: var(--slate-800);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .volunteer-logo svg {
+            width: 40px;
+            height: 40px;
+            color: var(--indigo-400);
+        }
+        
+        .volunteer-content h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .volunteer-org {
+            color: var(--indigo-400);
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
+        
+        .volunteer-duration {
+            color: var(--slate-500);
+            font-size: 0.875rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        .volunteer-desc {
+            color: var(--slate-400);
+            font-size: 0.9rem;
+        }
+        
+        .contact {
+            text-align: center;
+        }
+        
+        .contact-cta {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 4rem 2rem;
+            backdrop-filter: blur(20px);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .contact-cta h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .contact-cta p {
+            color: var(--slate-400);
+            margin-bottom: 2rem;
+        }
+        
+        .footer {
+            background: var(--slate-900);
+            border-top: 1px solid var(--glass-border);
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        
+        .footer-logo {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .footer-link {
+            color: var(--slate-400);
+            transition: color 0.3s ease;
+        }
+        
+        .footer-link:hover {
+            color: var(--indigo-400);
+        }
+        
+        .footer-copyright {
+            color: var(--slate-500);
+            font-size: 0.875rem;
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .stagger-1 { transition-delay: 0.1s; }
+        .stagger-2 { transition-delay: 0.2s; }
+        .stagger-3 { transition-delay: 0.3s; }
+        .stagger-4 { transition-delay: 0.4s; }
+        .stagger-5 { transition-delay: 0.5s; }
+        
+        @media (max-width: 1024px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: var(--glass-bg);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+                border-bottom: 1px solid var(--glass-border);
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .nav-toggle {
+                display: flex;
+            }
+            
+            .nav-toggle.active span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+            
+            .nav-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+            
+            .nav-toggle.active span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -5px);
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .timeline {
+                padding-left: 2rem;
+            }
+            
+            .timeline-dot {
+                left: -2rem;
+            }
+            
+            .volunteer-card {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .section {
+                padding: 4rem 1rem;
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-container">
+            <a href="#" class="nav-logo">JW</a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#experience" class="nav-link">Experience</a></li>
+                <li><a href="#certifications" class="nav-link">Certifications</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+            <div class="nav-toggle" id="navToggle" aria-label="Toggle navigation" role="button" tabindex="0">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-badge">Available for opportunities</div>
+            <h1 class="hero-title fade-in">Hi, I'm <span>Josh Wilhelm</span></h1>
+            <p class="hero-subtitle fade-in stagger-1">Salesforce Certified Platform Developer II building enterprise solutions that transform how businesses connect with their customers.</p>
+            <div class="hero-cta fade-in stagger-2">
+                <a href="#contact" class="btn btn-primary">
+                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    Get in Touch
+                </a>
+                <a href="#experience" class="btn btn-secondary">View Experience</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="about">
+        <div class="section-header fade-in">
+            <p class="section-label">About Me</p>
+            <h2 class="section-title">Passionate About Building Solutions</h2>
+            <p class="section-subtitle">Leveraging the power of Salesforce to create impactful business transformations.</p>
+        </div>
+        
+        <div class="about-grid">
+            <div class="about-card fade-in">
+                <div class="about-avatar">JW</div>
+                <div class="about-info">
+                    <div class="about-info-item">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        Indianapolis, IN
+                    </div>
+                    <div class="about-info-item">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                        Salesforce Developer
+                    </div>
+                    <div class="about-info-item">
+                        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                        Platform Developer II
+                    </div>
+                </div>
+            </div>
+            
+            <div class="about-content fade-in stagger-1">
+                <h3>Salesforce Expert</h3>
+                <p>As a Salesforce Certified Platform Developer II with deep expertise in Apex, Lightning Web Components (LWC), and the broader Salesforce ecosystem, I specialize in designing and building scalable enterprise solutions. From custom Lightning experiences to complex integrations, I transform business requirements into elegant technical implementations.</p>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number">10+</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">4</div>
+                        <div class="stat-label">Salesforce Certifications</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">400+</div>
+                        <div class="stat-label">Professional Network</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="skills">
+        <div class="section-header fade-in">
+            <p class="section-label">Skills</p>
+            <h2 class="section-title">Technical Expertise</h2>
+            <p class="section-subtitle">A comprehensive skill set built through years of hands-on experience.</p>
+        </div>
+        
+        <div class="skills-grid">
+            <div class="skill-category fade-in">
+                <div class="skill-category-header">
+                    <div class="skill-icon">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                    </div>
+                    <h3 class="skill-category-title">Development</h3>
+                </div>
+                <div class="skill-list">
+                    <span class="skill-tag">Apex</span>
+                    <span class="skill-tag">LWC</span>
+                    <span class="skill-tag">Aura</span>
+                    <span class="skill-tag">Visualforce</span>
+                    <span class="skill-tag">SOQL</span>
+                    <span class="skill-tag">SOSL</span>
+                    <span class="skill-tag">REST API</span>
+                    <span class="skill-tag">Bulk API</span>
+                </div>
+            </div>
+            
+            <div class="skill-category fade-in stagger-1">
+                <div class="skill-category-header">
+                    <div class="skill-icon">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </div>
+                    <h3 class="skill-category-title">Automation</h3>
+                </div>
+                <div class="skill-list">
+                    <span class="skill-tag">Flow Builder</span>
+                    <span class="skill-tag">Process Builder</span>
+                    <span class="skill-tag">Apex Triggers</span>
+                    <span class="skill-tag">Approval Processes</span>
+                    <span class="skill-tag">Scheduled Jobs</span>
+                    <span class="skill-tag">Queueable Apex</span>
+                    <span class="skill-tag">Batch Apex</span>
+                </div>
+            </div>
+            
+            <div class="skill-category fade-in stagger-2">
+                <div class="skill-category-header">
+                    <div class="skill-icon">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+                    </div>
+                    <h3 class="skill-category-title">Data & Security</h3>
+                </div>
+                <div class="skill-list">
+                    <span class="skill-tag">Data Modeling</span>
+                    <span class="skill-tag">Sharing Rules</span>
+                    <span class="skill-tag">OWD</span>
+                    <span class="skill-tag">Permission Sets</span>
+                    <span class="skill-tag">Field Level Security</span>
+                    <span class="skill-tag">Validation Rules</span>
+                    <span class="skill-tag">MDAPI</span>
+                </div>
+            </div>
+            
+            <div class="skill-category fade-in stagger-3">
+                <div class="skill-category-header">
+                    <div class="skill-icon">
+                        <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+                    </div>
+                    <h3 class="skill-category-title">Tools & Platforms</h3>
+                </div>
+                <div class="skill-list">
+                    <span class="skill-tag">Salesforce CLI</span>
+                    <span class="skill-tag">VS Code</span>
+                    <span class="skill-tag">Salesforce DX</span>
+                    <span class="skill-tag">Git</span>
+                    <span class="skill-tag">CI/CD</span>
+                    <span class="skill-tag">Sandbox</span>
+                    <span class="skill-tag">Workbench</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="experience">
+        <div class="section-header fade-in">
+            <p class="section-label">Experience</p>
+            <h2 class="section-title">Professional Journey</h2>
+            <p class="section-subtitle">Building enterprise solutions and leading technical initiatives.</p>
+        </div>
+        
+        <div class="timeline">
+            <div class="timeline-item fade-in">
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                    <div class="timeline-header">
+                        <div class="timeline-company">
+                            <div class="company-logo">SF</div>
+                            <div>
+                                <div class="timeline-title">Salesforce Professional</div>
+                                <div class="timeline-company-name">Salesforce</div>
+                            </div>
+                        </div>
+                        <div class="timeline-date">Present</div>
+                    </div>
+                    <p class="timeline-description">Leading enterprise Salesforce implementations, developing custom solutions, and mentoring teams on best practices.</p>
+                    <div class="timeline-tags">
+                        <span class="timeline-tag">Platform Development</span>
+                        <span class="timeline-tag">LWC</span>
+                        <span class="timeline-tag">Apex</span>
+                        <span class="timeline-tag">Integration</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="timeline-item fade-in stagger-1">
+                <div class="timeline-dot"></div>
+                <div class="timeline-card">
+                    <div class="timeline-header">
+                        <div class="timeline-company">
+                            <div class="company-logo">TU</div>
+                            <div>
+                                <div class="timeline-title">Bachelor's Degree</div>
+                                <div class="timeline-company-name">Taylor University</div>
+                            </div>
+                        </div>
+                        <div class="timeline-date">2011 - 2015</div>
+                    </div>
+                    <p class="timeline-description">Foundational education in technology and business, establishing the groundwork for a career in enterprise software development.</p>
+                    <div class="timeline-tags">
+                        <span class="timeline-tag">Computer Science</span>
+                        <span class="timeline-tag">Business</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="certifications">
+        <div class="section-header fade-in">
+            <p class="section-label">Certifications</p>
+            <h2 class="section-title">Credentials & Achievements</h2>
+            <p class="section-subtitle">Industry-recognized certifications demonstrating expertise.</p>
+        </div>
+        
+        <div class="certs-grid">
+            <div class="cert-card fade-in">
+                <div class="cert-icon">
+                    <svg fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                </div>
+                <div class="cert-content">
+                    <h4>Platform Developer II</h4>
+                    <p class="cert-issuer">Salesforce</p>
+                    <p class="cert-date">Issued Jul 2019</p>
+                </div>
+            </div>
+            
+            <div class="cert-card fade-in stagger-1">
+                <div class="cert-icon">
+                    <svg fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                </div>
+                <div class="cert-content">
+                    <h4>Platform App Builder</h4>
+                    <p class="cert-issuer">Salesforce</p>
+                    <p class="cert-date">Issued Apr 2016</p>
+                </div>
+            </div>
+            
+            <div class="cert-card fade-in stagger-2">
+                <div class="cert-icon">
+                    <svg fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                </div>
+                <div class="cert-content">
+                    <h4>Platform Developer I</h4>
+                    <p class="cert-issuer">Salesforce</p>
+                    <p class="cert-date">Issued Jan 2016</p>
+                </div>
+            </div>
+            
+            <div class="cert-card fade-in stagger-3">
+                <div class="cert-icon">
+                    <svg fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                </div>
+                <div class="cert-content">
+                    <h4>Administrator</h4>
+                    <p class="cert-issuer">Salesforce</p>
+                    <p class="cert-date">Issued Jul 2015</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="volunteer">
+        <div class="section-header fade-in">
+            <p class="section-label">Volunteer Work</p>
+            <h2 class="section-title">Giving Back to the Community</h2>
+            <p class="section-subtitle">Making a difference outside of work.</p>
+        </div>
+        
+        <div class="volunteer-card fade-in">
+            <div class="volunteer-logo">
+                <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+            </div>
+            <div class="volunteer-content">
+                <h3>Assistant</h3>
+                <p class="volunteer-org">Special Olympics</p>
+                <p class="volunteer-duration">Sep 2014 - Present · 11+ years</p>
+                <p class="volunteer-desc">Working with children and adults with special needs, assisting them in participating in competitive sports and promoting inclusion.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section contact" id="contact">
+        <div class="section-header fade-in">
+            <p class="section-label">Contact</p>
+            <h2 class="section-title">Let's Connect</h2>
+        </div>
+        
+        <div class="contact-cta fade-in stagger-1">
+            <h2>Ready to Transform Your Business?</h2>
+            <p>Whether you're looking to implement Salesforce or optimize your existing implementation, I'd love to hear from you.</p>
+            <a href="https://www.linkedin.com/in/josh-wilhelm-9000a8a1" target="_blank" class="btn btn-primary">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                Connect on LinkedIn
+            </a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">Josh Wilhelm</div>
+            <ul class="footer-links">
+                <li><a href="#about" class="footer-link">About</a></li>
+                <li><a href="#skills" class="footer-link">Skills</a></li>
+                <li><a href="#experience" class="footer-link">Experience</a></li>
+                <li><a href="#certifications" class="footer-link">Certifications</a></li>
+            </ul>
+            <p class="footer-copyright">© 2024 Josh Wilhelm. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const navToggle = document.getElementById('navToggle');
+            const navLinks = document.getElementById('navLinks');
+            
+            navToggle.addEventListener('click', function() {
+                navToggle.classList.toggle('active');
+                navLinks.classList.toggle('active');
+            });
+            
+            navLinks.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    navToggle.classList.remove('active');
+                    navLinks.classList.remove('active');
+                });
+            });
+            
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.fade-in').forEach(el => {
+                observer.observe(el);
+            });
+            
+            const sections = document.querySelectorAll('section[id]');
+            const navLinkItems = document.querySelectorAll('.nav-link');
+            
+            window.addEventListener('scroll', () => {
+                let current = '';
+                
+                sections.forEach(section => {
+                    const sectionTop = section.offsetTop;
+                    const sectionHeight = section.clientHeight;
+                    
+                    if (scrollY >= sectionTop - 200) {
+                        current = section.getAttribute('id');
+                    }
+                });
+                
+                navLinkItems.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === `#${current}`) {
+                        link.classList.add('active');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
