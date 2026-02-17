@@ -307,6 +307,7 @@
     <h3>📱 Install This App</h3>
     <p id="install-text">Add to your home screen for the best experience!</p>
     <button id="install-btn" onclick="installApp()">Install</button>
+    <p style="font-size: 12px; color: #999; margin-top: 8px; margin-bottom: 0;">(tap to dismiss)</p>
   </div>
 
   <script>
@@ -334,10 +335,20 @@
         installBtn.style.display = 'none';
       }
       
-      // Show prompt after a short delay
+      // Show prompt immediately
+      installPrompt.classList.add('show');
+      
+      // Auto-hide after 10 seconds
       setTimeout(() => {
-        installPrompt.classList.add('show');
-      }, 1000);
+        installPrompt.classList.remove('show');
+      }, 10000);
+      
+      // Allow tap to dismiss
+      installPrompt.addEventListener('click', (e) => {
+        if (e.target !== installBtn) {
+          installPrompt.classList.remove('show');
+        }
+      });
     }
     
     function installApp() {

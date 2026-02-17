@@ -254,27 +254,17 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
 
-        .model-icon {
-            width: 80px;
-            height: 80px;
-            background: rgba(255, 107, 53, 0.1);
-            border: 2px solid var(--accent);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            margin-bottom: 1.5rem;
-            transition: all 0.3s;
-        }
-
-        .model-card:hover .model-icon {
-            background: var(--accent);
-            transform: scale(1.1);
+        .model-company {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .model-card h3 {
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             margin-bottom: 0.5rem;
             color: var(--accent);
         }
@@ -343,12 +333,12 @@
             <span>⚔️</span> AI Model Competition
         </div>
         <h1>LLM Fight Club</h1>
-        <p>Four AI models, one prompt, zero rules. Each model was given the exact same task: build a high-performance portfolio website. Compare their approaches and decide who wins.</p>
+        <p>Multiple AI models competing head-to-head. Each model was given the exact same prompt and constraints: build a high-performance portfolio website. No special instructions, no extra help—just pure model capability. Compare their approaches and decide who wins.</p>
     </section>
 
     <div class="prompt-container">
         <button class="prompt-toggle" onclick="togglePrompt()">
-            <span>📋 View the Original Prompt</span>
+            <span>📋 View the Prompt</span>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -386,38 +376,38 @@
         
         <div class="models-grid">
             <a href="codex-5.3-xhigh/josh.html" class="model-card">
-                <div class="model-icon">🤖</div>
-                <h3>Codex 5.3</h3>
-                <p>by OpenAI</p>
+                <div class="model-company">OpenAI</div>
+                <h3>Codex 5.3 xHigh</h3>
                 <div class="model-meta">
-                    <span class="meta-tag">xHigh Reasoning</span>
+                    <span class="meta-tag">Reasoning</span>
+                    <span class="meta-tag">~355B Params</span>
                 </div>
             </a>
 
             <a href="glm-5/josh.html" class="model-card">
-                <div class="model-icon">🧠</div>
+                <div class="model-company">Zhipu AI</div>
                 <h3>GLM 5</h3>
-                <p>by Zhipu AI</p>
                 <div class="model-meta">
-                    <span class="meta-tag">Flash Thinking</span>
+                    <span class="meta-tag">Mixture of Experts</span>
+                    <span class="meta-tag">744B Params</span>
                 </div>
             </a>
 
             <a href="kimi-k2.5/josh.html" class="model-card">
-                <div class="model-icon">🦅</div>
+                <div class="model-company">Moonshot AI</div>
                 <h3>Kimi K2.5</h3>
-                <p>by Moonshot AI</p>
                 <div class="model-meta">
-                    <span class="meta-tag">Free Tier</span>
+                    <span class="meta-tag">Multi-modal</span>
+                    <span class="meta-tag">1T Params</span>
                 </div>
             </a>
 
             <a href="minimax-m2.5/josh.html" class="model-card">
-                <div class="model-icon">⚡</div>
+                <div class="model-company">MiniMax</div>
                 <h3>MiniMax M2.5</h3>
-                <p>by MiniMax</p>
                 <div class="model-meta">
-                    <span class="meta-tag">Text-01</span>
+                    <span class="meta-tag">Agent-Native MoE</span>
+                    <span class="meta-tag">229B Params</span>
                 </div>
             </a>
         </div>
