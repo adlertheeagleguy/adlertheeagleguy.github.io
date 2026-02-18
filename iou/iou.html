@@ -63,10 +63,10 @@
     body::before {
       content: '';
       position: fixed;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
+      top: -75%;
+      left: -75%;
+      width: 250%;
+      height: 250%;
       background: 
         radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.15) 0%, transparent 50%),
         radial-gradient(circle at 80% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
@@ -434,16 +434,19 @@
       display: flex;
       align-items: center;
       gap: 16px;
-      padding: 18px;
+      padding: 20px;
       background: var(--bg-tertiary);
       border-radius: 16px;
       border: 1px solid var(--glass-border);
       transition: all 0.2s;
     }
     
-    .expense-item:hover {
+    .expense-item:not(.swipeable) {
+      margin-bottom: 12px;
+    }
+    
+    .expense-item:not(.swipeable):hover {
       border-color: rgba(99, 102, 241, 0.3);
-      transform: translateX(4px);
     }
     
     .expense-icon {
@@ -488,6 +491,145 @@
     
     .expense-amount.negative {
       color: var(--danger);
+    }
+
+    /* Swipe to Delete */
+    .swipe-container {
+      position: relative;
+      overflow: hidden;
+      border-radius: 16px;
+      margin-bottom: 12px;
+    }
+
+    .swipe-delete {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 80px;
+      background: var(--danger);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 0 16px 16px 0;
+      opacity: 0;
+      transition: opacity 0.15s ease-out;
+    }
+
+    .swipe-container:has(.swipeable.swiping) .swipe-delete,
+    .swipe-container:has(.swipeable.open) .swipe-delete {
+      opacity: 1;
+    }
+
+    .swipeable {
+      transition: transform 0.15s ease-out;
+      touch-action: pan-y;
+      background: var(--bg-tertiary);
+      position: relative;
+      z-index: 1;
+    }
+
+    .swipeable.swiping {
+      transition: none;
+    }
+
+    .swipeable.open {
+      transform: translateX(-80px);
+    }
+
+    /* Participant Rows */
+    .participant-rows {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .participant-row {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .participant-row input {
+      flex: 1;
+      margin-bottom: 0;
+    }
+
+    .participant-row .remove-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--danger);
+      font-size: 20px;
+      font-weight: 300;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .participant-row .remove-btn:hover {
+      background: rgba(239, 68, 68, 0.2);
+    }
+
+    .participant-row .remove-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .add-participant-btn {
+      padding: 12px 16px;
+      border-radius: 12px;
+      background: var(--glass);
+      border: 1px dashed var(--glass-border);
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .add-participant-btn:hover {
+      border-color: var(--accent-primary);
+      color: var(--text-primary);
+      background: rgba(99, 102, 241, 0.08);
+    }
+
+    .existing-participants {
+      margin-bottom: 16px;
+    }
+
+    .existing-participants-label {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .participant-chip {
+      display: inline-block;
+      padding: 8px 14px;
+      background: var(--bg-tertiary);
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-right: 8px;
+      margin-bottom: 8px;
+      border: 1px solid var(--glass-border);
     }
     
     /* Balance Cards */
@@ -667,7 +809,38 @@
     .modal-actions button {
       flex: 1;
     }
-    
+
+    /* Expense Detail Sections */
+    .expense-detail-section {
+      margin-bottom: 16px;
+      padding: 16px;
+      background: var(--bg-tertiary);
+      border-radius: 12px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .detail-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .detail-value {
+      font-size: 16px;
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .detail-value.amount {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--success);
+    }
+
     /* Utility */
     .hidden {
       display: none !important;
@@ -841,7 +1014,10 @@
       
       <div class="input-group">
         <label>Participants</label>
-        <input type="text" id="tripParticipants" placeholder="Alice, Bob, Charlie">
+        <div id="createParticipantsList" class="participant-rows"></div>
+        <button type="button" class="add-participant-btn" onclick="addCreateParticipantRow()" style="margin-top: 10px;">
+          <span>+</span> Add Participant
+        </button>
       </div>
       
       <div class="modal-actions">
@@ -851,11 +1027,71 @@
     </div>
   </div>
 
+  <!-- Edit Trip Modal -->
+  <div id="editTripModal" class="modal-overlay" onclick="if(event.target === this) hideEditTripModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-title">Edit Trip</div>
+      
+      <div class="existing-participants">
+        <div class="existing-participants-label">Current Participants</div>
+        <div id="existingParticipantsChips"></div>
+      </div>
+      
+      <div class="input-group">
+        <label>Add Participants</label>
+        <div id="editParticipantsList" class="participant-rows"></div>
+        <button type="button" class="add-participant-btn" onclick="addEditParticipantRow()" style="margin-top: 10px;">
+          <span>+</span> Add Participant
+        </button>
+      </div>
+      
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="hideEditTripModal()">Cancel</button>
+        <button class="btn-primary" onclick="saveTripEdits()">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Expense Detail Modal -->
+  <div id="expenseDetailModal" class="modal-overlay" onclick="if(event.target === this) hideExpenseDetailModal()">
+    <div class="modal" onclick="event.stopPropagation()">
+      <div class="modal-title" id="expenseDetailTitle">Expense Details</div>
+      
+      <div class="expense-detail-section">
+        <div class="detail-label">Amount</div>
+        <div class="detail-value amount" id="expenseDetailAmount">$0.00</div>
+      </div>
+      
+      <div class="expense-detail-section">
+        <div class="detail-label">Paid by</div>
+        <div class="detail-value" id="expenseDetailPayer">-</div>
+      </div>
+      
+      <div class="expense-detail-section">
+        <div class="detail-label">Split with</div>
+        <div class="detail-value" id="expenseDetailSplit">-</div>
+      </div>
+      
+      <div class="expense-detail-section">
+        <div class="detail-label">Date</div>
+        <div class="detail-value" id="expenseDetailDate">-</div>
+      </div>
+      
+      <div class="modal-actions">
+        <button class="btn-secondary btn-danger" onclick="deleteExpenseFromModal()">Delete</button>
+        <button class="btn-primary" onclick="hideExpenseDetailModal()">Close</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let trips = JSON.parse(localStorage.getItem('iou-trips') || '[]');
     let expenses = JSON.parse(localStorage.getItem('iou-expenses') || '[]');
     let selectedTripId = '';
     let currentView = 'tracker';
+    let editingTripId = '';
+    let openSwipeElement = null;
+    let viewingExpenseId = null;
 
     // Initialize - auto-select first trip if exists
     if (trips.length > 0) {
@@ -971,12 +1207,47 @@
     function showCreateTripModal() {
       document.getElementById('tripModal').classList.add('show');
       document.getElementById('tripName').focus();
+      initCreateParticipants();
     }
 
     function hideCreateTripModal() {
       document.getElementById('tripModal').classList.remove('show');
       document.getElementById('tripName').value = '';
-      document.getElementById('tripParticipants').value = '';
+      document.getElementById('createParticipantsList').innerHTML = '';
+    }
+
+    function initCreateParticipants() {
+      const container = document.getElementById('createParticipantsList');
+      container.innerHTML = '';
+      addCreateParticipantRow();
+      addCreateParticipantRow();
+    }
+
+    function addCreateParticipantRow(name = '') {
+      const container = document.getElementById('createParticipantsList');
+      const row = document.createElement('div');
+      row.className = 'participant-row';
+      row.innerHTML = `
+        <input type="text" placeholder="Name" value="${name}">
+        <button type="button" class="remove-btn" onclick="removeParticipantRow(this)">×</button>
+      `;
+      container.appendChild(row);
+      row.querySelector('input').focus();
+    }
+
+    function removeParticipantRow(btn) {
+      const row = btn.parentElement;
+      const container = row.parentElement;
+      if (container.children.length > 1) {
+        row.remove();
+      }
+    }
+
+    function getCreateParticipants() {
+      const inputs = document.querySelectorAll('#createParticipantsList input');
+      return Array.from(inputs)
+        .map(input => input.value.trim())
+        .filter(name => name);
     }
 
     // Close modal on overlay click
@@ -990,6 +1261,7 @@
     document.addEventListener('keydown', function(e) {
       if (e.key === 'Escape') {
         hideCreateTripModal();
+        hideEditTripModal();
       }
     });
 
@@ -1024,10 +1296,15 @@
     // Trip functions
     function createTrip() {
       const name = document.getElementById('tripName').value.trim();
-      const participants = document.getElementById('tripParticipants').value.split(',').map(p => p.trim()).filter(p => p);
+      const participants = getCreateParticipants();
       
-      if (!name || participants.length === 0) {
-        alert('Please enter trip name and at least one participant');
+      if (!name) {
+        alert('Please enter a trip name');
+        return;
+      }
+
+      if (participants.length === 0) {
+        alert('Please add at least one participant');
         return;
       }
 
@@ -1048,10 +1325,13 @@
       // Switch to tracker view with the new trip
       currentView = 'tracker';
       document.querySelector('.app-header').style.display = 'block';
+      document.querySelector('.trip-bar').style.display = 'flex';
+      document.querySelector('.tab-bar').style.display = 'flex';
       document.querySelectorAll('.menu-item')[0].classList.add('active');
       document.querySelectorAll('.menu-item')[1].classList.remove('active');
       showTab('add');
       onGlobalTripChange();
+      window.scrollTo(0, 0);
       
       alert('Trip created!');
     }
@@ -1074,12 +1354,12 @@
       });
       
       list.innerHTML = trips.map(t => `
-        <div class="expense-item">
+        <div class="expense-item" style="cursor: pointer;" onclick="showEditTripModal('${t.id}')">
           <div class="expense-details">
             <div class="expense-title">${t.name}</div>
             <div class="expense-meta">${t.participants.join(', ')} • ${expenseCounts[t.id] || 0} expenses</div>
           </div>
-          <div style="display:flex; gap:8px;">
+          <div style="display:flex; gap:8px;" onclick="event.stopPropagation()">
             <button class="btn-secondary" style="width:auto; padding:10px 16px;" onclick="shareTrip('${t.id}')" title="Share trip">Share</button>
             <button class="btn-secondary btn-danger" style="width:auto; padding:10px 16px;" onclick="deleteTrip('${t.id}')">Delete</button>
           </div>
@@ -1112,6 +1392,88 @@
       renderTrips();
       updateGlobalTripSelect();
     }
+
+    // Edit Trip Modal functions
+    function showEditTripModal(tripId) {
+      editingTripId = tripId;
+      const trip = trips.find(t => t.id === tripId);
+      if (!trip) return;
+      
+      // Render existing participants as chips
+      const chipsContainer = document.getElementById('existingParticipantsChips');
+      chipsContainer.innerHTML = trip.participants
+        .map(p => `<span class="participant-chip">${p}</span>`)
+        .join('');
+      
+      // Clear the add participants list
+      document.getElementById('editParticipantsList').innerHTML = '';
+      
+      document.getElementById('editTripModal').classList.add('show');
+    }
+
+    function hideEditTripModal() {
+      document.getElementById('editTripModal').classList.remove('show');
+      editingTripId = '';
+      document.getElementById('editParticipantsList').innerHTML = '';
+    }
+
+    function addEditParticipantRow(name = '') {
+      const container = document.getElementById('editParticipantsList');
+      const row = document.createElement('div');
+      row.className = 'participant-row';
+      row.innerHTML = `
+        <input type="text" placeholder="Name" value="${name}">
+        <button type="button" class="remove-btn" onclick="this.parentElement.remove()">×</button>
+      `;
+      container.appendChild(row);
+      row.querySelector('input').focus();
+    }
+
+    function saveTripEdits() {
+      const trip = trips.find(t => t.id === editingTripId);
+      if (!trip) return;
+      
+      // Get new participants from inputs
+      const inputs = document.querySelectorAll('#editParticipantsList input');
+      const newParticipants = Array.from(inputs)
+        .map(input => input.value.trim())
+        .filter(name => name);
+      
+      // Check for duplicates
+      const duplicateNames = newParticipants.filter(name => 
+        trip.participants.includes(name)
+      );
+      
+      if (duplicateNames.length > 0) {
+        alert(`These participants already exist: ${duplicateNames.join(', ')}`);
+        return;
+      }
+      
+      // Add new participants
+      trip.participants = [...trip.participants, ...newParticipants];
+      
+      saveTrips();
+      hideEditTripModal();
+      renderTrips();
+      
+      // Update payer dropdown if this is the selected trip
+      if (selectedTripId === editingTripId) {
+        onGlobalTripChange();
+      }
+      
+      if (newParticipants.length > 0) {
+        alert(`Added ${newParticipants.length} participant(s) to "${trip.name}"`);
+      } else {
+        alert('No new participants added');
+      }
+    }
+
+    // Close edit modal on overlay click
+    document.getElementById('editTripModal').addEventListener('click', function(e) {
+      if (e.target === this) {
+        hideEditTripModal();
+      }
+    });
 
     async function shareTrip(tripId) {
       const trip = trips.find(t => t.id === tripId);
@@ -1332,16 +1694,145 @@
         const participantCount = e.people.length;
         const splitAmount = e.amount / participantCount;
         return `
-          <div class="expense-item animate-in">
-            <div class="expense-icon">💸</div>
-            <div class="expense-details">
-              <div class="expense-title">${e.description}</div>
-              <div class="expense-meta">${e.payer} paid • ${participantCount} people</div>
+          <div class="swipe-container">
+            <div class="swipe-delete" onclick="deleteExpense(${e.id})">Delete</div>
+            <div class="expense-item swipeable animate-in" data-expense-id="${e.id}">
+              <div class="expense-icon">💸</div>
+              <div class="expense-details">
+                <div class="expense-title">${e.description}</div>
+                <div class="expense-meta">${e.payer} paid • ${participantCount} people</div>
+              </div>
+              <div class="expense-amount">$${e.amount.toFixed(2)}</div>
             </div>
-            <div class="expense-amount">$${e.amount.toFixed(2)}</div>
           </div>
         `;
       }).join('');
+      
+      // Attach swipe handlers to new expense items
+      attachSwipeHandlers();
+    }
+
+    // Swipe to delete functionality
+    function attachSwipeHandlers() {
+      const swipeables = document.querySelectorAll('.swipeable');
+      swipeables.forEach(el => {
+        let startX = 0;
+        let startY = 0;
+        let currentX = 0;
+        let currentY = 0;
+        let isDragging = false;
+        let hasMoved = false;
+        let isScrolling = false;
+        
+        el.addEventListener('touchstart', (e) => {
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+          currentX = startX;
+          currentY = startY;
+          isDragging = true;
+          hasMoved = false;
+          isScrolling = false;
+          el.classList.add('swiping');
+          
+          // Close any other open swipes
+          if (openSwipeElement && openSwipeElement !== el) {
+            openSwipeElement.classList.remove('open');
+            openSwipeElement = null;
+          }
+        }, { passive: true });
+        
+        el.addEventListener('touchmove', (e) => {
+          if (!isDragging) return;
+          currentX = e.touches[0].clientX;
+          currentY = e.touches[0].clientY;
+          const deltaX = startX - currentX;
+          const deltaY = startY - currentY;
+          
+          // Detect if scrolling vertically (more vertical than horizontal movement)
+          if (!isScrolling && Math.abs(deltaY) > 10) {
+            if (Math.abs(deltaY) > Math.abs(deltaX)) {
+              isScrolling = true;
+            }
+          }
+          
+          if (Math.abs(deltaX) > 10 || Math.abs(deltaY) > 10) {
+            hasMoved = true;
+          }
+          
+          // Only apply horizontal swipe if not scrolling vertically
+          if (isScrolling) return;
+          
+          // Only allow swiping left (positive deltaX)
+          if (deltaX > 0) {
+            const translateX = Math.min(deltaX, 80);
+            el.style.transform = `translateX(-${translateX}px)`;
+          } else if (deltaX < 0 && el.classList.contains('open')) {
+            // Swiping right to close
+            const translateX = 80 + deltaX;
+            if (translateX > 0) {
+              el.style.transform = `translateX(-${translateX}px)`;
+            }
+          }
+        }, { passive: true });
+        
+        el.addEventListener('touchend', (e) => {
+          if (!isDragging) return;
+          isDragging = false;
+          el.classList.remove('swiping');
+          
+          const deltaX = startX - currentX;
+          
+          // Reset transform if was scrolling
+          if (isScrolling) {
+            el.style.transform = 'translateX(0)';
+            return;
+          }
+          
+          // If barely moved, treat as tap to show detail
+          if (!hasMoved && Math.abs(deltaX) < 10) {
+            const expenseId = parseInt(el.dataset.expenseId);
+            showExpenseDetailModal(expenseId);
+            el.style.transform = 'translateX(0)';
+            return;
+          }
+          
+          if (deltaX > 40) {
+            // Swiped enough to open
+            el.classList.add('open');
+            el.style.transform = 'translateX(-80px)';
+            openSwipeElement = el;
+          } else if (deltaX < -20 && el.classList.contains('open')) {
+            // Swiped right to close
+            el.classList.remove('open');
+            el.style.transform = 'translateX(0)';
+            openSwipeElement = null;
+          } else if (!el.classList.contains('open')) {
+            // Snap back
+            el.style.transform = 'translateX(0)';
+          } else {
+            // Stay open
+            el.style.transform = 'translateX(-80px)';
+          }
+        }, { passive: true });
+        
+        // Click handler for non-touch devices
+        el.addEventListener('click', (e) => {
+          // Only handle if not on delete button and not swiping
+          if (!hasMoved && !el.classList.contains('open')) {
+            const expenseId = parseInt(el.dataset.expenseId);
+            showExpenseDetailModal(expenseId);
+          }
+        });
+      });
+      
+      // Close open swipe when tapping elsewhere
+      document.addEventListener('touchstart', (e) => {
+        if (openSwipeElement && !e.target.closest('.swipe-container')) {
+          openSwipeElement.classList.remove('open');
+          openSwipeElement.style.transform = 'translateX(0)';
+          openSwipeElement = null;
+        }
+      }, { passive: true });
     }
 
     function renderBalances() {
@@ -1437,6 +1928,33 @@
       saveExpenses();
       renderExpenses();
       renderBalances();
+    }
+
+    function showExpenseDetailModal(expenseId) {
+      viewingExpenseId = expenseId;
+      const expense = expenses.find(e => e.id === expenseId);
+      if (!expense) return;
+      
+      document.getElementById('expenseDetailTitle').textContent = expense.description;
+      document.getElementById('expenseDetailAmount').textContent = `$${expense.amount.toFixed(2)}`;
+      document.getElementById('expenseDetailPayer').textContent = expense.payer;
+      document.getElementById('expenseDetailSplit').textContent = expense.people.join(', ');
+      document.getElementById('expenseDetailDate').textContent = new Date(expense.date).toLocaleDateString();
+      
+      document.getElementById('expenseDetailModal').classList.add('show');
+    }
+
+    function hideExpenseDetailModal() {
+      document.getElementById('expenseDetailModal').classList.remove('show');
+      viewingExpenseId = null;
+    }
+
+    function deleteExpenseFromModal() {
+      if (!viewingExpenseId) return;
+      if (!confirm('Delete this expense?')) return;
+      
+      deleteExpense(viewingExpenseId);
+      hideExpenseDetailModal();
     }
 
     function clearExpenses() {
