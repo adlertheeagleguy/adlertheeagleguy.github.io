@@ -3,178 +3,804 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Balkans Adventure - March 2026</title>
+    <title>🦅 Josh's Balkans Adventure 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            line-height: 1.6;
-            max-width: 800px;
-            margin: 0 auto;
+            font-family: 'Poppins', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #ff6b6b 0%, #feca57 50%, #48dbfb 100%);
+            min-height: 100vh;
+            color: #2d3436;
             padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
         }
+
         .container {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
         }
-        header {
+
+        .hero {
             text-align: center;
-            margin-bottom: 30px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            margin-bottom: 40px;
+            color: white;
+            position: relative;
+            overflow: hidden;
         }
-        h1 {
-            color: #764ba2;
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.05) 10px,
+                rgba(255,255,255,0.05) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+
+        @keyframes slide {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            font-weight: 800;
             margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
-        .dates {
-            color: #667eea;
-            font-size: 1.2em;
-        }
-        .section {
-            margin: 30px 0;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-        }
-        .section h2 {
-            color: #333;
-            margin-top: 0;
+
+        .hero .subtitle {
             font-size: 1.3em;
+            opacity: 0.95;
+            position: relative;
+            z-index: 1;
         }
-        .section p {
-            margin: 10px 0;
+
+        .hero .dates {
+            font-size: 1.1em;
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50px;
+            display: inline-block;
+            position: relative;
+            z-index: 1;
         }
-        .booked {
-            color: #28a745;
-            font-weight: bold;
+
+        .trip-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
         }
-        .suggestions {
-            background: #fff3cd;
-            border-left-color: #ffc107;
+
+        .stat-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            text-align: center;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .stat-box .emoji {
+            font-size: 2em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .day-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 25px 0;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            border-left: 6px solid;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .day-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.15);
+        }
+
+        .day-card:nth-child(odd) { border-left-color: #e17055; }
+        .day-card:nth-child(even) { border-left-color: #00b894; }
+
+        .day-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .day-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .day-title {
+            flex: 1;
+        }
+
+        .day-title h2 {
+            font-size: 1.5em;
+            color: #2d3436;
+            margin-bottom: 5px;
+        }
+
+        .location-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #dfe6e9;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            color: #636e72;
+        }
+
+        .plans-section {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            padding: 20px;
+            border-radius: 12px;
             margin: 15px 0;
         }
-        .suggestions h3 {
-            color: #856404;
+
+        .plans-section h3 {
+            color: #2d3436;
+            margin-bottom: 15px;
+            font-size: 1.2em;
         }
-        .suggestions p {
-            color: #664d03;
-        }
-        .activity {
+
+        .plan-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
             margin: 10px 0;
-            padding-left: 20px;
+            padding: 10px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 8px;
+        }
+
+        .plan-item .time {
+            font-weight: 600;
+            color: #667eea;
+            min-width: 80px;
+        }
+
+        .booked-badge {
+            background: #00b894;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+
+        .adler-suggestions {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px dashed #e17055;
+        }
+
+        .adler-suggestions h3 {
+            color: #d63031;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .suggestion-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .suggestion-item {
+            background: white;
+            padding: 12px 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+
+        .suggestion-item:hover {
+            transform: scale(1.02);
+        }
+
+        .suggestion-item .emoji {
+            font-size: 1.5em;
+        }
+
+        .food-section {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fecfef 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .food-section h3 {
+            color: #d63031;
+            margin-bottom: 15px;
+        }
+
+        .food-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .food-item {
+            background: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .photo-ops {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+        }
+
+        .photo-ops h3 {
+            margin-bottom: 15px;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        .photo-item {
+            background: rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .tips-section {
+            background: #fff9e6;
+            border: 3px solid #ffd93d;
+            border-radius: 16px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+
+        .tips-section h2 {
+            color: #f39c12;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tip-item {
+            margin: 12px 0;
+            padding-left: 30px;
             position: relative;
         }
-        .activity::before {
-            content: "→";
+
+        .tip-item::before {
+            content: "💡";
             position: absolute;
             left: 0;
-            color: #764ba2;
         }
+
         .footer {
             text-align: center;
+            padding: 30px;
+            margin-top: 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
             color: white;
-            margin-top: 30px;
-            font-size: 0.9em;
+        }
+
+        .footer h3 {
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .transport-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #74b9ff;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        @media (max-width: 600px) {
+            .hero h1 { font-size: 2em; }
+            .day-header { flex-direction: column; text-align: center; }
+            .container { padding: 20px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🏛️ Balkans Adventure 2026</h1>
-            <p class="dates">February 28 - March 6, 2026</p>
-            <p><strong>Starting in Schladming, Austria → Ending in Munich, Germany</strong></p>
-        </header>
-
-        <div class="section">
-            <h2>2/28 Saturday</h2>
-            <p><strong>Morning - Schladming, Austria</strong></p>
-            <p>Train to Ljubljana, Slovenia (booked ✅)</p>
-            <p><strong>Night - Ljubljana, Slovenia</strong></p>
-            <p>Hostel booked ✅</p>
+        <div class="hero">
+            <h1>🦅 Josh's Balkans Adventure</h1>
+            <p class="subtitle">🇦🇹 Austria → 🇸🇮 Slovenia → 🇭🇷 Croatia → 🇧🇦 Bosnia & Herzegovina → 🇩🇪 Germany</p>
+            <div class="dates">📅 Feb 28 - Mar 6, 2026 (7 Days of Epicness)</div>
         </div>
 
-        <div class="section">
-            <h2>3/1 Sunday</h2>
-            <p><strong>Morning - Ljubljana, Slovenia</strong></p>
-            <p>Hostel, grab rental car (booked ✅)</p>
-            <p>Drive to Zagreb</p>
-            <p><strong>Night - Zagreb, Croatia</strong></p>
-            <p>Chillout Hostel Zagreb (booked ✅)</p>
-            
-            <div class="suggestions">
-                <h3>Suggestions:</h3>
-                <p class="activity">St. Mark's Church</p>
-                <p class="activity">Zagreb Cathedral</p>
-                <p class="activity">National Theater</p>
-                <p class="activity">Dolac Market</p>
-                <p class="activity">Ban Jelacic Square (2 min walk from hostel)</p>
-                <p class="activity">Tkalciceva Street</p>
+        <div class="trip-stats">
+            <div class="stat-box">
+                <span class="emoji">🚂</span>
+                2 Train Rides
+            </div>
+            <div class="stat-box">
+                <span class="emoji">🚗</span>
+                1 Rental Car
+            </div>
+            <div class="stat-box">
+                <span class="emoji">🏨</span>
+                6 Stays
+            </div>
+            <div class="stat-box">
+                <span class="emoji">🍖</span>
+                ∞ Meat Flatbreads
             </div>
         </div>
 
-        <div class="section">
-            <h2>3/2 Monday</h2>
-            <p><strong>Morning - Zagreb, Croatia</strong></p>
-            <p>Hostel</p>
-            <p>Drive towards Sarajevo, stop in Banja Luka</p>
-            <p><strong>Night - Sarajevo, Bosnia & Herzegovina</strong></p>
-            <p>Hostel booked ✅</p>
-        </div>
-
-        <div class="section">
-            <h2>3/3 Tuesday</h2>
-            <p><strong>Morning - Sarajevo, Bosnia & Herzegovina</strong></p>
-            <p>Hostel</p>
-            <p>Explore Sarajevo, drive to Mostar</p>
-            <p><strong>Night - Mostar, Bosnia & Herzegovina</strong></p>
-            <p>Airbnb booked ✅ (<a href="https://www.airbnb.com/rooms/667836461319533869?adults=1&check_in=2026-03-03&check_out=2026-03-05&location=Mostar%2C%20Bosnia%20and%20Herzegovina&search_mode=regular_search&source_impression_id=p3_1770340686_P3ToNFjvODJF5zv9&previous_page_section_name=1001&federated_search_id=a69165da-01a7-48a6-8783-e5fc6aea3284">link</a>)</p>
-        </div>
-
-        <div class="section">
-            <h2>3/4 Wednesday</h2>
-            <p><strong>Morning - Mostar, Bosnia & Herzegovina</strong></p>
-            <p>Chill in Mostar</p>
-            
-            <div class="suggestions">
-                <h3>Suggestions:</h3>
-                <p class="activity">Austro-Hungarian ruins hike (<a href="https://maps.app.goo.gl/dq6RZavYEednPxRq5">map</a>)</p>
-                <p class="activity">Ski resort 1.5 hr drive away, big mountain (<a href="https://maps.app.goo.gl/qmWVZaaxCKvC1FFS9">map</a>)</p>
-                <p class="activity">Ski resort 2.5 hr drive - hosted Olympics in 1984 (<a href="https://share.google/tdTyIoDWbpVQcrsys">map</a>)</p>
+        <!-- Day 1: Feb 28 -->
+        <div class="day-card">
+            <div class="day-header">
+                <div class="day-number">1</div>
+                <div class="day-title">
+                    <h2>Saturday, February 28</h2>
+                    <span class="location-tag">🇦🇹 Schladming → 🇸🇮 Ljubljana</span>
+                </div>
             </div>
             
-            <p><strong>Food Recommendations:</strong></p>
-            <p class="activity">Meat flatbreads</p>
-            <p class="activity">Meat stuffed pastries</p>
-            <p class="activity">Apples stuffed with nuts</p>
-            <p class="activity">Baklava</p>
-            <p class="activity">Grilled fish</p>
+            <div class="plans-section">
+                <h3>📋 The Plan</h3>
+                <div class="plan-item">
+                    <span class="time">Morning</span>
+                    <div>
+                        Scenic train ride from Schladming to Ljubljana 
+                        <span class="booked-badge">BOOKED ✅</span>
+                    </div>
+                </div>
+                <div class="plan-item">
+                    <span class="time">Afternoon</span>
+                    <div>Explore Ljubljana Old Town</div>
+                </div>
+                <div class="plan-item">
+                    <span class="time">Night</span>
+                    <div>
+                        Ljubljana hostel stay 
+                        <span class="booked-badge">BOOKED ✅</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="adler-suggestions">
+                <h3>🦅 Adler's Picks for Ljubljana</h3>
+                <div class="suggestion-grid">
+                    <div class="suggestion-item">
+                        <span class="emoji">🐉</span>
+                        <span>Dragon Bridge (iconic!)</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">🏰</span>
+                        <span>Ljubljana Castle (take the funicular!)</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">☕</span>
+                        <span>Café culture along the river</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">🎨</span>
+                        <span>Metelkova Art Center (weird & cool)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 2: Mar 1 -->
+        <div class="day-card">
+            <div class="day-header">
+                <div class="day-number">2</div>
+                <div class="day-title">
+                    <h2>Sunday, March 1</h2>
+                    <span class="location-tag">🇸🇮 Ljubljana → 🇭🇷 Zagreb</span>
+                </div>
+            </div>
             
-            <p><strong>Night - Mostar, Bosnia & Herzegovina</strong></p>
-            <p>Airbnb booked ✅</p>
+            <div class="plans-section">
+                <h3>📋 The Plan</h3>
+                <div class="plan-item">
+                    <span class="time">Morning</span>
+                    <div>
+                        Pick up rental car 
+                        <span class="booked-badge">BOOKED ✅</span>
+                    </div>
+                </div>
+                <div class="plan-item">
+                    <span class="time">Midday</span>
+                    <div>Drive to Zagreb (about 1.5 hrs)</div>
+                </div>
+                <div class="plan-item">
+                    <span class="time">Night</span>
+                    <div>
+                        Chillout Hostel Zagreb 
+                        <span class="booked-badge">BOOKED ✅</span>
+                        <span class="transport-badge">🚶 2 min walk to Ban Jelacic Square!</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="adler-suggestions">
+                <h3>🦅 Adler's Picks for Zagreb</h3>
+                <div class="suggestion-grid">
+                    <div class="suggestion-item">
+                        <span class="emoji">⛪</span>
+                        <span>St. Mark's Church (those colorful tiles!)</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">🎭</span>
+                        <span>National Theater (architecture goals)</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">🍎</span>
+                        <span>Dolac Market (fresh food market)</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">🍺</span>
+                        <span>Tkalciceva Street (bar hopping central)</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="section">
-            <h2>3/5 Thursday</h2>
-            <p><strong>Morning - Mostar, Bosnia & Herzegovina</strong></p>
-            <p>Hostel</p>
-            <p>Drive to Ljubljana, stop at national park on the way</p>
-            <p><strong>Night - Ljubljana, Slovenia</strong></p>
-            <p>Night train at 10pm (booked ✅)</p>
+        <!-- Day 3: Mar 2 -->
+        <div class="day-card">
+            <div class="day-header">
+                <div class="day-number">3</div>
+                <div class="day-title">
+                    <h2>Monday, March 2</h2>
+                    <span class="location-tag">🇭🇷 Zagreb → 🇧🇦 Banja Luka → 🇧🇦 Sarajevo</span>
+                </div>
+            </div>
+            
+            <div class="plans-section">
+                <h3>📋 The Plan</h3>
+                <div class="plan-item">
+                    <span class="time">Morning</span>
+                    <div>Grab breakfast, leave Zagreb</div>
+                </div>
+                <div class="plan-item">
+                    <span class="time">Midday</span>
+                    <div>Stop in Banja Luka for lunch & exploration</div>
+                </div>
+                <div class="plan-item">
+                    <span class="time">Evening</span>
+                    <div>
+                        Arrive in Sarajevo 
+                        <span class="booked-badge">HOSTEL BOOKED ✅</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="adler-suggestions">
+                <h3>🦅 Adler's Picks for Banja Luka</h3>
+                <div class="suggestion-grid">
+                    <div class="suggestion-item">
+                        <span class="emoji">🏰</span>
+                        <span>Kastel Fortress (medieval vibes)</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">⛪</span>
+                        <span>Cathedral of Christ the Savior</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">🍖</span>
+                        <span>Try Banja Luka cevapi!</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="section">
-            <h2>3/6 Friday</h2>
-            <p><strong>Morning - Munich, Germany</strong></p>
-            <p>Return flights</p>
+        <!-- Day 4: Mar 3 -->
+        <div class="day-card">
+            <div class="day-header">
+                <div class="day-number">4</div>
+                <div class="day-title">
+                    <h2>Tuesday, March 3</h2>
+                    <span class="location-tag">🇧🇦 Sarajevo → 🇧🇦 Mostar</span>
+                </div>
+            </div>
+            
+            <div class="plans-section">
+                <h3>📋 The Plan</h3>
+                <div class="plan-item">
+                    <span class="time">Morning</span>
+                    <div>Explore Sarajevo Old Town (Baščaršija)</div>
+                </div>
+                <div class="plan-item">
+                    <span class="time">Afternoon</span>
+                    <div>Drive to Mostar (gorgeous mountain scenery!)</div>
+                </div>
+                <div class="plan-item">
+                    <span class="time">Night</span>
+                    <div>
+                        Mostar Airbnb (2 nights) 
+                        <span class="booked-badge">BOOKED ✅</span>
+                        <br><a href="https://www.airbnb.com/rooms/667836461319533869?adults=1&check_in=2026-03-03&check_out=2026-03-05&location=Mostar%2C%20Bosnia%20and%20Herzegovina&search_mode=regular_search&source_impression_id=p3_1770340686_P3ToNFjvODJF5zv9&previous_page_section_name=1001&federated_search_id=a69165da-01a7-48a6-8783-e5fc6aea3284">🔗 Airbnb Link</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="adler-suggestions">
+                <h3>🦅 Adler's Picks for Sarajevo</h3>
+                <div class="suggestion-grid">
+                    <div class="suggestion-item">
+                        <span class="emoji">☕</span>
+                        <span>Baščaršija Ottoman Quarter</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">💣</span>
+                        <span>Tunnel of Hope Museum</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">🍩</span>
+                        <span>Try authentic Bosnian coffee</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">💛</span>
+                        <span>Latin Bridge (history spot)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 5: Mar 4 -->
+        <div class="day-card">
+            <div class="day-header">
+                <div class="day-number">5</div>
+                <div class="day-title">
+                    <h2>Wednesday, March 4</h2>
+                    <span class="location-tag">🇧🇦 Mostar (Full Day!)</span>
+                </div>
+            </div>
+            
+            <div class="plans-section">
+                <h3>📋 The Plan</h3>
+                <div class="plan-item">
+                    <span class="time">Morning</span>
+                    <div>Chill & explore Mostar at your pace</div>
+                </div>
+                <div class="plan-item">
+                    <span class="time">Night</span>
+                    <div>
+                        Second night at Mostar Airbnb 
+                        <span class="booked-badge">BOOKED ✅</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="adler-suggestions">
+                <h3>🦅 Adler's Epic Picks for Mostar</h3>
+                <div class="suggestion-grid">
+                    <div class="suggestion-item">
+                        <span class="emoji">🌉</span>
+                        <span>Stari Most (Old Bridge) - sunrise/sunset!</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">🏔️</span>
+                        <span>Austro-Hungarian Ruins Hike <a href="https://maps.app.goo.gl/dq6RZavYEednPxRq5">📍 Map</a></span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">⛷️</span>
+                        <span>Big Mountain Ski Resort (1.5hr) <a href="https://maps.app.goo.gl/qmWVZaaxCKvC1FFS9">📍 Map</a></span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">🏅</span>
+                        <span>1984 Olympics Site (2.5hr) <a href="https://share.google/tdTyIoDWbpVQcrsys">📍 Map</a></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="food-section">
+                <h3>🍽️ Food to Devour in Mostar</h3>
+                <div class="food-grid">
+                    <span class="food-item">🥙 Meat Flatbreads</span>
+                    <span class="food-item">🥟 Stuffed Meat Pastries</span>
+                    <span class="food-item">🍎 Apples Stuffed with Nuts</span>
+                    <span class="food-item">🍯 Baklava</span>
+                    <span class="food-item">🐟 Grilled Fish</span>
+                    <span class="food-item">☕ Bosnian Coffee</span>
+                </div>
+            </div>
+
+            <div class="photo-ops">
+                <h3>📸 Instagram-Worthy Spots</h3>
+                <div class="photo-grid">
+                    <div class="photo-item">🌉 Stari Most</div>
+                    <div class="photo-item">🌅 Sunset from the bridge</div>
+                    <div class="photo-item">🏘️ Old town streets</div>
+                    <div class="photo-item">⛰️ Mountain views</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 6: Mar 5 -->
+        <div class="day-card">
+            <div class="day-header">
+                <div class="day-number">6</div>
+                <div class="day-title">
+                    <h2>Thursday, March 5</h2>
+                    <span class="location-tag">🇧🇦 Mostar → 🇸🇮 Ljubljana</span>
+                </div>
+            </div>
+            
+            <div class="plans-section">
+                <h3>📋 The Plan</h3>
+                <div class="plan-item">
+                    <span class="time">Morning</span>
+                    <div>Final Mostar explorations</div>
+                </div>
+                <div class="plan-item">
+                    <span class="time">Midday</span>
+                    <div>Drive to Ljubljana via national park</div>
+                </div>
+                <div class="plan-item">
+                    <span class="time">Night</span>
+                    <div>
+                        Night train at 10pm to Munich 
+                        <span class="booked-badge">BOOKED ✅</span>
+                        <span class="transport-badge">🚂 Overnight adventure!</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="adler-suggestions">
+                <h3>🦅 Adler's Suggestions for the Road</h3>
+                <div class="suggestion-grid">
+                    <div class="suggestion-item">
+                        <span class="emoji">🏞️</span>
+                        <span>Stop at Plitvice Lakes National Park</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">📷</span>
+                        <span>Scenic overlooks for photos</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">☕</span>
+                        <span>Coffee break in a small village</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">🌲</span>
+                        <span>Soca Valley if time permits</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Day 7: Mar 6 -->
+        <div class="day-card">
+            <div class="day-header">
+                <div class="day-number">7</div>
+                <div class="day-title">
+                    <h2>Friday, March 6</h2>
+                    <span class="location-tag">🇩🇪 Munich (Homeward Bound)</span>
+                </div>
+            </div>
+            
+            <div class="plans-section">
+                <h3>📋 The Plan</h3>
+                <div class="plan-item">
+                    <span class="time">Morning</span>
+                    <div>Arrive in Munich via night train 🚂</div>
+                </div>
+                <div class="plan-item">
+                    <span class="time">Midday</span>
+                    <div>Return flights home ✈️</div>
+                </div>
+            </div>
+
+            <div class="adler-suggestions">
+                <h3>🦅 Quick Munich Stop Ideas (if time allows)</h3>
+                <div class="suggestion-grid">
+                    <div class="suggestion-item">
+                        <span class="emoji">🥨</span>
+                        <span>Grab a pretzel & beer!</span>
+                    </div>
+                    <div class="suggestion-item">
+                        <span class="emoji">🏛️</span>
+                        <span>Marienplatz (city center)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tips-section">
+            <h2>💡 Adler's Pro Tips</h2>
+            <div class="tip-item">
+                <strong>Download offline maps</strong> - Some mountain areas have spotty service!
+            </div>
+            <div class="tip-item">
+                <strong>Bring cash</strong> - Many places in Bosnia don't take cards
+            </div>
+            <div class="tip-item">
+                <strong>Learn "Hvala"</strong> - Means "thank you" in Bosnian. Use it often!
+            </div>
+            <div class="tip-item">
+                <strong>Try ALL the cevapi</strong> - It's everywhere and always delicious
+            </div>
+            <div class="tip-item">
+                <strong>Fill up gas in Croatia</strong> - Cheaper than Bosnia in some spots
+            </div>
+            <div class="tip-item">
+                <strong>Book Mostar bridge sunrise</strong> - It's magical and less crowded
+            </div>
         </div>
 
         <div class="footer">
-            <p>Created with ❤️ by Adler</p>
-            <p>Questions? Contact Josh</p>
+            <h3>🦅 Created by Adler for Josh</h3>
+            <p>Have the time of your life! Take photos, eat everything, and make memories.</p>
+            <p style="margin-top: 15px; font-size: 0.9em; opacity: 0.9;">
+                Questions? You know who to ask 😉
+            </p>
         </div>
     </div>
 </body>
