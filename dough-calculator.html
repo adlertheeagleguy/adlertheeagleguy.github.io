@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dough Calculator 🦅</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Outfit:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: #e8e8e8;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            font-family: 'Space Mono', monospace;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            color: #f39c12;
+            text-shadow: 0 0 20px rgba(243, 156, 18, 0.3);
+        }
+        
+        .input-group {
+            margin-bottom: 24px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #aaa;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        input[type="number"] {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.2rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-family: 'Space Mono', monospace;
+            transition: all 0.3s ease;
+        }
+        
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #f39c12;
+            box-shadow: 0 0 20px rgba(243, 156, 18, 0.2);
+        }
+        
+        .thickness-options {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .thickness-btn {
+            flex: 1;
+            padding: 14px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #aaa;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .thickness-btn:hover {
+            border-color: rgba(243, 156, 18, 0.5);
+            background: rgba(243, 156, 18, 0.1);
+        }
+        
+        .thickness-btn.active {
+            border-color: #f39c12;
+            background: rgba(243, 156, 18, 0.2);
+            color: #f39c12;
+        }
+        
+        .gluten-free {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+        }
+        
+        .gluten-free input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            accent-color: #f39c12;
+            cursor: pointer;
+        }
+        
+        .gluten-free label {
+            margin: 0;
+            text-transform: none;
+            letter-spacing: 0;
+            color: #e8e8e8;
+            cursor: pointer;
+        }
+        
+        .results {
+            margin-top: 30px;
+            padding: 24px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 16px;
+            border: 1px solid rgba(243, 156, 18, 0.2);
+        }
+        
+        .results h2 {
+            font-family: 'Space Mono', monospace;
+            font-size: 1rem;
+            color: #f39c12;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .ingredient {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        
+        .ingredient:last-child {
+            border-bottom: none;
+        }
+        
+        .ingredient-name {
+            color: #aaa;
+        }
+        
+        .ingredient-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #fff;
+        }
+        
+        .total {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(243, 156, 18, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .total-label {
+            font-weight: 700;
+            color: #f39c12;
+        }
+        
+        .total-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #f39c12;
+        }
+        
+        .instructions {
+            margin-top: 24px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            display: none;
+        }
+        
+        .instructions.show {
+            display: block;
+        }
+        
+        .instructions h3 {
+            font-size: 1rem;
+            margin-bottom: 12px;
+            color: #f39c12;
+        }
+        
+        .instructions p {
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        
+        .instructions-toggle {
+            width: 100%;
+            padding: 12px;
+            margin-top: 16px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(243, 156, 18, 0.1);
+            color: #f39c12;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .instructions-toggle:hover {
+            background: rgba(243, 156, 18, 0.2);
+        }
+        
+        .water-temp {
+            margin-top: 16px;
+            padding: 16px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 10px;
+            border: 1px solid rgba(52, 152, 219, 0.2);
+        }
+        
+        .water-temp-label {
+            color: #3498db;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+        
+        .water-temp-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.2rem;
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍕 Dough Calculator</h1>
+        
+        <div class="input-group">
+            <label>Pizza Size (inches)</label>
+            <input type="number" id="pizzaSize" value="16" min="6" max="24">
+        </div>
+        
+        <div class="input-group">
+            <label>Number of Pizzas</label>
+            <input type="number" id="numPizzas" value="6" min="1" max="20">
+        </div>
+        
+        <div class="input-group">
+            <label>Pizza Thickness</label>
+            <div class="thickness-options">
+                <button class="thickness-btn" data-thickness="thin">Thin</button>
+                <button class="thickness-btn active" data-thickness="regular">Regular</button>
+                <button class="thickness-btn" data-thickness="thick">Thick</button>
+            </div>
+        </div>
+        
+        <div class="gluten-free">
+            <input type="checkbox" id="glutenFree">
+            <label for="glutenFree">Gluten Free</label>
+        </div>
+        
+        <div class="results">
+            <h2>🧾 Ingredients</h2>
+            <div class="ingredient">
+                <span class="ingredient-name">Flour</span>
+                <span class="ingredient-value" id="flour">1248g</span>
+            </div>
+            <div class="ingredient">
+                <span class="ingredient-name">Water</span>
+                <span class="ingredient-value" id="water">808g</span>
+            </div>
+            <div class="ingredient">
+                <span class="ingredient-name">Salt</span>
+                <span class="ingredient-value" id="salt">40g</span>
+            </div>
+            <div class="ingredient">
+                <span class="ingredient-name">Oil</span>
+                <span class="ingredient-value" id="oil">62g</span>
+            </div>
+            <div class="ingredient">
+                <span class="ingredient-name">Yeast</span>
+                <span class="ingredient-value" id="yeast">3g</span>
+            </div>
+            <div class="total">
+                <span class="total-label">Total Dough</span>
+                <span class="total-value" id="total">2161g</span>
+            </div>
+        </div>
+        
+        <div class="water-temp">
+            <div class="water-temp-label">💧 Cool water to</div>
+            <div class="water-temp-value" id="waterTemp">70°F (21°C)</div>
+        </div>
+        
+        <button class="instructions-toggle" id="toggleInstructions">Show Instructions</button>
+        
+        <div class="instructions" id="instructions">
+            <h3>🥣 Dough Making Instructions:</h3>
+            <p>1. Combine flour, salt, and yeast in a large bowl.<br>
+            2. Add water and oil, mix until combined.<br>
+            3. Knead for 10-15 minutes until smooth and elastic.<br>
+            4. Cover and let rise for 1-2 hours until doubled.<br>
+            5. Divide into balls, shape, and top as desired.<br>
+            6. Bake at 500°F (260°C) for 12-15 minutes.</p>
+        </div>
+    </div>
+
+    <script>
+        const pizzaSizeInput = document.getElementById('pizzaSize');
+        const numPizzasInput = document.getElementById('numPizzas');
+        const thicknessBtns = document.querySelectorAll('.thickness-btn');
+        const glutenFreeCheck = document.getElementById('glutenFree');
+        const toggleBtn = document.getElementById('toggleInstructions');
+        const instructions = document.getElementById('instructions');
+        
+        let thickness = 'regular';
+        
+        // Dough weight per inch of diameter (multiplier)
+        const thicknessMultipliers = {
+            thin: 17.5,
+            regular: 22.5,
+            thick: 27.5
+        };
+        
+        // Ingredient percentages
+        const ratios = {
+            water: 0.647,      // 64.7% hydration
+            salt: 0.032,       // 3.2% of flour
+            oil: 0.05,         // 5% of flour
+            yeast: 0.0024      // 0.24% of flour
+        };
+        
+        function calculate() {
+            const size = parseFloat(pizzaSizeInput.value) || 16;
+            const numPizzas = parseInt(numPizzasInput.value) || 1;
+            const multiplier = thicknessMultipliers[thickness];
+            
+            // Calculate total dough needed
+            const totalDough = size * multiplier * numPizzas;
+            
+            // Calculate flour (base = 100%)
+            const flour = Math.round(totalDough / (1 + ratios.water + ratios.salt + ratios.oil + ratios.yast));
+            
+            // Actually, let's work backwards from total dough
+            // If flour = x, then total = x + 0.647x + 0.032x + 0.05x + 0.0024x = 1.7314x
+            // So: x = total / 1.7314
+            const flourWeight = Math.round(totalDough / 1.7314);
+            const waterWeight = Math.round(flourWeight * ratios.water);
+            const saltWeight = Math.round(flourWeight * ratios.salt);
+            const oilWeight = Math.round(flourWeight * ratios.oil);
+            const yeastWeight = Math.round(flourWeight * ratios.yeast);
+            
+            const calculatedTotal = flourWeight + waterWeight + saltWeight + oilWeight + yeastWeight;
+            
+            // Update display
+            document.getElementById('flour').textContent = flourWeight + 'g';
+            document.getElementById('water').textContent = waterWeight + 'g';
+            document.getElementById('salt').textContent = saltWeight + 'g';
+            document.getElementById('oil').textContent = oilWeight + 'g';
+            document.getElementById('yeast').textContent = yeastWeight + 'g';
+            document.getElementById('total').textContent = calculatedTotal + 'g';
+            
+            // Water temperature suggestion
+            document.getElementById('waterTemp').textContent = '70°F (21°C)';
+            
+            // Update instructions for gluten free
+            if (glutenFreeCheck.checked) {
+                document.getElementById('instructions').innerHTML = `
+                    <h3>🥣 Gluten-Free Dough Instructions:</h3>
+                    <p>1. Mix gluten-free flour blend with xanthan gum (if not included).<br>
+                    2. Add warm water, oil, and salt. Whisk until smooth.<br>
+                    3. Let rest for 30 minutes.<br>
+                    4. Shape directly on parchment-lined baking sheet.<br>
+                    5. Bake at 425°F (220°C) for 15-20 minutes.</p>
+                `;
+            } else {
+                document.getElementById('instructions').innerHTML = `
+                    <h3>🥣 Dough Making Instructions:</h3>
+                    <p>1. Combine flour, salt, and yeast in a large bowl.<br>
+                    2. Add water and oil, mix until combined.<br>
+                    3. Knead for 10-15 minutes until smooth and elastic.<br>
+                    4. Cover and let rise for 1-2 hours until doubled.<br>
+                    5. Divide into balls, shape, and top as desired.<br>
+                    6. Bake at 500°F (260°C) for 12-15 minutes.</p>
+                `;
+            }
+        }
+        
+        // Event listeners
+        pizzaSizeInput.addEventListener('input', calculate);
+        numPizzasInput.addEventListener('input', calculate);
+        glutenFreeCheck.addEventListener('change', calculate);
+        
+        thicknessBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                thicknessBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                thickness = btn.dataset.thickness;
+                calculate();
+            });
+        });
+        
+        toggleBtn.addEventListener('click', () => {
+            instructions.classList.toggle('show');
+            toggleBtn.textContent = instructions.classList.contains('show') ? 'Hide Instructions' : 'Show Instructions';
+        });
+        
+        // Initial calculation
+        calculate();
+    </script>
+</body>
+</html>
