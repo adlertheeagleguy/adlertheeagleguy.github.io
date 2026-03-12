@@ -76,6 +76,29 @@
             box-shadow: 0 0 20px rgba(243, 156, 18, 0.2);
         }
         
+        select {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.1rem;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-family: 'Outfit', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        select:focus {
+            outline: none;
+            border-color: #f39c12;
+        }
+        
+        select option {
+            background: #1a1a2e;
+            color: #fff;
+        }
+        
         .thickness-options {
             display: flex;
             gap: 10px;
@@ -148,6 +171,20 @@
             text-align: center;
         }
         
+        .dough-ball-info {
+            text-align: center;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: rgba(243, 156, 18, 0.1);
+            border-radius: 8px;
+        }
+        
+        .dough-ball-info span {
+            color: #f39c12;
+            font-weight: 700;
+            font-family: 'Space Mono', monospace;
+        }
+        
         .ingredient {
             display: flex;
             justify-content: space-between;
@@ -197,11 +234,6 @@
             padding: 20px;
             background: rgba(255, 255, 255, 0.03);
             border-radius: 12px;
-            display: none;
-        }
-        
-        .instructions.show {
-            display: block;
         }
         
         .instructions h3 {
@@ -210,48 +242,12 @@
             color: #f39c12;
         }
         
-        .instructions p {
+        .instructions ol {
+            margin: 0;
+            padding-left: 20px;
             color: #aaa;
             font-size: 0.9rem;
-            line-height: 1.6;
-        }
-        
-        .instructions-toggle {
-            width: 100%;
-            padding: 12px;
-            margin-top: 16px;
-            border: none;
-            border-radius: 8px;
-            background: rgba(243, 156, 18, 0.1);
-            color: #f39c12;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .instructions-toggle:hover {
-            background: rgba(243, 156, 18, 0.2);
-        }
-        
-        .water-temp {
-            margin-top: 16px;
-            padding: 16px;
-            background: rgba(52, 152, 219, 0.1);
-            border-radius: 10px;
-            border: 1px solid rgba(52, 152, 219, 0.2);
-        }
-        
-        .water-temp-label {
-            color: #3498db;
-            font-size: 0.85rem;
-            margin-bottom: 4px;
-        }
-        
-        .water-temp-value {
-            font-family: 'Space Mono', monospace;
-            font-size: 1.2rem;
-            color: #3498db;
+            line-height: 1.8;
         }
     </style>
 </head>
@@ -266,15 +262,15 @@
         
         <div class="input-group">
             <label>Number of Pizzas</label>
-            <input type="number" id="numPizzas" value="6" min="1" max="20">
+            <input type="number" id="numPizzas" value="2" min="1" max="20">
         </div>
         
         <div class="input-group">
             <label>Pizza Thickness</label>
             <div class="thickness-options">
-                <button class="thickness-btn" data-thickness="thin">Thin</button>
-                <button class="thickness-btn active" data-thickness="regular">Regular</button>
-                <button class="thickness-btn" data-thickness="thick">Thick</button>
+                <button class="thickness-btn" data-thickness="1.8">Thin</button>
+                <button class="thickness-btn active" data-thickness="2.11">Regular</button>
+                <button class="thickness-btn" data-thickness="2.75">Thick</button>
             </div>
         </div>
         
@@ -285,47 +281,54 @@
         
         <div class="results">
             <h2>🧾 Ingredients</h2>
+            <div class="dough-ball-info">
+                Target Dough Ball Size: <span id="doughBallSize">255g</span> per ball
+            </div>
             <div class="ingredient">
-                <span class="ingredient-name">Flour</span>
-                <span class="ingredient-value" id="flour">1248g</span>
+                <span class="ingredient-name" id="flourLabel">Bread Flour</span>
+                <span class="ingredient-value" id="flour">1509g</span>
             </div>
             <div class="ingredient">
                 <span class="ingredient-name">Water</span>
-                <span class="ingredient-value" id="water">808g</span>
-            </div>
-            <div class="ingredient">
-                <span class="ingredient-name">Salt</span>
-                <span class="ingredient-value" id="salt">40g</span>
-            </div>
-            <div class="ingredient">
-                <span class="ingredient-name">Oil</span>
-                <span class="ingredient-value" id="oil">62g</span>
+                <span class="ingredient-value" id="water">936g</span>
             </div>
             <div class="ingredient">
                 <span class="ingredient-name">Yeast</span>
-                <span class="ingredient-value" id="yeast">3g</span>
+                <span class="ingredient-value" id="yeast">6.0g</span>
+            </div>
+            <div class="ingredient">
+                <span class="ingredient-name">Salt</span>
+                <span class="ingredient-value" id="salt">38g</span>
+            </div>
+            <div class="ingredient">
+                <span class="ingredient-name">Sugar</span>
+                <span class="ingredient-value" id="sugar">30g</span>
+            </div>
+            <div class="ingredient">
+                <span class="ingredient-name">Olive Oil</span>
+                <span class="ingredient-value" id="oil">50g</span>
             </div>
             <div class="total">
                 <span class="total-label">Total Dough</span>
-                <span class="total-value" id="total">2161g</span>
+                <span class="total-value" id="total">2550g</span>
             </div>
         </div>
         
-        <div class="water-temp">
-            <div class="water-temp-label">💧 Cool water to</div>
-            <div class="water-temp-value" id="waterTemp">70°F (21°C)</div>
-        </div>
-        
-        <button class="instructions-toggle" id="toggleInstructions">Show Instructions</button>
-        
         <div class="instructions" id="instructions">
             <h3>🥣 Dough Making Instructions:</h3>
-            <p>1. Combine flour, salt, and yeast in a large bowl.<br>
-            2. Add water and oil, mix until combined.<br>
-            3. Knead for 10-15 minutes until smooth and elastic.<br>
-            4. Cover and let rise for 1-2 hours until doubled.<br>
-            5. Divide into balls, shape, and top as desired.<br>
-            6. Bake at 500°F (260°C) for 12-15 minutes.</p>
+            <ol>
+                <li>Cool water to &lt;60°F.</li>
+                <li>Mix the water and yeast.</li>
+                <li>Add flour and Olive Oil and mix for 2 minutes.</li>
+                <li>Keep mixing on low, then add Sugar and Salt.</li>
+                <li>Mix for 10 more minutes.</li>
+                <li>Cover the dough with plastic wrap and rest for 1-3 hours.</li>
+                <li>Divide the dough into portions.</li>
+                <li>Shape into balls, sealing the seam.</li>
+                <li>Put the dough in a lightly oiled container.</li>
+                <li>Cover tightly and refrigerate for 2–4 days. 3 days is ideal.</li>
+                <li>Let the dough come to room temperature before using.</li>
+            </ol>
         </div>
     </div>
 
@@ -334,83 +337,86 @@
         const numPizzasInput = document.getElementById('numPizzas');
         const thicknessBtns = document.querySelectorAll('.thickness-btn');
         const glutenFreeCheck = document.getElementById('glutenFree');
-        const toggleBtn = document.getElementById('toggleInstructions');
-        const instructions = document.getElementById('instructions');
         
-        let thickness = 'regular';
+        let thickness = '2.11';
         
-        // Dough weight per inch of diameter (multiplier)
-        const thicknessMultipliers = {
-            thin: 17.5,
-            regular: 22.5,
-            thick: 27.5
-        };
-        
-        // Ingredient percentages
-        const ratios = {
-            water: 0.647,      // 64.7% hydration
-            salt: 0.032,       // 3.2% of flour
-            oil: 0.05,         // 5% of flour
-            yeast: 0.0024      // 0.24% of flour
-        };
+        const basePizzaSize = 16;
+        const baseQuantity = 6;
+        const baseThickness = 2.11;
+        const baseFlourAmountRegular = 1509.797685 * (480/425);
+        const baseFlourAmountGlutenFree = 333 * 6;
+        const doughFactor = 2550 / 1509.797685;
         
         function calculate() {
             const size = parseFloat(pizzaSizeInput.value) || 16;
             const numPizzas = parseInt(numPizzasInput.value) || 1;
-            const multiplier = thicknessMultipliers[thickness];
+            const isGlutenFree = glutenFreeCheck.checked;
             
-            // Calculate total dough needed
-            const totalDough = size * multiplier * numPizzas;
+            const sizeScaleFactor = Math.pow(size / basePizzaSize, 2);
+            const quantityScaleFactor = numPizzas / baseQuantity;
+            const thicknessScaleFactor = thickness / baseThickness;
             
-            // Calculate flour (base = 100%)
-            const flour = Math.round(totalDough / (1 + ratios.water + ratios.salt + ratios.oil + ratios.yast));
+            const baseFlourAmount = isGlutenFree ? baseFlourAmountGlutenFree : baseFlourAmountRegular;
+            const flourAmount = baseFlourAmount * sizeScaleFactor * quantityScaleFactor * thicknessScaleFactor;
             
-            // Actually, let's work backwards from total dough
-            // If flour = x, then total = x + 0.647x + 0.032x + 0.05x + 0.0024x = 1.7314x
-            // So: x = total / 1.7314
-            const flourWeight = Math.round(totalDough / 1.7314);
-            const waterWeight = Math.round(flourWeight * ratios.water);
-            const saltWeight = Math.round(flourWeight * ratios.salt);
-            const oilWeight = Math.round(flourWeight * ratios.oil);
-            const yeastWeight = Math.round(flourWeight * ratios.yeast);
+            const waterPercentage = isGlutenFree ? 0.80 : 0.62;
+            const water = Math.round(flourAmount * waterPercentage);
+            const yeast = flourAmount * 0.004;
+            const salt = Math.round(flourAmount * 0.025);
+            const sugar = Math.round(flourAmount * 0.02);
+            const oliveOil = Math.round(flourAmount * 0.033);
             
-            const calculatedTotal = flourWeight + waterWeight + saltWeight + oilWeight + yeastWeight;
+            const totalDoughWeight = flourAmount * doughFactor;
+            const doughBallSize = Math.round(totalDoughWeight / numPizzas);
             
-            // Update display
-            document.getElementById('flour').textContent = flourWeight + 'g';
-            document.getElementById('water').textContent = waterWeight + 'g';
-            document.getElementById('salt').textContent = saltWeight + 'g';
-            document.getElementById('oil').textContent = oilWeight + 'g';
-            document.getElementById('yeast').textContent = yeastWeight + 'g';
-            document.getElementById('total').textContent = calculatedTotal + 'g';
+            document.getElementById('flourLabel').textContent = isGlutenFree ? 'Gluten-Free Flour' : 'Bread Flour';
+            document.getElementById('flour').textContent = Math.round(flourAmount) + 'g';
+            document.getElementById('water').textContent = water + 'g';
+            document.getElementById('yeast').textContent = yeast.toFixed(1) + 'g';
+            document.getElementById('salt').textContent = salt + 'g';
+            document.getElementById('sugar').textContent = sugar + 'g';
+            document.getElementById('oil').textContent = oliveOil + 'g';
+            document.getElementById('total').textContent = Math.round(totalDoughWeight) + 'g';
+            document.getElementById('doughBallSize').textContent = doughBallSize + 'g';
             
-            // Water temperature suggestion
-            document.getElementById('waterTemp').textContent = '70°F (21°C)';
-            
-            // Update instructions for gluten free
-            if (glutenFreeCheck.checked) {
-                document.getElementById('instructions').innerHTML = `
-                    <h3>🥣 Gluten-Free Dough Instructions:</h3>
-                    <p>1. Mix gluten-free flour blend with xanthan gum (if not included).<br>
-                    2. Add warm water, oil, and salt. Whisk until smooth.<br>
-                    3. Let rest for 30 minutes.<br>
-                    4. Shape directly on parchment-lined baking sheet.<br>
-                    5. Bake at 425°F (220°C) for 15-20 minutes.</p>
+            const instructionsEl = document.getElementById('instructions');
+            if (isGlutenFree) {
+                instructionsEl.innerHTML = `
+                    <h3>🥣 Gluten-Free Dough Making Instructions:</h3>
+                    <ol>
+                        <li>Add cold water and yeast to bowl</li>
+                        <li>Add gluten-free flour (I recommend Caputo) and Olive Oil and Mix for 2 minutes</li>
+                        <li>Keep Mixing on low, and then add sugar and salt</li>
+                        <li>Mix for 3-4 minutes until completely combined</li>
+                        <li>Cover the bowl and put in fridge for 15 minutes (helps firm up the dough)</li>
+                        <li>Remove bowl and oil up your hands</li>
+                        <li>Shape dough into dough balls (doesn't need to be perfect)</li>
+                        <li>Put the dough balls into a lightly oiled container</li>
+                        <li>Cover tightly and refrigerate for <strong>up to</strong> 48 hours</li>
+                        <li>If using same day, leave out on counter 3-4 hours before baking</li>
+                        <li>Let the dough come to room temperature (2-3 hours) before using (covered).</li>
+                    </ol>
                 `;
             } else {
-                document.getElementById('instructions').innerHTML = `
+                instructionsEl.innerHTML = `
                     <h3>🥣 Dough Making Instructions:</h3>
-                    <p>1. Combine flour, salt, and yeast in a large bowl.<br>
-                    2. Add water and oil, mix until combined.<br>
-                    3. Knead for 10-15 minutes until smooth and elastic.<br>
-                    4. Cover and let rise for 1-2 hours until doubled.<br>
-                    5. Divide into balls, shape, and top as desired.<br>
-                    6. Bake at 500°F (260°C) for 12-15 minutes.</p>
+                    <ol>
+                        <li>Cool water to &lt;60°F.</li>
+                        <li>Mix the water and yeast.</li>
+                        <li>Add flour and Olive Oil and mix for 2 minutes.</li>
+                        <li>Keep mixing on low, then add Sugar and Salt.</li>
+                        <li>Mix for 10 more minutes.</li>
+                        <li>Cover the dough with plastic wrap and rest for 1-3 hours.</li>
+                        <li>Divide the dough into portions.</li>
+                        <li>Shape into balls, sealing the seam.</li>
+                        <li>Put the dough in a lightly oiled container.</li>
+                        <li>Cover tightly and refrigerate for 2–4 days. 3 days is ideal.</li>
+                        <li>Let the dough come to room temperature before using.</li>
+                    </ol>
                 `;
             }
         }
         
-        // Event listeners
         pizzaSizeInput.addEventListener('input', calculate);
         numPizzasInput.addEventListener('input', calculate);
         glutenFreeCheck.addEventListener('change', calculate);
@@ -424,12 +430,6 @@
             });
         });
         
-        toggleBtn.addEventListener('click', () => {
-            instructions.classList.toggle('show');
-            toggleBtn.textContent = instructions.classList.contains('show') ? 'Hide Instructions' : 'Show Instructions';
-        });
-        
-        // Initial calculation
         calculate();
     </script>
 </body>
