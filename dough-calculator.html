@@ -16,6 +16,7 @@
         body {
             font-family: 'Outfit', sans-serif;
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            background-color: #1a1a2e;
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -33,6 +34,7 @@
             width: 100%;
             border: 1px solid rgba(255, 255, 255, 0.1);
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+            overflow: visible;
         }
         
         h1 {
@@ -249,6 +251,222 @@
             font-size: 0.9rem;
             line-height: 1.8;
         }
+        
+        .number-input {
+            display: flex;
+            align-items: center;
+            gap: 0;
+        }
+        
+        .number-input input {
+            border-radius: 0;
+            text-align: center;
+            font-size: 1.5rem;
+            -moz-appearance: textfield;
+        }
+        
+        .number-input input::-webkit-outer-spin-button,
+        .number-input input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
+        .num-btn {
+            width: 50px;
+            height: 54px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: #f39c12;
+            font-size: 1.5rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .num-btn:first-child {
+            border-radius: 12px 0 0 12px;
+            border-right: none;
+        }
+        
+        .num-btn:last-child {
+            border-radius: 0 12px 12px 0;
+            border-left: none;
+        }
+        
+        .num-btn:hover {
+            background: rgba(243, 156, 18, 0.2);
+        }
+        
+        .num-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .size-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80px;
+            margin-top: 16px;
+        }
+        
+        .pizza-visual {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #f4d03f, #d4a012);
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .pizza-visual::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 8px;
+            height: 8px;
+            background: #c0392b;
+            border-radius: 50%;
+            transform: translate(-50%, -50%) rotate(0deg);
+            box-shadow: 
+                18px -8px 0 #c0392b,
+                -14px 14px 0 #27ae60,
+                10px 18px 0 #e74c3c,
+                -20px -5px 0 #e67e22,
+                5px -20px 0 #c0392b;
+            animation: spin 20s linear infinite;
+        }
+        
+        @keyframes spin {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        .pizza-dots {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 12px;
+            min-height: 30px;
+        }
+        
+        .pizza-dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #f4d03f, #d4a012);
+            box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
+            animation: popIn 0.3s ease forwards;
+            opacity: 0;
+            transform: scale(0);
+        }
+        
+        @keyframes popIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .recipe-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 24px;
+        }
+        
+        .recipe-btn {
+            flex: 1;
+            padding: 14px 10px;
+            border: 2px solid rgba(243, 156, 18, 0.3);
+            border-radius: 12px;
+            background: rgba(243, 156, 18, 0.1);
+            color: #f39c12;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .recipe-btn:hover {
+            background: rgba(243, 156, 18, 0.2);
+            border-color: #f39c12;
+        }
+        
+        .recipe-btn.active {
+            background: rgba(243, 156, 18, 0.3);
+            border-color: #f39c12;
+            color: #f39c12;
+        }
+        
+        .recipe-content {
+            margin-top: 16px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            display: none;
+            border: 1px solid rgba(243, 156, 18, 0.2);
+        }
+        
+        .recipe-content.show {
+            display: block;
+        }
+        
+        .recipe-content h3 {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            color: #f39c12;
+        }
+        
+        .recipe-content h4 {
+            font-size: 0.95rem;
+            margin: 16px 0 8px;
+            color: #e8e8e8;
+            font-weight: 600;
+        }
+        
+        .recipe-content p, .recipe-content li {
+            color: #aaa;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+        
+        .recipe-content ol {
+            padding-left: 20px;
+            color: #aaa;
+            margin: 0;
+        }
+        
+        .recipe-content ol li {
+            margin-bottom: 10px;
+            padding-left: 5px;
+        }
+        
+        .recipe-content ul {
+            padding-left: 20px;
+            margin-bottom: 16px;
+            color: #aaa;
+        }
+        
+        .recipe-content ul li {
+            margin-bottom: 4px;
+        }
+        
+        .recipe-content .note {
+            background: rgba(243, 156, 18, 0.1);
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+            color: #f39c12;
+            font-size: 0.9rem;
+        }
+        
+        .recipe-content strong {
+            color: #e8e8e8;
+        }
     </style>
 </head>
 <body>
@@ -257,12 +475,24 @@
         
         <div class="input-group">
             <label>Pizza Size (inches)</label>
-            <input type="number" id="pizzaSize" value="16" min="6" max="24">
+            <div class="number-input">
+                <button class="num-btn minus" data-target="pizzaSize">−</button>
+                <input type="number" id="pizzaSize" value="16" min="6" max="24">
+                <button class="num-btn plus" data-target="pizzaSize">+</button>
+            </div>
+            <div class="size-visual">
+                <div class="pizza-visual" id="pizzaVisual"></div>
+            </div>
         </div>
         
         <div class="input-group">
             <label>Number of Pizzas</label>
-            <input type="number" id="numPizzas" value="2" min="1" max="20">
+            <div class="number-input">
+                <button class="num-btn minus" data-target="numPizzas">−</button>
+                <input type="number" id="numPizzas" value="2" min="1" max="20">
+                <button class="num-btn plus" data-target="numPizzas">+</button>
+            </div>
+            <div class="pizza-dots" id="pizzaDots"></div>
         </div>
         
         <div class="input-group">
@@ -330,6 +560,68 @@
                 <li>Let the dough come to room temperature before using.</li>
             </ol>
         </div>
+        
+        <div class="recipe-buttons">
+            <button class="recipe-btn" data-recipe="sauce">Sauce</button>
+            <button class="recipe-btn" data-recipe="cheese">Cheese</button>
+            <button class="recipe-btn" data-recipe="pizza">Pizza</button>
+        </div>
+        
+        <div class="recipe-content" id="recipe-sauce">
+            <h3>🍅 Simple New York-Style Pizza Tomato Sauce</h3>
+            <h4>Ingredients (for 1 can, enough for 2–4 pizzas):</h4>
+            <ul>
+                <li>1 can crushed/canned tomatoes</li>
+                <li>4 grams salt</li>
+            </ul>
+            <h4>Instructions:</h4>
+            <ol>
+                <li>Add about 4 grams of salt directly to the can of crushed tomatoes.</li>
+                <li>Blend right in the can using an immersion blender (or transfer to a regular blender).</li>
+                <li>Blend just enough to smooth it out—don't over-blend.</li>
+                <li>That's it—super simple sauce ready to use (about ½ cup per pizza).</li>
+            </ol>
+        </div>
+        
+        <div class="recipe-content" id="recipe-cheese">
+            <h3>🧀 New York-Style Cheese Blend for Pizza</h3>
+            <h4>Ingredients (for 1 pizza):</h4>
+            <ul>
+                <li>8 ounces low-moisture mozzarella (50/50 blend: half whole-milk + half part-skim)</li>
+            </ul>
+            <h4>Instructions:</h4>
+            <ol>
+                <li>Shred your own low-moisture mozzarella block (use a 50/50 mix of whole-milk and part-skim for the best taste without getting too greasy).</li>
+                <li>Mix the shredded mozzarella well and set aside.</li>
+                <li>Use the full 8 ounces when topping the pizza.</li>
+            </ol>
+        </div>
+        
+        <div class="recipe-content" id="recipe-pizza">
+            <h3>🍕 New York-Style Pizza</h3>
+            <div class="note"><strong>Important Equipment:</strong> Pizza steel (highly recommended), Pizza peel, Oven that can reach its highest temperature (ideally 500–550°F / 260–288°C)</div>
+            <div class="note"><strong>Timing Notes:</strong> Take dough out 3–4 hours before baking to reach room temperature. Preheat oven (with pizza steel inside) to its highest temperature for about 1 hour.</div>
+            <h4>Ingredients (per pizza):</h4>
+            <ul>
+                <li>Room-temperature New York-style pizza dough</li>
+                <li><strong>Sauce:</strong> 1 can (28oz) crushed/canned tomatoes, About 4 grams salt per can</li>
+                <li><strong>Cheese:</strong> 8 ounces low-moisture mozzarella (50/50 blend: half whole milk + half part-skim)</li>
+                <li>Flour (for dusting)</li>
+                <li>Semolina flour (for dusting peel / preventing sticking)</li>
+            </ul>
+            <h4>Instructions:</h4>
+            <ol>
+                <li><strong>Preheat the oven:</strong> Place your pizza steel on the middle or top rack. Preheat the oven to its highest temperature setting (usually 500–550°F) and let it heat for a full hour so the steel gets very hot.</li>
+                <li><strong>Set up your work area:</strong> Lightly flour your work surface with all-purpose flour. Have extra flour and semolina flour nearby. Dust your pizza peel generously with a mixture of flour and semolina flour (this prevents sticking when launching).</li>
+                <li><strong>Shape the dough:</strong> Place the room-temperature dough ball onto the floured surface. Dust the top lightly with flour. Gently press out large air bubbles with your fingertips. Begin pressing and stretching the dough into a circle, making it slightly larger than your hand span.</li>
+                <li><strong>Transfer to peel:</strong> Once shaped, carefully lift the dough onto your prepared, generously dusted pizza peel. Give it a gentle shake to confirm it slides easily. If it sticks, add more flour/semolina underneath.</li>
+                <li><strong>Top the pizza:</strong> Spread approx ½ cup of tomato sauce in a thin, even layer. Add the 8 ounces of shredded low-moisture mozzarella blend evenly. Add whatever toppings you want.</li>
+                <li><strong>Final stretch (optional):</strong> If you want a slightly larger or thinner pizza, give the dough one last gentle stretch from the edges while it's on the peel.</li>
+                <li><strong>Launch the pizza:</strong> Open the oven and carefully angle the peel toward the back of the steel. Give the peel a quick back-and-forth shake so the pizza slides off onto the hot steel.</li>
+                <li><strong>Bake:</strong> Bake for 7–8 minutes at the oven's maximum temperature (around 550°F if possible). Rotate halfway if your oven has hot spots. The crust should be puffed, lightly charred in spots, and the cheese bubbly and golden.</li>
+                <li><strong>Finish and serve:</strong> Remove from the oven when done. Let rest 1–2 minutes, slice, and serve hot.</li>
+            </ol>
+        </div>
     </div>
 
     <script>
@@ -337,6 +629,8 @@
         const numPizzasInput = document.getElementById('numPizzas');
         const thicknessBtns = document.querySelectorAll('.thickness-btn');
         const glutenFreeCheck = document.getElementById('glutenFree');
+        const pizzaVisual = document.getElementById('pizzaVisual');
+        const pizzaDots = document.getElementById('pizzaDots');
         
         let thickness = '2.11';
         
@@ -346,6 +640,46 @@
         const baseFlourAmountRegular = 1509.797685 * (480/425);
         const baseFlourAmountGlutenFree = 333 * 6;
         const doughFactor = 2550 / 1509.797685;
+        
+        document.querySelectorAll('.num-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const target = document.getElementById(btn.dataset.target);
+                const min = parseInt(target.min);
+                const max = parseInt(target.max);
+                let val = parseInt(target.value);
+                
+                if (btn.classList.contains('plus')) {
+                    val = Math.min(val + 1, max);
+                } else {
+                    val = Math.max(val - 1, min);
+                }
+                
+                target.value = val;
+                target.dispatchEvent(new Event('input'));
+            });
+        });
+        
+        function updatePizzaVisual() {
+            const size = parseFloat(pizzaSizeInput.value) || 16;
+            const minSize = 40;
+            const maxSize = 100;
+            const minVal = 6;
+            const maxVal = 24;
+            const visualSize = minSize + ((size - minVal) / (maxVal - minVal)) * (maxSize - minSize);
+            pizzaVisual.style.width = visualSize + 'px';
+            pizzaVisual.style.height = visualSize + 'px';
+        }
+        
+        function updatePizzaDots() {
+            const num = parseInt(numPizzasInput.value) || 1;
+            pizzaDots.innerHTML = '';
+            for (let i = 0; i < num; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'pizza-dot';
+                dot.style.animationDelay = (i * 0.05) + 's';
+                pizzaDots.appendChild(dot);
+            }
+        }
         
         function calculate() {
             const size = parseFloat(pizzaSizeInput.value) || 16;
@@ -378,6 +712,9 @@
             document.getElementById('oil').textContent = oliveOil + 'g';
             document.getElementById('total').textContent = Math.round(totalDoughWeight) + 'g';
             document.getElementById('doughBallSize').textContent = doughBallSize + 'g';
+            
+            updatePizzaVisual();
+            updatePizzaDots();
             
             const instructionsEl = document.getElementById('instructions');
             if (isGlutenFree) {
@@ -427,6 +764,22 @@
                 btn.classList.add('active');
                 thickness = btn.dataset.thickness;
                 calculate();
+            });
+        });
+        
+        document.querySelectorAll('.recipe-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const recipe = btn.dataset.recipe;
+                const content = document.getElementById('recipe-' + recipe);
+                const isShowing = content.classList.contains('show');
+                
+                document.querySelectorAll('.recipe-content').forEach(c => c.classList.remove('show'));
+                document.querySelectorAll('.recipe-btn').forEach(b => b.classList.remove('active'));
+                
+                if (!isShowing) {
+                    content.classList.add('show');
+                    btn.classList.add('active');
+                }
             });
         });
         
