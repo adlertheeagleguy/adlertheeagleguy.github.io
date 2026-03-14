@@ -69,9 +69,55 @@
     .tip strong { color: #f5a623; }
     footer { text-align: center; margin-top: 3rem; color: #555; font-size: 0.85rem; }
     footer a { color: #e94560; text-decoration: none; }
+
+    /* Timer styles */
+    .timer-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: rgba(233,69,96,0.15); border: 1px solid rgba(233,69,96,0.4);
+      border-radius: 6px; padding: 1px 8px; cursor: pointer;
+      color: #e94560; font-weight: 600; font-size: 0.9em;
+      transition: all 0.2s; vertical-align: baseline;
+      font-family: inherit; line-height: 1.6;
+    }
+    .timer-btn:hover { background: rgba(233,69,96,0.3); }
+    .timer-btn .icon { font-size: 0.85em; }
+    .timer-btn.running { background: rgba(233,69,96,0.25); border-color: #e94560; }
+    .timer-btn.done {
+      background: rgba(76,175,80,0.2); border-color: #4caf50; color: #4caf50;
+      animation: pulse 0.8s ease-in-out infinite alternate;
+    }
+    @keyframes pulse { from { opacity: 0.7; } to { opacity: 1; } }
+
+    /* Floating timer bar */
+    .timer-bar {
+      position: fixed; top: 0; left: 0; right: 0;
+      background: rgba(26,26,46,0.95); backdrop-filter: blur(10px);
+      border-bottom: 2px solid #e94560;
+      padding: 0.6rem 1rem; display: flex; flex-wrap: wrap;
+      gap: 0.8rem; align-items: center; justify-content: center;
+      z-index: 100; transform: translateY(-100%);
+      transition: transform 0.3s ease;
+    }
+    .timer-bar.visible { transform: translateY(0); }
+    .timer-bar-item {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.05); border-radius: 8px;
+      padding: 4px 12px; font-size: 0.9rem;
+    }
+    .timer-bar-item .label { color: #999; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .timer-bar-item .countdown { color: #e94560; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 50px; }
+    .timer-bar-item .stop-btn {
+      background: none; border: none; color: #666; cursor: pointer;
+      font-size: 1.1rem; padding: 0 2px; line-height: 1;
+    }
+    .timer-bar-item .stop-btn:hover { color: #e94560; }
+    .timer-bar-item.done { border: 1px solid #4caf50; }
+    .timer-bar-item.done .countdown { color: #4caf50; }
   </style>
 </head>
 <body>
+  <div class="timer-bar" id="timerBar"></div>
+
   <div class="container">
     <a class="back" href="index.html">← All Recipes</a>
     <div class="hero">
@@ -106,9 +152,9 @@
         <li>Divide beef into 4 equal balls (~4 oz each). Don't season yet — season the griddle, not the meat.</li>
         <li>Heat a cast iron skillet or griddle over <strong>high heat</strong> until it's screaming hot. You want wisps of smoke.</li>
         <li>Butter and toast the buns on the griddle until golden. Set aside.</li>
-        <li>Place a ball of beef on the hot griddle. Immediately smash it flat with a sturdy spatula or burger press — press HARD, one time, and hold for 5 seconds. Season the top generously with salt and pepper.</li>
-        <li>Cook without moving for ~2 minutes until the edges are deeply browned and crispy. You'll see juice pooling on top — that's the signal to flip.</li>
-        <li>Flip, immediately lay a slice of cheese on top, and cook 1 more minute. The cheese will melt while the second side crisps.</li>
+        <li>Place a ball of beef on the hot griddle. Immediately smash it flat with a sturdy spatula or burger press — press HARD, one time, and hold for <button class="timer-btn" data-seconds="5" data-label="Smash hold"><span class="icon">⏱</span> 5 seconds</button>. Season the top generously with salt and pepper.</li>
+        <li>Cook without moving for ~<button class="timer-btn" data-seconds="120" data-label="First side"><span class="icon">⏱</span> 2 minutes</button> until the edges are deeply browned and crispy. You'll see juice pooling on top — that's the signal to flip.</li>
+        <li>Flip, immediately lay a slice of cheese on top, and cook <button class="timer-btn" data-seconds="60" data-label="Cheese melt"><span class="icon">⏱</span> 1 more minute</button>. The cheese will melt while the second side crisps.</li>
         <li>Stack: bottom bun → mustard → burger patty → pickles → onions → top bun. Serve immediately.</li>
       </ol>
     </section>
@@ -123,5 +169,100 @@
       <a href="index.html">← Back to all recipes</a>
     </footer>
   </div>
+
+  <script>
+    const timers = {};
+    const timerBar = document.getElementById('timerBar');
+    let timerIdCounter = 0;
+
+    function updateTimerBar() {
+      const active = Object.entries(timers).filter(([,t]) => t.remaining > 0 || t.justDone);
+      if (active.length === 0) {
+        timerBar.classList.remove('visible');
+        return;
+      }
+      timerBar.classList.add('visible');
+      timerBar.innerHTML = active.map(([id, t]) => {
+        const done = t.remaining <= 0;
+        const cls = done ? 'timer-bar-item done' : 'timer-bar-item';
+        const display = done ? '✅ Done!' : formatTime(t.remaining);
+        return `<div class="${cls}">
+          <span class="label">${t.label}</span>
+          <span class="countdown">${display}</span>
+          <button class="stop-btn" onclick="cancelTimer('${id}')">×</button>
+        </div>`;
+      }).join('');
+    }
+
+    function formatTime(s) {
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      if (m > 0) return `${m}:${String(sec).padStart(2,'0')}`;
+      return `${sec}s`;
+    }
+
+    function cancelTimer(id) {
+      if (timers[id]?.interval) clearInterval(timers[id].interval);
+      if (timers[id]?.btnEl) {
+        timers[id].btnEl.classList.remove('running','done');
+      }
+      delete timers[id];
+      updateTimerBar();
+    }
+
+    document.querySelectorAll('.timer-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const seconds = parseInt(btn.dataset.seconds);
+        const label = btn.dataset.label;
+        const id = 'timer_' + (timerIdCounter++);
+
+        timers[id] = { remaining: seconds, label, btnEl: btn, justDone: false };
+        btn.classList.add('running');
+        btn.querySelector('.icon').textContent = '⏳';
+
+        timers[id].interval = setInterval(() => {
+          timers[id].remaining--;
+          btn.querySelector('.icon').textContent = '⏳';
+          btn.childNodes[1].textContent = ' ' + formatTime(timers[id].remaining);
+
+          if (timers[id].remaining <= 0) {
+            clearInterval(timers[id].interval);
+            btn.classList.remove('running');
+            btn.classList.add('done');
+            btn.querySelector('.icon').textContent = '✅';
+            btn.childNodes[1].textContent = ' Done!';
+            timers[id].justDone = true;
+
+            // Sound
+            try {
+              const ctx = new (window.AudioContext || window.webkitAudioContext)();
+              [0, 150, 300].forEach(delay => {
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.frequency.value = 880;
+                gain.gain.value = 0.3;
+                osc.start(ctx.currentTime + delay/1000);
+                osc.stop(ctx.currentTime + delay/1000 + 0.15);
+              });
+            } catch(e) {}
+
+            // Auto-clear after 5s
+            setTimeout(() => {
+              timers[id].justDone = false;
+              btn.classList.remove('done');
+              btn.querySelector('.icon').textContent = '⏱';
+              btn.childNodes[1].textContent = ' ' + formatTime(seconds);
+              delete timers[id];
+              updateTimerBar();
+            }, 5000);
+          }
+          updateTimerBar();
+        }, 1000);
+
+        updateTimerBar();
+      });
+    });
+  </script>
 </body>
 </html>

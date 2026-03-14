@@ -69,9 +69,53 @@
     .tip strong { color: #f5a623; }
     footer { text-align: center; margin-top: 3rem; color: #555; font-size: 0.85rem; }
     footer a { color: #e94560; text-decoration: none; }
+
+    .timer-btn {
+      display: inline-flex; align-items: center; gap: 4px;
+      background: rgba(233,69,96,0.15); border: 1px solid rgba(233,69,96,0.4);
+      border-radius: 6px; padding: 1px 8px; cursor: pointer;
+      color: #e94560; font-weight: 600; font-size: 0.9em;
+      transition: all 0.2s; vertical-align: baseline;
+      font-family: inherit; line-height: 1.6;
+    }
+    .timer-btn:hover { background: rgba(233,69,96,0.3); }
+    .timer-btn .icon { font-size: 0.85em; }
+    .timer-btn.running { background: rgba(233,69,96,0.25); border-color: #e94560; }
+    .timer-btn.done {
+      background: rgba(76,175,80,0.2); border-color: #4caf50; color: #4caf50;
+      animation: pulse 0.8s ease-in-out infinite alternate;
+    }
+    @keyframes pulse { from { opacity: 0.7; } to { opacity: 1; } }
+
+    .timer-bar {
+      position: fixed; top: 0; left: 0; right: 0;
+      background: rgba(26,26,46,0.95); backdrop-filter: blur(10px);
+      border-bottom: 2px solid #e94560;
+      padding: 0.6rem 1rem; display: flex; flex-wrap: wrap;
+      gap: 0.8rem; align-items: center; justify-content: center;
+      z-index: 100; transform: translateY(-100%);
+      transition: transform 0.3s ease;
+    }
+    .timer-bar.visible { transform: translateY(0); }
+    .timer-bar-item {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(255,255,255,0.05); border-radius: 8px;
+      padding: 4px 12px; font-size: 0.9rem;
+    }
+    .timer-bar-item .label { color: #999; max-width: 120px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .timer-bar-item .countdown { color: #e94560; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 50px; }
+    .timer-bar-item .stop-btn {
+      background: none; border: none; color: #666; cursor: pointer;
+      font-size: 1.1rem; padding: 0 2px; line-height: 1;
+    }
+    .timer-bar-item .stop-btn:hover { color: #e94560; }
+    .timer-bar-item.done { border: 1px solid #4caf50; }
+    .timer-bar-item.done .countdown { color: #4caf50; }
   </style>
 </head>
 <body>
+  <div class="timer-bar" id="timerBar"></div>
+
   <div class="container">
     <a class="back" href="index.html">← All Recipes</a>
     <div class="hero">
@@ -105,21 +149,21 @@
     <section>
       <h2>Instructions</h2>
       <ol class="steps">
-        <li><strong>Brown the butter:</strong> Cut butter into chunks and melt in a saucepan over medium heat. Swirl occasionally. It'll foam, then the foam will subside, and you'll see golden-brown specks forming at the bottom. It'll smell nutty and toasty — that's the moment. Pull it off the heat immediately (about 5-7 minutes total). Pour into a heatproof bowl and let cool for 10 minutes.</li>
+        <li><strong>Brown the butter:</strong> Cut butter into chunks and melt in a saucepan over medium heat. Swirl occasionally. It'll foam, then the foam will subside, and you'll see golden-brown specks forming at the bottom. It'll smell nutty and toasty — that's the moment. Pull it off the heat immediately (about <button class="timer-btn" data-seconds="360" data-label="Brown butter"><span class="icon">⏱</span> 5-7 minutes</button> total). Pour into a heatproof bowl and let cool for <button class="timer-btn" data-seconds="600" data-label="Cool butter"><span class="icon">⏱</span> 10 minutes</button>.</li>
         <li>Whisk both sugars into the browned butter until combined. Add eggs one at a time, whisking after each. Stir in vanilla.</li>
         <li>In a separate bowl, whisk together flour, baking soda, and salt. Add to the wet mixture and fold with a spatula until <em>just</em> combined — a few flour streaks are fine.</li>
         <li>Fold in the chocolate chips. The dough will be soft and glossy.</li>
-        <li><strong>Chill the dough</strong> for at least 30 minutes (up to 72 hours — longer = better flavor). This is the hardest step but it matters.</li>
+        <li><strong>Chill the dough</strong> for at least <button class="timer-btn" data-seconds="1800" data-label="Chill dough"><span class="icon">⏱</span> 30 minutes</button> (up to 72 hours — longer = better flavor). This is the hardest step but it matters.</li>
         <li>Preheat oven to 375°F (190°C). Line baking sheets with parchment paper.</li>
         <li>Scoop dough into balls (~2 tbsp each) and place 3 inches apart. They spread. Sprinkle each ball with a pinch of flaky sea salt.</li>
-        <li>Bake for 10-12 minutes — pull them when the edges are set but the centers still look slightly underdone. They'll firm up as they cool.</li>
-        <li>Let cool on the pan for 5 minutes, then transfer to a wire rack. Or just eat them warm. No judgment.</li>
+        <li>Bake for <button class="timer-btn" data-seconds="660" data-label="Bake"><span class="icon">⏱</span> 10-12 minutes</button> — pull them when the edges are set but the centers still look slightly underdone. They'll firm up as they cool.</li>
+        <li>Let cool on the pan for <button class="timer-btn" data-seconds="300" data-label="Cool on pan"><span class="icon">⏱</span> 5 minutes</button>, then transfer to a wire rack. Or just eat them warm. No judgment.</li>
       </ol>
     </section>
 
     <section>
       <div class="tip">
-        <strong>💡 Pro tip:</strong> For extra-thick, bakery-style cookies: freeze the dough balls for 1 hour before baking. Add 1-2 minutes to bake time. The frozen center stays gooey while the outside gets crispy. Game changer.
+        <strong>💡 Pro tip:</strong> For extra-thick, bakery-style cookies: freeze the dough balls for <button class="timer-btn" data-seconds="3600" data-label="Freeze dough"><span class="icon">⏱</span> 1 hour</button> before baking. Add 1-2 minutes to bake time. The frozen center stays gooey while the outside gets crispy. Game changer.
       </div>
     </section>
 
@@ -127,5 +171,74 @@
       <a href="index.html">← Back to all recipes</a>
     </footer>
   </div>
+
+  <script>
+    const timers = {};
+    const timerBar = document.getElementById('timerBar');
+    let timerIdCounter = 0;
+    function updateTimerBar() {
+      const active = Object.entries(timers).filter(([,t]) => t.remaining > 0 || t.justDone);
+      if (active.length === 0) { timerBar.classList.remove('visible'); return; }
+      timerBar.classList.add('visible');
+      timerBar.innerHTML = active.map(([id, t]) => {
+        const done = t.remaining <= 0;
+        const cls = done ? 'timer-bar-item done' : 'timer-bar-item';
+        const display = done ? '✅ Done!' : formatTime(t.remaining);
+        return `<div class="${cls}"><span class="label">${t.label}</span><span class="countdown">${display}</span><button class="stop-btn" onclick="cancelTimer('${id}')">×</button></div>`;
+      }).join('');
+    }
+    function formatTime(s) {
+      const m = Math.floor(s / 60); const sec = s % 60;
+      if (m > 0) return `${m}:${String(sec).padStart(2,'0')}`;
+      return `${sec}s`;
+    }
+    function cancelTimer(id) {
+      if (timers[id]?.interval) clearInterval(timers[id].interval);
+      if (timers[id]?.btnEl) timers[id].btnEl.classList.remove('running','done');
+      delete timers[id]; updateTimerBar();
+    }
+    document.querySelectorAll('.timer-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const seconds = parseInt(btn.dataset.seconds);
+        const label = btn.dataset.label;
+        const id = 'timer_' + (timerIdCounter++);
+        const origText = btn.childNodes[1].textContent;
+        timers[id] = { remaining: seconds, label, btnEl: btn, justDone: false };
+        btn.classList.add('running');
+        btn.querySelector('.icon').textContent = '⏳';
+        timers[id].interval = setInterval(() => {
+          timers[id].remaining--;
+          btn.querySelector('.icon').textContent = '⏳';
+          btn.childNodes[1].textContent = ' ' + formatTime(timers[id].remaining);
+          if (timers[id].remaining <= 0) {
+            clearInterval(timers[id].interval);
+            btn.classList.remove('running');
+            btn.classList.add('done');
+            btn.querySelector('.icon').textContent = '✅';
+            btn.childNodes[1].textContent = ' Done!';
+            timers[id].justDone = true;
+            try {
+              const ctx = new (window.AudioContext || window.webkitAudioContext)();
+              [0, 150, 300].forEach(delay => {
+                const osc = ctx.createOscillator(); const gain = ctx.createGain();
+                osc.connect(gain); gain.connect(ctx.destination);
+                osc.frequency.value = 880; gain.gain.value = 0.3;
+                osc.start(ctx.currentTime + delay/1000); osc.stop(ctx.currentTime + delay/1000 + 0.15);
+              });
+            } catch(e) {}
+            setTimeout(() => {
+              timers[id].justDone = false;
+              btn.classList.remove('done');
+              btn.querySelector('.icon').textContent = '⏱';
+              btn.childNodes[1].textContent = origText;
+              delete timers[id]; updateTimerBar();
+            }, 5000);
+          }
+          updateTimerBar();
+        }, 1000);
+        updateTimerBar();
+      });
+    });
+  </script>
 </body>
 </html>
