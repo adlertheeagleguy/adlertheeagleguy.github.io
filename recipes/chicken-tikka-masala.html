@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chicken Tikka Masala 🍛</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍛</text></svg>">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+      color: #e0e0e0;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 700px; margin: 0 auto; }
+    .back { color: #e94560; text-decoration: none; font-size: 0.9rem; display: inline-block; margin-bottom: 1.5rem; }
+    .back:hover { text-decoration: underline; }
+    .hero { text-align: center; margin-bottom: 2rem; }
+    .hero .emoji { font-size: 5rem; }
+    h1 {
+      font-size: 2.2rem;
+      margin: 0.5rem 0;
+      background: linear-gradient(90deg, #e94560, #f5a623);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .tagline { color: #888; font-style: italic; }
+    .meta-bar {
+      display: flex; justify-content: center; gap: 2rem;
+      margin: 1.5rem 0; padding: 1rem;
+      background: rgba(255,255,255,0.05); border-radius: 12px;
+      font-size: 0.95rem;
+    }
+    .meta-bar span { color: #f5a623; }
+    section { margin-bottom: 2rem; }
+    h2 {
+      font-size: 1.4rem; margin-bottom: 1rem; padding-bottom: 0.5rem;
+      border-bottom: 2px solid rgba(233,69,96,0.3);
+    }
+    h3 { font-size: 1.1rem; color: #f5a623; margin: 1rem 0 0.5rem; }
+    .ingredients { display: flex; flex-direction: column; gap: 0.5rem; }
+    .ingredients li {
+      list-style: none; padding: 0.5rem 0.8rem;
+      background: rgba(255,255,255,0.03); border-radius: 8px;
+      border-left: 3px solid #e94560;
+    }
+    .steps { counter-reset: step; }
+    .steps li {
+      list-style: none; position: relative;
+      padding: 0.8rem 0.8rem 0.8rem 3.5rem;
+      margin-bottom: 0.8rem;
+      background: rgba(255,255,255,0.03); border-radius: 10px;
+      line-height: 1.6;
+    }
+    .steps li::before {
+      counter-increment: step;
+      content: counter(step);
+      position: absolute; left: 0.8rem; top: 0.7rem;
+      width: 1.8rem; height: 1.8rem;
+      background: #e94560; color: #fff;
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: bold; font-size: 0.85rem;
+    }
+    .tip {
+      background: rgba(245,166,35,0.1); border: 1px solid rgba(245,166,35,0.3);
+      border-radius: 12px; padding: 1rem 1.2rem; margin-top: 1rem;
+    }
+    .tip strong { color: #f5a623; }
+    footer { text-align: center; margin-top: 3rem; color: #555; font-size: 0.85rem; }
+    footer a { color: #e94560; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a class="back" href="index.html">← All Recipes</a>
+    <div class="hero">
+      <div class="emoji">🍛</div>
+      <h1>Chicken Tikka Masala</h1>
+      <p class="tagline">Britain's national dish, perfected in your kitchen.</p>
+    </div>
+
+    <div class="meta-bar">
+      <div>⏱ <span>1 hr</span></div>
+      <div>🍽 <span>4 servings</span></div>
+      <div>🔥 <span>Medium</span></div>
+    </div>
+
+    <section>
+      <h2>Ingredients</h2>
+      <h3>For the Chicken</h3>
+      <ul class="ingredients">
+        <li>1.5 lbs boneless chicken thighs, cut into chunks</li>
+        <li>1 cup plain yogurt</li>
+        <li>2 tbsp lemon juice</li>
+        <li>2 tsp garam masala</li>
+        <li>1 tsp turmeric</li>
+        <li>1 tsp cumin</li>
+        <li>1 tsp chili powder (or paprika for mild)</li>
+        <li>4 cloves garlic, minced</li>
+        <li>1-inch ginger, grated</li>
+        <li>Salt to taste</li>
+      </ul>
+      <h3>For the Sauce</h3>
+      <ul class="ingredients">
+        <li>2 tbsp butter</li>
+        <li>1 large onion, finely diced</li>
+        <li>4 cloves garlic, minced</li>
+        <li>1 tbsp fresh ginger, grated</li>
+        <li>2 tsp garam masala</li>
+        <li>1 tsp cumin</li>
+        <li>1 tsp coriander</li>
+        <li>1 tsp paprika</li>
+        <li>¼ tsp cayenne (adjust to taste)</li>
+        <li>1 can (15 oz) tomato sauce</li>
+        <li>1 cup heavy cream</li>
+        <li>1 tbsp sugar</li>
+        <li>Fresh cilantro for garnish</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Instructions</h2>
+      <ol class="steps">
+        <li><strong>Marinate the chicken:</strong> Mix yogurt, lemon juice, all spices, garlic, and ginger in a bowl. Add chicken and toss to coat. Cover and refrigerate at least 30 minutes (overnight is even better).</li>
+        <li><strong>Cook the chicken:</strong> Heat a skillet over high heat with a drizzle of oil. Cook marinated chicken in batches — don't crowd the pan — until charred on the outside, about 3-4 minutes per side. It doesn't need to be cooked through; it'll finish in the sauce. Set aside.</li>
+        <li><strong>Start the sauce:</strong> In a large pot or Dutch oven, melt butter over medium heat. Add onions and cook until soft and golden, about 8 minutes.</li>
+        <li>Add garlic and ginger, cook 1 minute until fragrant. Add all the sauce spices (garam masala, cumin, coriander, paprika, cayenne) and stir for 30 seconds — just until they bloom and smell amazing.</li>
+        <li>Pour in the tomato sauce and sugar. Simmer for 15 minutes, stirring occasionally, until the sauce thickens and deepens in color.</li>
+        <li>Stir in the heavy cream. Add the chicken and any accumulated juices. Simmer on low for 10 minutes until chicken is cooked through and the sauce is rich and velvety.</li>
+        <li>Taste and adjust salt, heat, and sugar. Garnish generously with cilantro. Serve over basmati rice with warm naan.</li>
+      </ol>
+    </section>
+
+    <section>
+      <div class="tip">
+        <strong>💡 Pro tip:</strong> Broiling the marinated chicken instead of pan-searing gives you even better char. Put it on a sheet pan under the broiler for 5-6 minutes per side, watching carefully.
+      </div>
+    </section>
+
+    <footer>
+      <a href="index.html">← Back to all recipes</a>
+    </footer>
+  </div>
+</body>
+</html>
