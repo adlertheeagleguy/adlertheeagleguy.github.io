@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phonetic Alphabet Quiz</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.5rem;
+      color: #38bdf8;
+    }
+
+    .subtitle {
+      color: #94a3b8;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+
+    .card {
+      background: #1e293b;
+      border-radius: 12px;
+      padding: 2rem;
+      max-width: 600px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+    }
+
+    .sentence {
+      font-size: 1.6rem;
+      line-height: 2;
+      letter-spacing: 0.05em;
+      margin: 1.5rem 0;
+      word-break: break-word;
+    }
+
+    .letter {
+      display: inline-block;
+      padding: 0.15em 0.2em;
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+
+    .letter.done {
+      color: #4ade80;
+    }
+
+    .letter.active {
+      color: #0f172a;
+      background: #38bdf8;
+      border-radius: 6px;
+      font-weight: bold;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .letter.pending {
+      color: #475569;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    .hint {
+      color: #94a3b8;
+      font-size: 1.1rem;
+      margin: 1rem 0;
+      min-height: 1.5em;
+    }
+
+    .hint strong {
+      color: #fbbf24;
+      font-size: 1.3rem;
+    }
+
+    .status {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      min-height: 2.5em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .status.listening {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+    }
+
+    .status.correct {
+      background: rgba(74, 222, 128, 0.15);
+      color: #4ade80;
+    }
+
+    .status.wrong {
+      background: rgba(248, 113, 113, 0.15);
+      color: #f87171;
+    }
+
+    .status.idle {
+      background: rgba(148, 163, 184, 0.1);
+      color: #94a3b8;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 2rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin: 0.5rem;
+    }
+
+    .btn-primary {
+      background: #38bdf8;
+      color: #0f172a;
+    }
+
+    .btn-primary:hover {
+      background: #7dd3fc;
+    }
+
+    .btn-secondary {
+      background: #334155;
+      color: #e2e8f0;
+    }
+
+    .btn-secondary:hover {
+      background: #475569;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .progress {
+      margin-top: 1.5rem;
+      color: #64748b;
+      font-size: 0.85rem;
+    }
+
+    .score {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #94a3b8;
+    }
+
+    .score span strong {
+      color: #e2e8f0;
+    }
+
+    .reference {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #334155;
+    }
+
+    .reference summary {
+      color: #64748b;
+      cursor: pointer;
+      font-size: 0.9rem;
+      user-select: none;
+    }
+
+    .reference-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 0.3rem 1rem;
+      margin-top: 0.75rem;
+      font-size: 0.85rem;
+      color: #64748b;
+      text-align: left;
+    }
+
+    .mic-indicator {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .mic-indicator.on {
+      background: #f87171;
+      animation: blink 1s ease-in-out infinite;
+    }
+
+    .mic-indicator.off {
+      background: #475569;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+
+    .complete-screen {
+      display: none;
+    }
+
+    .complete-screen h2 {
+      color: #4ade80;
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .complete-screen p {
+      color: #94a3b8;
+      margin-bottom: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Phonetic Alphabet Quiz</h1>
+  <p class="subtitle">Speak the NATO phonetic word for each highlighted letter</p>
+
+  <div class="card" id="startScreen">
+    <p style="margin-bottom: 1.5rem; color: #94a3b8;">
+      A sentence will appear with letters highlighted one at a time.<br>
+      Say the NATO phonetic word for each letter to advance.
+    </p>
+    <button class="btn btn-primary" id="startBtn">Start Quiz</button>
+
+    <details class="reference">
+      <summary>NATO Phonetic Alphabet Reference</summary>
+      <div class="reference-grid" id="refGrid"></div>
+    </details>
+  </div>
+
+  <div class="card" id="quizScreen" style="display:none;">
+    <div class="sentence" id="sentence"></div>
+    <div class="hint" id="hint"></div>
+    <div class="status idle" id="status">
+      <span class="mic-indicator off" id="micDot"></span>
+      <span id="statusText">Click Start to begin</span>
+    </div>
+    <div style="margin-top: 1rem;">
+      <button class="btn btn-secondary" id="skipBtn">Skip</button>
+      <button class="btn btn-secondary" id="newSentenceBtn">New Sentence</button>
+    </div>
+    <div class="score">
+      <span>Correct: <strong id="correctCount">0</strong></span>
+      <span>Skipped: <strong id="skipCount">0</strong></span>
+      <span>Letters: <strong id="letterCount">0</strong></span>
+    </div>
+    <div class="progress" id="progress"></div>
+
+    <details class="reference" style="margin-top: 1.5rem;">
+      <summary>Need a hint? Show reference</summary>
+      <div class="reference-grid" id="refGrid2"></div>
+    </details>
+  </div>
+
+  <div class="card complete-screen" id="completeScreen">
+    <h2>Sentence Complete!</h2>
+    <p id="summaryText"></p>
+    <button class="btn btn-primary" id="nextBtn">Next Sentence</button>
+  </div>
+
+  <script>
+    const PHONETIC = {
+      a: 'alpha', b: 'bravo', c: 'charlie', d: 'delta', e: 'echo',
+      f: 'foxtrot', g: 'golf', h: 'hotel', i: 'india', j: 'juliet',
+      k: 'kilo', l: 'lima', m: 'mike', n: 'november', o: 'oscar',
+      p: 'papa', q: 'quebec', r: 'romeo', s: 'sierra', t: 'tango',
+      u: 'uniform', v: 'victor', w: 'whiskey', x: 'x-ray', y: 'yankee', z: 'zulu'
+    };
+
+    const SENTENCES = [
+      "The quick brown fox jumps over the lazy dog",
+      "Pack my box with five dozen liquor jugs",
+      "How vexingly quick daft zebras jump",
+      "The five boxing wizards jump quickly",
+      "Sphinx of black quartz judge my vow",
+      "Two driven jocks help fax my big quiz",
+      "The jay pig fox zebra and my wolves quack",
+      "Sympathizing would fix Quaker objectives",
+      "Jackdaws love my big sphinx of quartz",
+      "We promptly judged antique ivory buckles for the next prize",
+      "A mad boxer shot a quick gloved jab to the jaw of his dizzy opponent",
+      "Jinxed wizards pluck ivy from the big quilt",
+      "The wizard quickly jinxed the gnomes before they vaporized",
+      "Foxy diva Jennifer quickly swapped her big car for a taxi",
+      "Amazingly few discotheques provide jukeboxes",
+      "How quickly daft jumping zebras vex",
+      "Grumpy wizards make toxic brew for the evil queen and jack",
+      "My girl wove six dozen plaid jackets before she quit",
+      "Sixty zippers were quickly picked from the woven jute bag",
+      "The quick onyx goblin jumps over the lazy dwarf"
+    ];
+
+    let currentSentence = '';
+    let letters = [];
+    let currentIndex = 0;
+    let correctCount = 0;
+    let skipCount = 0;
+    let recognition = null;
+    let isListening = false;
+
+    const $ = id => document.getElementById(id);
+
+    function populateRefGrid(containerId) {
+      const grid = $(containerId);
+      grid.innerHTML = Object.entries(PHONETIC)
+        .map(([k, v]) => `<div><strong>${k.toUpperCase()}</strong> — ${v}</div>`)
+        .join('');
+    }
+
+    populateRefGrid('refGrid');
+    populateRefGrid('refGrid2');
+
+    function pickSentence() {
+      return SENTENCES[Math.floor(Math.random() * SENTENCES.length)];
+    }
+
+    function initSentence(sentence) {
+      currentSentence = sentence;
+      letters = [];
+      for (const ch of sentence) {
+        const lower = ch.toLowerCase();
+        if (lower >= 'a' && lower <= 'z') {
+          letters.push({ char: lower, original: ch });
+        }
+      }
+      currentIndex = 0;
+      correctCount = 0;
+      skipCount = 0;
+      renderSentence();
+      updateScore();
+    }
+
+    function renderSentence() {
+      let letterIdx = 0;
+      let html = '';
+      for (const ch of currentSentence) {
+        const lower = ch.toLowerCase();
+        if (lower >= 'a' && lower <= 'z') {
+          let cls = 'pending';
+          if (letterIdx < currentIndex) cls = 'done';
+          else if (letterIdx === currentIndex) cls = 'active';
+          html += `<span class="letter ${cls}">${ch}</span>`;
+          letterIdx++;
+        } else {
+          html += ch === ' ' ? ' ' : ch;
+        }
+      }
+      $('sentence').innerHTML = html;
+
+      if (currentIndex < letters.length) {
+        const cur = letters[currentIndex];
+        const phoneticWord = PHONETIC[cur.char];
+        $('hint').innerHTML = `Say: <strong>${phoneticWord.toUpperCase()}</strong> (${cur.char.toUpperCase()})`;
+        $('progress').textContent = `Letter ${currentIndex + 1} of ${letters.length}`;
+      }
+    }
+
+    function updateScore() {
+      $('correctCount').textContent = correctCount;
+      $('skipCount').textContent = skipCount;
+      $('letterCount').textContent = letters.length;
+    }
+
+    function setStatus(text, type) {
+      const el = $('status');
+      el.className = `status ${type}`;
+      $('statusText').textContent = text;
+      $('micDot').className = `mic-indicator ${isListening ? 'on' : 'off'}`;
+    }
+
+    function advanceLetter() {
+      currentIndex++;
+      if (currentIndex >= letters.length) {
+        showComplete();
+      } else {
+        renderSentence();
+        setStatus('Listening...', 'listening');
+      }
+    }
+
+    function showComplete() {
+      stopListening();
+      $('quizScreen').style.display = 'none';
+      $('completeScreen').style.display = 'block';
+      $('summaryText').innerHTML =
+        `You got <strong>${correctCount}</strong> out of <strong>${letters.length}</strong> letters correct.` +
+        (skipCount > 0 ? ` (${skipCount} skipped)` : '');
+    }
+
+    function startListening() {
+      if (isListening) return;
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        setStatus('Speech recognition not supported in this browser. Try Chrome.', 'wrong');
+        return;
+      }
+
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+
+      recognition.onstart = () => {
+        isListening = true;
+        setStatus('Listening...', 'listening');
+      };
+
+      recognition.onresult = (event) => {
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript.trim().toLowerCase();
+          const words = transcript.split(/\s+/);
+
+          for (const word of words) {
+            const cleaned = word.replace(/[^a-z-]/g, '');
+            if (currentIndex >= letters.length) return;
+
+            const expected = PHONETIC[letters[currentIndex].char];
+            if (cleaned === expected || cleaned === expected.replace('-', '')) {
+              correctCount++;
+              updateScore();
+              setStatus(`Correct! "${expected}"`, 'correct');
+              advanceLetter();
+              return;
+            }
+          }
+        }
+      };
+
+      recognition.onerror = (e) => {
+        if (e.error === 'no-speech') return;
+        if (e.error === 'aborted') return;
+        console.error('Speech error:', e.error);
+        setStatus(`Error: ${e.error}. Click Start to retry.`, 'wrong');
+        isListening = false;
+      };
+
+      recognition.onend = () => {
+        isListening = false;
+        if (currentIndex < letters.length) {
+          try { recognition.start(); } catch (e) {}
+        }
+      };
+
+      try {
+        recognition.start();
+      } catch (e) {
+        setStatus('Could not start speech recognition.', 'wrong');
+      }
+    }
+
+    function stopListening() {
+      if (recognition) {
+        try { recognition.stop(); } catch (e) {}
+        recognition = null;
+      }
+      isListening = false;
+    }
+
+    function startQuiz() {
+      $('startScreen').style.display = 'none';
+      $('completeScreen').style.display = 'none';
+      $('quizScreen').style.display = 'block';
+      initSentence(pickSentence());
+      startListening();
+    }
+
+    $('startBtn').addEventListener('click', startQuiz);
+
+    $('skipBtn').addEventListener('click', () => {
+      if (currentIndex < letters.length) {
+        skipCount++;
+        updateScore();
+        setStatus(`Skipped "${PHONETIC[letters[currentIndex].char]}"`, 'wrong');
+        advanceLetter();
+      }
+    });
+
+    $('newSentenceBtn').addEventListener('click', () => {
+      stopListening();
+      initSentence(pickSentence());
+      startListening();
+    });
+
+    $('nextBtn').addEventListener('click', startQuiz);
+  </script>
+</body>
+</html>
