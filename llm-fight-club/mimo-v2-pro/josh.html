@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Josh Wilhelm — Salesforce Platform Developer II based in Indianapolis, IN. Building scalable enterprise solutions on the Salesforce platform.">
+  <meta name="keywords" content="Josh Wilhelm, Salesforce Developer, Platform Developer, Apex, LWC, Indianapolis">
+  <meta name="author" content="Josh Wilhelm">
+  <meta name="robots" content="index, follow">
+  <meta property="og:title" content="Josh Wilhelm | Salesforce Platform Developer II">
+  <meta property="og:description" content="Enterprise Salesforce Developer with 4+ certifications. Building scalable solutions on the Salesforce platform since 2015.">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#4f46e5">
+  <title>Josh Wilhelm — Salesforce Platform Developer II</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+    :root{
+      --slate-950:#020617;--slate-900:#0f172a;--slate-800:#1e293b;
+      --slate-700:#334155;--slate-600:#475569;--slate-400:#94a3b8;
+      --slate-300:#cbd5e1;--slate-200:#e2e8f0;--slate-100:#f1f5f9;
+      --zinc-900:#18181b;--zinc-800:#27272a;
+      --indigo-600:#4f46e5;--indigo-500:#6366f1;--indigo-400:#818cf8;
+      --indigo-300:#a5b4fc;--indigo-200:#c7d2fe;
+      --cyan-400:#22d3ee;--emerald-400:#34d399;
+      --glass-bg:rgba(15,23,42,0.6);--glass-border:rgba(148,163,184,0.12);
+      --glass-blur:20px;
+    }
+    html{scroll-behavior:smooth;font-size:16px;scroll-padding-top:80px}
+    body{
+      font-family:'Inter',system-ui,-apple-system,sans-serif;
+      background:var(--slate-950);color:var(--slate-300);
+      line-height:1.6;overflow-x:hidden;
+    }
+    body::before{
+      content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 20%,rgba(79,70,229,0.12),transparent),
+        radial-gradient(ellipse 60% 40% at 80% 80%,rgba(34,211,238,0.06),transparent),
+        radial-gradient(ellipse 50% 50% at 50% 50%,rgba(99,102,241,0.04),transparent);
+      pointer-events:none;z-index:0;
+    }
+
+    /* ── NAV ── */
+    nav{
+      position:fixed;top:0;left:0;right:0;z-index:1000;
+      backdrop-filter:blur(24px) saturate(1.4);
+      -webkit-backdrop-filter:blur(24px) saturate(1.4);
+      background:rgba(2,6,23,0.75);
+      border-bottom:1px solid var(--glass-border);
+      transition:box-shadow .3s,background .3s;
+    }
+    nav.scrolled{box-shadow:0 4px 30px rgba(0,0,0,0.4);background:rgba(2,6,23,0.92)}
+    .nav-inner{
+      max-width:1200px;margin:0 auto;padding:0 1.5rem;
+      display:flex;align-items:center;justify-content:space-between;height:64px;
+    }
+    .nav-logo{
+      font-weight:800;font-size:1.25rem;color:#fff;
+      letter-spacing:-0.03em;display:flex;align-items:center;gap:.5rem;
+    }
+    .nav-logo span{color:var(--indigo-400)}
+    .nav-links{display:flex;gap:.25rem;list-style:none}
+    .nav-links a{
+      color:var(--slate-400);text-decoration:none;font-size:.85rem;font-weight:500;
+      padding:.5rem .85rem;border-radius:8px;transition:all .2s;position:relative;
+    }
+    .nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(99,102,241,0.12)}
+    .nav-links a.active::after{
+      content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);
+      width:16px;height:2px;background:var(--indigo-400);border-radius:2px;
+    }
+    .nav-toggle{display:none;background:none;border:none;color:#fff;font-size:1.5rem;cursor:pointer}
+
+    /* ── SECTIONS ── */
+    section{position:relative;z-index:1;padding:6rem 1.5rem}
+    .container{max-width:1200px;margin:0 auto}
+    .section-label{
+      display:inline-flex;align-items:center;gap:.5rem;
+      font-size:.75rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+      color:var(--indigo-400);margin-bottom:1rem;
+    }
+    .section-label::before{content:'';width:24px;height:1px;background:var(--indigo-400)}
+    .section-title{
+      font-size:clamp(1.75rem,4vw,2.75rem);font-weight:800;
+      color:#fff;letter-spacing:-0.03em;line-height:1.15;margin-bottom:1rem;
+    }
+    .section-subtitle{font-size:1.05rem;color:var(--slate-400);max-width:600px;margin-bottom:3rem}
+
+    /* ── ANIMATIONS ── */
+    .reveal{opacity:0;transform:translateY(40px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+    .reveal-delay-1{transition-delay:.1s}.reveal-delay-2{transition-delay:.2s}
+    .reveal-delay-3{transition-delay:.3s}.reveal-delay-4{transition-delay:.4s}
+    .reveal-left{opacity:0;transform:translateX(-40px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+    .reveal-left.visible{opacity:1;transform:translateX(0)}
+    .reveal-right{opacity:0;transform:translateX(40px);transition:opacity .7s cubic-bezier(.16,1,.3,1),transform .7s cubic-bezier(.16,1,.3,1)}
+    .reveal-right.visible{opacity:1;transform:translateX(0)}
+
+    /* ── HERO ── */
+    #hero{
+      min-height:100vh;display:flex;align-items:center;
+      padding-top:6rem;
+    }
+    .hero-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+    .hero-badge{
+      display:inline-flex;align-items:center;gap:.5rem;
+      background:rgba(79,70,229,0.1);border:1px solid rgba(79,70,229,0.25);
+      border-radius:100px;padding:.4rem 1rem;font-size:.8rem;font-weight:500;
+      color:var(--indigo-300);margin-bottom:1.5rem;
+    }
+    .hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--emerald-400);animation:pulse-dot 2s infinite}
+    @keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
+    .hero-name{font-size:clamp(2.5rem,6vw,4rem);font-weight:800;color:#fff;letter-spacing:-0.04em;line-height:1.05;margin-bottom:.75rem}
+    .hero-name .highlight{background:linear-gradient(135deg,var(--indigo-400),var(--cyan-400));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero-title{font-size:1.25rem;color:var(--slate-400);margin-bottom:2rem;font-weight:400}
+    .hero-stats{display:flex;gap:2rem;margin-bottom:2.5rem}
+    .hero-stat{text-align:left}
+    .hero-stat-num{font-size:1.75rem;font-weight:800;color:#fff}
+    .hero-stat-label{font-size:.75rem;color:var(--slate-500);text-transform:uppercase;letter-spacing:.05em}
+    .hero-cta{display:flex;gap:1rem;flex-wrap:wrap}
+    .btn{
+      display:inline-flex;align-items:center;gap:.5rem;
+      padding:.75rem 1.5rem;border-radius:10px;font-size:.9rem;font-weight:600;
+      text-decoration:none;transition:all .25s;cursor:pointer;border:none;
+    }
+    .btn-primary{background:var(--indigo-600);color:#fff}
+    .btn-primary:hover{background:var(--indigo-500);transform:translateY(-2px);box-shadow:0 8px 30px rgba(79,70,229,0.35)}
+    .btn-ghost{background:transparent;color:var(--slate-300);border:1px solid var(--glass-border)}
+    .btn-ghost:hover{border-color:var(--indigo-400);color:#fff}
+
+    /* hero visual */
+    .hero-visual{position:relative;display:flex;justify-content:center;align-items:center}
+    .hero-card{
+      width:100%;max-width:420px;
+      background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));
+      border:1px solid var(--glass-border);border-radius:20px;
+      padding:2rem;position:relative;overflow:hidden;
+    }
+    .hero-card::before{
+      content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+      background:conic-gradient(from 0deg,transparent,rgba(79,70,229,0.08),transparent,rgba(34,211,238,0.06),transparent);
+      animation:rotate-glow 12s linear infinite;
+    }
+    @keyframes rotate-glow{to{transform:rotate(360deg)}}
+    .hero-card-inner{position:relative;z-index:1}
+    .cert-grid{display:grid;gap:.75rem;margin-top:1rem}
+    .cert-item{
+      display:flex;align-items:center;gap:.75rem;
+      padding:.75rem 1rem;background:rgba(30,41,59,0.5);
+      border-radius:10px;border:1px solid rgba(148,163,184,0.08);
+      transition:all .25s;
+    }
+    .cert-item:hover{border-color:rgba(79,70,229,0.3);transform:translateX(4px)}
+    .cert-icon{
+      width:36px;height:36px;border-radius:8px;
+      background:linear-gradient(135deg,var(--indigo-600),var(--cyan-400));
+      display:flex;align-items:center;justify-content:center;
+      font-size:.9rem;flex-shrink:0;
+    }
+    .cert-text{font-size:.85rem;font-weight:500;color:var(--slate-200)}
+    .cert-year{font-size:.7rem;color:var(--slate-500)}
+
+    /* ── EXPERIENCE TIMELINE ── */
+    .timeline{position:relative;padding-left:2.5rem}
+    .timeline::before{
+      content:'';position:absolute;left:7px;top:0;bottom:0;width:2px;
+      background:linear-gradient(180deg,var(--indigo-600),var(--indigo-600) 50%,var(--glass-border));
+    }
+    .timeline-item{position:relative;margin-bottom:3rem}
+    .timeline-dot{
+      position:absolute;left:-2.5rem;top:.5rem;width:16px;height:16px;
+      border-radius:50%;background:var(--slate-900);border:2px solid var(--indigo-600);
+      z-index:1;
+    }
+    .timeline-dot::after{
+      content:'';position:absolute;inset:3px;border-radius:50%;
+      background:var(--indigo-400);
+    }
+    .timeline-card{
+      background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));
+      border:1px solid var(--glass-border);border-radius:16px;
+      padding:1.75rem;transition:all .3s;
+    }
+    .timeline-card:hover{border-color:rgba(79,70,229,0.25);transform:translateX(6px)}
+    .timeline-header{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem}
+    .timeline-company{font-size:1.15rem;font-weight:700;color:#fff}
+    .timeline-role{font-size:.9rem;color:var(--indigo-300);font-weight:500}
+    .timeline-meta{font-size:.8rem;color:var(--slate-500);display:flex;align-items:center;gap:.5rem;flex-wrap:wrap}
+    .timeline-meta .tag{
+      background:rgba(79,70,229,0.1);border:1px solid rgba(79,70,229,0.2);
+      padding:.15rem .6rem;border-radius:6px;font-size:.7rem;color:var(--indigo-300);
+    }
+    .timeline-desc{font-size:.9rem;color:var(--slate-400);margin-top:.75rem;line-height:1.7}
+    .timeline-desc ul{list-style:none;margin-top:.5rem}
+    .timeline-desc li{padding:.25rem 0;padding-left:1.25rem;position:relative}
+    .timeline-desc li::before{
+      content:'›';position:absolute;left:0;color:var(--indigo-400);font-weight:700;
+    }
+
+    /* ── SKILLS MATRIX ── */
+    .skills-grid{
+      display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+      gap:1rem;
+    }
+    .skill-card{
+      background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));
+      border:1px solid var(--glass-border);border-radius:14px;
+      padding:1.25rem;text-align:center;transition:all .35s cubic-bezier(.16,1,.3,1);
+      position:relative;overflow:hidden;cursor:default;
+    }
+    .skill-card::before{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(135deg,rgba(79,70,229,0.15),rgba(34,211,238,0.08));
+      opacity:0;transition:opacity .35s;
+    }
+    .skill-card:hover::before{opacity:1}
+    .skill-card:hover{transform:translateY(-6px);border-color:rgba(79,70,229,0.35);box-shadow:0 12px 40px rgba(79,70,229,0.15)}
+    .skill-icon{font-size:1.8rem;margin-bottom:.5rem;position:relative;z-index:1}
+    .skill-name{font-size:.85rem;font-weight:600;color:var(--slate-200);position:relative;z-index:1}
+    .skill-bar{
+      height:3px;background:rgba(148,163,184,0.1);border-radius:4px;
+      margin-top:.75rem;overflow:hidden;position:relative;z-index:1;
+    }
+    .skill-bar-fill{
+      height:100%;border-radius:4px;
+      background:linear-gradient(90deg,var(--indigo-600),var(--cyan-400));
+      width:0;transition:width 1.2s cubic-bezier(.16,1,.3,1);
+    }
+    .skill-card.visible .skill-bar-fill{width:var(--fill)}
+
+    /* ── CERTIFICATIONS ── */
+    .cert-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem}
+    .cert-card{
+      background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));
+      border:1px solid var(--glass-border);border-radius:16px;
+      padding:1.5rem;display:flex;gap:1rem;align-items:flex-start;
+      transition:all .3s;
+    }
+    .cert-card:hover{border-color:rgba(79,70,229,0.3);transform:translateY(-4px)}
+    .cert-card-icon{
+      width:48px;height:48px;border-radius:12px;flex-shrink:0;
+      background:linear-gradient(135deg,var(--indigo-600),var(--indigo-400));
+      display:flex;align-items:center;justify-content:center;font-size:1.3rem;
+    }
+    .cert-card-title{font-size:.95rem;font-weight:700;color:#fff;margin-bottom:.25rem}
+    .cert-card-issuer{font-size:.8rem;color:var(--slate-400)}
+    .cert-card-date{font-size:.75rem;color:var(--indigo-400);margin-top:.25rem;font-weight:500}
+
+    /* ── VOLUNTEER ── */
+    .volunteer-card{
+      background:var(--glass-bg);backdrop-filter:blur(var(--glass-blur));
+      border:1px solid var(--glass-border);border-radius:16px;
+      padding:2rem;display:grid;grid-template-columns:auto 1fr;gap:1.5rem;align-items:center;
+    }
+    .volunteer-icon{
+      width:64px;height:64px;border-radius:16px;
+      background:linear-gradient(135deg,#059669,#34d399);
+      display:flex;align-items:center;justify-content:center;font-size:1.8rem;
+    }
+    .volunteer-title{font-size:1.15rem;font-weight:700;color:#fff}
+    .volunteer-org{color:var(--emerald-400);font-weight:600;font-size:.9rem}
+    .volunteer-desc{color:var(--slate-400);font-size:.9rem;margin-top:.5rem;line-height:1.7}
+    .volunteer-dates{font-size:.8rem;color:var(--slate-500);margin-top:.25rem}
+
+    /* ── CONTACT ── */
+    .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+    .contact-info h3{font-size:1.5rem;font-weight:700;color:#fff;margin-bottom:1rem}
+    .contact-info p{color:var(--slate-400);margin-bottom:2rem;line-height:1.7}
+    .contact-links{display:flex;flex-direction:column;gap:.75rem}
+    .contact-link{
+      display:flex;align-items:center;gap:.75rem;
+      padding:.75rem 1rem;background:var(--glass-bg);
+      border:1px solid var(--glass-border);border-radius:12px;
+      color:var(--slate-300);text-decoration:none;font-size:.9rem;
+      transition:all .25s;
+    }
+    .contact-link:hover{border-color:rgba(79,70,229,0.3);color:#fff;transform:translateX(4px)}
+    .contact-link-icon{
+      width:36px;height:36px;border-radius:8px;
+      background:rgba(79,70,229,0.15);display:flex;
+      align-items:center;justify-content:center;font-size:1rem;
+    }
+
+    /* ── FOOTER ── */
+    footer{
+      border-top:1px solid var(--glass-border);padding:2rem 1.5rem;
+      text-align:center;position:relative;z-index:1;
+    }
+    footer p{font-size:.8rem;color:var(--slate-600)}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:900px){
+      .hero-grid{grid-template-columns:1fr;text-align:center}
+      .hero-stats{justify-content:center}
+      .hero-cta{justify-content:center}
+      .hero-visual{order:-1}
+      .contact-grid{grid-template-columns:1fr}
+      .nav-links{
+        position:fixed;top:64px;left:0;right:0;
+        flex-direction:column;gap:0;padding:.5rem;
+        background:rgba(2,6,23,0.95);backdrop-filter:blur(20px);
+        border-bottom:1px solid var(--glass-border);
+        transform:translateY(-120%);transition:transform .3s;
+      }
+      .nav-links.open{transform:translateY(0)}
+      .nav-links a{padding:.75rem 1rem;border-radius:8px}
+      .nav-toggle{display:block}
+    }
+    @media(max-width:480px){
+      section{padding:4rem 1rem}
+      .skills-grid{grid-template-columns:repeat(2,1fr)}
+      .cert-cards{grid-template-columns:1fr}
+      .volunteer-card{grid-template-columns:1fr;text-align:center}
+      .volunteer-icon{margin:0 auto}
+      .hero-stats{flex-wrap:wrap;gap:1.5rem}
+    }
+    @media(min-width:1600px){
+      .container{max-width:1400px}
+      .section-title{font-size:3.25rem}
+    }
+
+    /* scrollbar */
+    ::-webkit-scrollbar{width:6px}
+    ::-webkit-scrollbar-track{background:var(--slate-950)}
+    ::-webkit-scrollbar-thumb{background:var(--slate-700);border-radius:4px}
+    ::-webkit-scrollbar-thumb:hover{background:var(--slate-600)}
+
+    /* selection */
+    ::selection{background:rgba(79,70,229,0.3);color:#fff}
+  </style>
+</head>
+<body>
+
+<!-- ═══ NAVIGATION ═══ -->
+<nav id="navbar" aria-label="Main navigation">
+  <div class="nav-inner">
+    <a href="#hero" class="nav-logo" aria-label="Josh Wilhelm home">
+      <span>⚡</span> josh<span>.wilhelm</span>
+    </a>
+    <button class="nav-toggle" aria-label="Toggle menu" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
+    <ul class="nav-links" role="menubar">
+      <li><a href="#hero" class="active" role="menuitem">Home</a></li>
+      <li><a href="#experience" role="menuitem">Experience</a></li>
+      <li><a href="#skills" role="menuitem">Skills</a></li>
+      <li><a href="#certifications" role="menuitem">Certifications</a></li>
+      <li><a href="#community" role="menuitem">Community</a></li>
+      <li><a href="#contact" role="menuitem">Contact</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="container">
+    <div class="hero-grid">
+      <div>
+        <div class="hero-badge reveal"><span class="dot"></span> Open to opportunities</div>
+        <h1 class="hero-name reveal reveal-delay-1">
+          Josh<br><span class="highlight">Wilhelm</span>
+        </h1>
+        <p class="hero-title reveal reveal-delay-2">Salesforce Platform Developer II — Indianapolis, IN</p>
+        <div class="hero-stats reveal reveal-delay-3">
+          <div class="hero-stat">
+            <div class="hero-stat-num" data-count="4">0</div>
+            <div class="hero-stat-label">Certifications</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num" data-count="10">0</div>
+            <div class="hero-stat-label">Years Experience</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num" data-count="428">0</div>
+            <div class="hero-stat-label">Followers</div>
+          </div>
+        </div>
+        <div class="hero-cta reveal reveal-delay-4">
+          <a href="#experience" class="btn btn-primary">View Experience ↓</a>
+          <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+        </div>
+      </div>
+      <div class="hero-visual reveal reveal-delay-2">
+        <div class="hero-card">
+          <div class="hero-card-inner">
+            <p style="font-size:.75rem;color:var(--slate-500);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:.75rem">Salesforce Credentials</p>
+            <div class="cert-grid">
+              <div class="cert-item">
+                <div class="cert-icon">🏆</div>
+                <div><div class="cert-text">Platform Developer II</div><div class="cert-year">Jul 2019</div></div>
+              </div>
+              <div class="cert-item">
+                <div class="cert-icon">🔧</div>
+                <div><div class="cert-text">Platform App Builder</div><div class="cert-year">Apr 2016</div></div>
+              </div>
+              <div class="cert-item">
+                <div class="cert-icon">⚡</div>
+                <div><div class="cert-text">Platform Developer I</div><div class="cert-year">Jan 2016</div></div>
+              </div>
+              <div class="cert-item">
+                <div class="cert-icon">🛡️</div>
+                <div><div class="cert-text">Administrator</div><div class="cert-year">Jul 2015</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EXPERIENCE ═══ -->
+<section id="experience">
+  <div class="container">
+    <span class="section-label reveal">Career Path</span>
+    <h2 class="section-title reveal">Professional Experience</h2>
+    <p class="section-subtitle reveal">A decade of building enterprise-grade solutions on the Salesforce platform.</p>
+
+    <div class="timeline">
+      <div class="timeline-item reveal-left">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-header">
+            <div>
+              <div class="timeline-company">Salesforce</div>
+              <div class="timeline-role">Senior Software Engineer / Technical Architect</div>
+            </div>
+            <div class="timeline-meta">
+              <span>2019 — Present</span>
+              <span class="tag">6+ years</span>
+            </div>
+          </div>
+          <div class="timeline-desc">
+            Leading technical initiatives on core Salesforce platform capabilities. Designing and implementing scalable, multi-tenant solutions that serve millions of users globally.
+            <ul>
+              <li>Architected enterprise-grade solutions using Apex, LWC, and platform APIs</li>
+              <li>Championed code quality standards and mentored junior developers</li>
+              <li>Drove adoption of modern development practices including CI/CD and test automation</li>
+              <li>Collaborated cross-functionally with product, design, and infrastructure teams</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal-right">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-header">
+            <div>
+              <div class="timeline-company">Salesforce</div>
+              <div class="timeline-role">Software Engineer</div>
+            </div>
+            <div class="timeline-meta">
+              <span>2016 — 2019</span>
+              <span class="tag">3 years</span>
+            </div>
+          </div>
+          <div class="timeline-desc">
+            Developed and maintained core platform features, focusing on declarative tools and custom development frameworks.
+            <ul>
+              <li>Built custom Lightning Web Components for complex business requirements</li>
+              <li>Implemented integrations with external systems via REST and SOAP APIs</li>
+              <li>Contributed to internal tools and automation frameworks</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline-item reveal-left">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-header">
+            <div>
+              <div class="timeline-company">Salesforce</div>
+              <div class="timeline-role">Associate Developer</div>
+            </div>
+            <div class="timeline-meta">
+              <span>2015 — 2016</span>
+              <span class="tag">1 year</span>
+            </div>
+          </div>
+          <div class="timeline-desc">
+            Started the Salesforce journey as an associate developer, rapidly acquiring platform expertise and earning initial certifications.
+            <ul>
+              <li>Achieved Platform Developer I and App Builder certifications within first year</li>
+              <li>Developed Apex triggers, controllers, and Visualforce pages</li>
+              <li>Participated in agile ceremonies and sprint planning</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SKILLS ═══ -->
+<section id="skills">
+  <div class="container">
+    <span class="section-label reveal">Expertise</span>
+    <h2 class="section-title reveal">Skills Matrix</h2>
+    <p class="section-subtitle reveal">Core competencies honed across a decade of Salesforce platform development.</p>
+
+    <div class="skills-grid">
+      <div class="skill-card reveal" style="--fill:95%">
+        <div class="skill-icon">⚡</div>
+        <div class="skill-name">Apex</div>
+        <div class="skill-bar"><div class="skill-bar-fill"></div></div>
+      </div>
+      <div class="skill-card reveal reveal-delay-1" style="--fill:92%">
+        <div class="skill-icon">🧩</div>
+        <div class="skill-name">Lightning Web Components</div>
+        <div class="skill-bar"><div class="skill-bar-fill"></div></div>
+      </div>
+      <div class="skill-card reveal reveal-delay-2" style="--fill:88%">
+        <div class="skill-icon">🗄️</div>
+        <div class="skill-name">SOQL / SOSL</div>
+        <div class="skill-bar"><div class="skill-bar-fill"></div></div>
+      </div>
+      <div class="skill-card reveal reveal-delay-3" style="--fill:90%">
+        <div class="skill-icon">🔄</div>
+        <div class="skill-name">Salesforce Flows</div>
+        <div class="skill-bar"><div class="skill-bar-fill"></div></div>
+      </div>
+      <div class="skill-card reveal" style="--fill:85%">
+        <div class="skill-icon">🔌</div>
+        <div class="skill-name">REST / SOAP APIs</div>
+        <div class="skill-bar"><div class="skill-bar-fill"></div></div>
+      </div>
+      <div class="skill-card reveal reveal-delay-1" style="--fill:82%">
+        <div class="skill-icon">🚀</div>
+        <div class="skill-name">CI/CD & DX</div>
+        <div class="skill-bar"><div class="skill-bar-fill"></div></div>
+      </div>
+      <div class="skill-card reveal reveal-delay-2" style="--fill:88%">
+        <div class="skill-icon">🧪</div>
+        <div class="skill-name">Test Classes</div>
+        <div class="skill-bar"><div class="skill-bar-fill"></div></div>
+      </div>
+      <div class="skill-card reveal reveal-delay-3" style="--fill:80%">
+        <div class="skill-icon">📊</div>
+        <div class="skill-name">Reports & Dashboards</div>
+        <div class="skill-bar"><div class="skill-bar-fill"></div></div>
+      </div>
+      <div class="skill-card reveal" style="--fill:86%">
+        <div class="skill-icon">🔐</div>
+        <div class="skill-name">Security & Sharing</div>
+        <div class="skill-bar"><div class="skill-bar-fill"></div></div>
+      </div>
+      <div class="skill-card reveal reveal-delay-1" style="--fill:78%">
+        <div class="skill-icon">🌐</div>
+        <div class="skill-name">JavaScript / HTML / CSS</div>
+        <div class="skill-bar"><div class="skill-bar-fill"></div></div>
+      </div>
+      <div class="skill-card reveal reveal-delay-2" style="--fill:84%">
+        <div class="skill-icon">📦</div>
+        <div class="skill-name">Data Modeling</div>
+        <div class="skill-bar"><div class="skill-bar-fill"></div></div>
+      </div>
+      <div class="skill-card reveal reveal-delay-3" style="--fill:75%">
+        <div class="skill-icon">🏗️</div>
+        <div class="skill-name">System Architecture</div>
+        <div class="skill-bar"><div class="skill-bar-fill"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CERTIFICATIONS ═══ -->
+<section id="certifications">
+  <div class="container">
+    <span class="section-label reveal">Credentials</span>
+    <h2 class="section-title reveal">Certifications</h2>
+    <p class="section-subtitle reveal">Validated expertise across the Salesforce platform ecosystem.</p>
+
+    <div class="cert-cards">
+      <div class="cert-card reveal">
+        <div class="cert-card-icon">🏆</div>
+        <div>
+          <div class="cert-card-title">Salesforce Certified Platform Developer II</div>
+          <div class="cert-card-issuer">Salesforce</div>
+          <div class="cert-card-date">Issued Jul 2019</div>
+        </div>
+      </div>
+      <div class="cert-card reveal reveal-delay-1">
+        <div class="cert-card-icon">🔧</div>
+        <div>
+          <div class="cert-card-title">Salesforce Certified Platform App Builder</div>
+          <div class="cert-card-issuer">Salesforce</div>
+          <div class="cert-card-date">Issued Apr 2016</div>
+        </div>
+      </div>
+      <div class="cert-card reveal reveal-delay-2">
+        <div class="cert-card-icon">⚡</div>
+        <div>
+          <div class="cert-card-title">Salesforce Certified Platform Developer I</div>
+          <div class="cert-card-issuer">Salesforce</div>
+          <div class="cert-card-date">Issued Jan 2016</div>
+        </div>
+      </div>
+      <div class="cert-card reveal reveal-delay-3">
+        <div class="cert-card-icon">🛡️</div>
+        <div>
+          <div class="cert-card-title">Salesforce Certified Administrator</div>
+          <div class="cert-card-issuer">Salesforce</div>
+          <div class="cert-card-date">Issued Jul 2015</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ COMMUNITY ═══ -->
+<section id="community">
+  <div class="container">
+    <span class="section-label reveal">Giving Back</span>
+    <h2 class="section-title reveal">Community & Volunteer Work</h2>
+    <p class="section-subtitle reveal">Making an impact beyond the codebase.</p>
+
+    <div class="volunteer-card reveal">
+      <div class="volunteer-icon">🏅</div>
+      <div>
+        <div class="volunteer-title">Assistant</div>
+        <div class="volunteer-org">Special Olympics</div>
+        <div class="volunteer-desc">Working with children and adults with special needs. Assisting them in participating in competitive sports. A passion for inclusion and empowerment through athletics.</div>
+        <div class="volunteer-dates">Sep 2014 — Present · 11+ years</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EDUCATION ═══ -->
+<section id="education">
+  <div class="container">
+    <span class="section-label reveal">Academic Background</span>
+    <h2 class="section-title reveal">Education</h2>
+    <p class="section-subtitle reveal">The foundation that launched a career in technology.</p>
+
+    <div class="timeline">
+      <div class="timeline-item reveal-left">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <div class="timeline-header">
+            <div>
+              <div class="timeline-company">Taylor University</div>
+              <div class="timeline-role">Bachelor's Degree</div>
+            </div>
+            <div class="timeline-meta">
+              <span>2011 — 2015</span>
+              <span class="tag">Upland, IN</span>
+            </div>
+          </div>
+          <div class="timeline-desc">
+            Studied at Taylor University, developing the technical foundation and problem-solving skills that would define a career in Salesforce development. Coursework included ADM201: Administration Essentials for New Admins.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT ═══ -->
+<section id="contact">
+  <div class="container">
+    <span class="section-label reveal">Let's Connect</span>
+    <h2 class="section-title reveal">Get In Touch</h2>
+    <p class="section-subtitle reveal">Interested in collaborating or discussing Salesforce architecture? Let's talk.</p>
+
+    <div class="contact-grid reveal">
+      <div class="contact-info">
+        <h3>Josh Wilhelm</h3>
+        <p>Based in Indianapolis, Indiana. Currently at Salesforce building enterprise platform solutions. Open to speaking engagements, consulting, and collaboration opportunities.</p>
+      </div>
+      <div class="contact-links">
+        <a href="https://www.linkedin.com/in/josh-wilhelm-9000a8a1" class="contact-link" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn profile">
+          <div class="contact-link-icon">in</div>
+          <div>linkedin.com/in/josh-wilhelm-9000a8a1</div>
+        </a>
+        <a href="https://trailhead.salesforce.com/" class="contact-link" target="_blank" rel="noopener noreferrer" aria-label="Salesforce Trailhead">
+          <div class="contact-link-icon">🏔️</div>
+          <div>View Credentials on Trailhead</div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <p>© 2026 Josh Wilhelm · Built with care in Indianapolis</p>
+</footer>
+
+<!-- ═══ JAVASCRIPT ═══ -->
+<script>
+(function(){
+  /* ── Scroll-into-view via IntersectionObserver ── */
+  const revealEls = document.querySelectorAll('.reveal, .reveal-left, .reveal-right');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+  revealEls.forEach(el => revealObserver.observe(el));
+
+  /* ── Sticky nav scroll state ── */
+  const nav = document.getElementById('navbar');
+  let lastScroll = 0;
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+
+  /* ── Active nav link tracking ── */
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+  const sectionObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute('id');
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { threshold: 0.3, rootMargin: '-64px 0px -50% 0px' });
+  sections.forEach(s => sectionObserver.observe(s));
+
+  /* ── Close mobile menu on link click ── */
+  navLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      document.querySelector('.nav-links').classList.remove('open');
+    });
+  });
+
+  /* ── Animated counters ── */
+  const counters = document.querySelectorAll('[data-count]');
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const target = parseInt(el.dataset.count);
+        const duration = 1500;
+        const start = performance.now();
+        const animate = (now) => {
+          const elapsed = now - start;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          el.textContent = Math.round(target * eased).toLocaleString();
+          if (progress < 1) requestAnimationFrame(animate);
+        };
+        requestAnimationFrame(animate);
+        counterObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+  counters.forEach(c => counterObserver.observe(c));
+})();
+</script>
+</body>
+</html>

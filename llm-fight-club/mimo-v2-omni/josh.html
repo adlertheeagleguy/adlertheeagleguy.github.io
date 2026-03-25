@@ -1,0 +1,1615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Josh Wilhelm - Production Support Engineer at Salesforce | Salesforce Certified Professional | Indianapolis, Indiana">
+    <meta name="keywords" content="Josh Wilhelm, Salesforce, Developer, Engineer, Indianapolis, Certified, Portfolio">
+    <meta name="author" content="Josh Wilhelm">
+    <meta name="robots" content="index, follow">
+    
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="Josh Wilhelm | Salesforce Professional Portfolio">
+    <meta property="og:description" content="Production Support Engineer at Salesforce with expertise in Salesforce development and support">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://joshwilhelm.dev">
+    
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Josh Wilhelm | Salesforce Professional">
+    <meta name="twitter:description" content="Production Support Engineer at Salesforce with expertise in Salesforce development and support">
+    
+    <title>Josh Wilhelm | Salesforce Professional Portfolio</title>
+    
+    <!-- Favicon Placeholder -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💼</text></svg>">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --slate-50: #f8fafc;
+            --slate-100: #f1f5f9;
+            --slate-200: #e2e8f0;
+            --slate-300: #cbd5e1;
+            --slate-400: #94a3b8;
+            --slate-500: #64748b;
+            --slate-600: #475569;
+            --slate-700: #334155;
+            --slate-800: #1e293b;
+            --slate-900: #0f172a;
+            --slate-950: #020617;
+            
+            --zinc-50: #fafafa;
+            --zinc-100: #f4f4f5;
+            --zinc-200: #e4e4e7;
+            --zinc-300: #d4d4d8;
+            --zinc-400: #a1a1aa;
+            --zinc-500: #71717a;
+            --zinc-600: #52525b;
+            --zinc-700: #3f3f46;
+            --zinc-800: #27272a;
+            --zinc-900: #18181b;
+            
+            --indigo-50: #eef2ff;
+            --indigo-100: #e0e7ff;
+            --indigo-200: #c7d2fe;
+            --indigo-300: #a5b4fc;
+            --indigo-400: #818cf8;
+            --indigo-500: #6366f1;
+            --indigo-600: #4f46e5;
+            --indigo-700: #4338ca;
+            --indigo-800: #3730a3;
+            --indigo-900: #312e81;
+            
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            
+            --gradient-primary: linear-gradient(135deg, var(--indigo-500) 0%, var(--slate-800) 100%);
+            --gradient-secondary: linear-gradient(135deg, var(--slate-800) 0%, var(--slate-950) 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html {
+            scroll-behavior: smooth;
+            scroll-padding-top: 80px;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--slate-950);
+            color: var(--slate-100);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Background Animation */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: var(--gradient-secondary);
+            overflow: hidden;
+        }
+        
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            width: 200%;
+            height: 200%;
+            top: -50%;
+            left: -50%;
+            background: radial-gradient(circle at 30% 30%, rgba(99, 102, 241, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 70%, rgba(99, 102, 241, 0.08) 0%, transparent 50%);
+            animation: float 20s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(30px, -30px) rotate(5deg); }
+            66% { transform: translate(-20px, 20px) rotate(-5deg); }
+        }
+        
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+        
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+        
+        .navbar.scrolled {
+            background: rgba(15, 23, 42, 0.95);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--slate-50);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+        
+        .nav-link {
+            color: var(--slate-300);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--indigo-500);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+        
+        .nav-link:hover, .nav-link.active {
+            color: var(--slate-50);
+            background: rgba(99, 102, 241, 0.1);
+        }
+        
+        .nav-link.active::after {
+            width: 80%;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--slate-50);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 2rem;
+            position: relative;
+        }
+        
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+        }
+        
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            color: var(--slate-300);
+            margin-bottom: 2rem;
+        }
+        
+        .hero-badge-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--indigo-500);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+        
+        .hero-title {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--slate-50) 0%, var(--slate-400) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            color: var(--slate-400);
+            margin-bottom: 1rem;
+            font-weight: 400;
+        }
+        
+        .hero-location {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: var(--slate-400);
+            font-size: 1rem;
+            margin-bottom: 2.5rem;
+        }
+        
+        .hero-cta {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: var(--slate-50);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(99, 102, 241, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            color: var(--slate-200);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--indigo-500);
+            color: var(--slate-50);
+        }
+        
+        /* Glass Card */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--glass-shadow);
+            transition: all 0.3s ease;
+        }
+        
+        .glass-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(99, 102, 241, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+        
+        /* Section */
+        .section {
+            padding: 100px 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .section-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--indigo-400);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+        
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            color: var(--slate-50);
+            margin-bottom: 1rem;
+        }
+        
+        .section-description {
+            font-size: 1.1rem;
+            color: var(--slate-400);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* About Section */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        
+        .about-image {
+            aspect-ratio: 1;
+            border-radius: 24px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .about-image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+        
+        .about-content h3 {
+            font-size: 1.8rem;
+            color: var(--slate-50);
+            margin-bottom: 1.5rem;
+        }
+        
+        .about-content p {
+            color: var(--slate-300);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        .about-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(99, 102, 241, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(99, 102, 241, 0.1);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--indigo-400);
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            color: var(--slate-400);
+            font-size: 0.9rem;
+        }
+        
+        /* Skills Section */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .skill-category {
+            padding: 2rem;
+        }
+        
+        .skill-category-title {
+            font-size: 1.3rem;
+            color: var(--slate-50);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        
+        .skill-tag {
+            padding: 0.75rem 1.25rem;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 50px;
+            color: var(--slate-200);
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: default;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .skill-tag::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .skill-tag:hover {
+            background: rgba(99, 102, 241, 0.2);
+            border-color: var(--indigo-500);
+            color: var(--slate-50);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
+        }
+        
+        .skill-tag:hover::before {
+            left: 100%;
+        }
+        
+        /* Experience Section */
+        .timeline {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--indigo-500), var(--slate-700));
+        }
+        
+        .timeline-item {
+            display: flex;
+            justify-content: flex-end;
+            padding-right: 50%;
+            position: relative;
+            margin-bottom: 3rem;
+        }
+        
+        .timeline-item:nth-child(even) {
+            justify-content: flex-start;
+            padding-right: 0;
+            padding-left: 50%;
+        }
+        
+        .timeline-content {
+            width: 90%;
+            padding: 2rem;
+            position: relative;
+            margin-right: 30px;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-right: 0;
+            margin-left: 30px;
+        }
+        
+        .timeline-dot {
+            position: absolute;
+            right: calc(50% - 15px);
+            top: 30px;
+            width: 30px;
+            height: 30px;
+            background: var(--indigo-500);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--slate-50);
+            font-weight: bold;
+            z-index: 1;
+        }
+        
+        .timeline-item:nth-child(even) .timeline-dot {
+            left: calc(50% - 15px);
+            right: auto;
+        }
+        
+        .timeline-date {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 50px;
+            color: var(--indigo-400);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        .timeline-title {
+            font-size: 1.4rem;
+            color: var(--slate-50);
+            margin-bottom: 0.5rem;
+        }
+        
+        .timeline-company {
+            color: var(--indigo-400);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .timeline-description {
+            color: var(--slate-300);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+        
+        /* Certifications Section */
+        .certifications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .certification-card {
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .certification-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1.5rem;
+            background: var(--gradient-primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+        
+        .certification-title {
+            font-size: 1.2rem;
+            color: var(--slate-50);
+            margin-bottom: 0.5rem;
+        }
+        
+        .certification-issuer {
+            color: var(--indigo-400);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        
+        .certification-date {
+            color: var(--slate-400);
+            font-size: 0.9rem;
+        }
+        
+        /* Volunteer Section */
+        .volunteer-card {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 3rem;
+            text-align: center;
+        }
+        
+        .volunteer-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, var(--indigo-500), #ec4899);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+        }
+        
+        .volunteer-title {
+            font-size: 1.8rem;
+            color: var(--slate-50);
+            margin-bottom: 1rem;
+        }
+        
+        .volunteer-organization {
+            color: var(--indigo-400);
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .volunteer-description {
+            color: var(--slate-300);
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+        
+        /* Contact Section */
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .contact-info h3 {
+            font-size: 2rem;
+            color: var(--slate-50);
+            margin-bottom: 1.5rem;
+        }
+        
+        .contact-info p {
+            color: var(--slate-300);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+        }
+        
+        .contact-details {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--slate-300);
+        }
+        
+        .contact-item-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+        
+        .contact-form {
+            padding: 3rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            color: var(--slate-300);
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+        
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--slate-100);
+            font-family: inherit;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--indigo-500);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+        
+        /* Footer */
+        .footer {
+            padding: 3rem 0;
+            border-top: 1px solid var(--glass-border);
+            text-align: center;
+        }
+        
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .footer-link {
+            color: var(--slate-400);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        
+        .footer-link:hover {
+            color: var(--indigo-400);
+        }
+        
+        .footer-copyright {
+            color: var(--slate-500);
+            font-size: 0.9rem;
+        }
+        
+        /* Scroll to Top */
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--slate-50);
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+            border: none;
+        }
+        
+        .scroll-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .scroll-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.4);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            
+            .about-image {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+            
+            .about-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            .contact-content {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: 0;
+                right: 0;
+                background: rgba(15, 23, 42, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1rem;
+                transform: translateY(-150%);
+                transition: transform 0.3s ease;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+            }
+            
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item {
+                padding-right: 0;
+                padding-left: 80px;
+                justify-content: flex-start;
+            }
+            
+            .timeline-item:nth-child(even) {
+                padding-left: 80px;
+            }
+            
+            .timeline-content {
+                width: 100%;
+                margin-right: 0;
+                margin-left: 0;
+            }
+            
+            .timeline-item:nth-child(even) .timeline-content {
+                margin-left: 0;
+            }
+            
+            .timeline-dot {
+                left: 15px;
+                right: auto;
+            }
+            
+            .timeline-item:nth-child(even) .timeline-dot {
+                left: 15px;
+            }
+            
+            .about-stats {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .hero {
+                padding: 100px 1rem;
+            }
+            
+            .section {
+                padding: 60px 0;
+            }
+            
+            .glass-card, .skill-category, .certification-card, .contact-form, .volunteer-card {
+                padding: 1.5rem;
+            }
+            
+            .timeline-content {
+                padding: 1.5rem;
+            }
+        }
+        
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.8s ease;
+        }
+        
+        .slide-in-left.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .slide-in-right {
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.8s ease;
+        }
+        
+        .slide-in-right.visible {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.9);
+            transition: all 0.8s ease;
+        }
+        
+        .scale-in.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Animation -->
+    <div class="bg-animation" aria-hidden="true"></div>
+    
+    <!-- Navigation -->
+    <nav class="navbar" role="navigation" aria-label="Main navigation">
+        <div class="nav-container">
+            <a href="#home" class="logo">
+                <div class="logo-icon">💼</div>
+                <span>Josh Wilhelm</span>
+            </a>
+            
+            <button class="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false">
+                ☰
+            </button>
+            
+            <ul class="nav-links">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#skills" class="nav-link">Skills</a></li>
+                <li><a href="#experience" class="nav-link">Experience</a></li>
+                <li><a href="#certifications" class="nav-link">Certifications</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <span class="hero-badge-dot"></span>
+                <span>Available for opportunities</span>
+            </div>
+            
+            <h1 class="hero-title">Production Support Engineer</h1>
+            
+            <p class="hero-subtitle">Salesforce Certified Professional specializing in enterprise-level support and development</p>
+            
+            <div class="hero-location">
+                <span>📍</span>
+                <span>Indianapolis, Indiana, United States</span>
+            </div>
+            
+            <div class="hero-cta">
+                <a href="#contact" class="btn btn-primary">
+                    <span>✉️</span>
+                    <span>Get in Touch</span>
+                </a>
+                <a href="#experience" class="btn btn-secondary">
+                    <span>📄</span>
+                    <span>View Experience</span>
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about" class="section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">
+                    <span>👤</span>
+                    <span>About Me</span>
+                </div>
+                <h2 class="section-title">Passionate about Salesforce Excellence</h2>
+                <p class="section-description">Dedicated to delivering exceptional support and solutions in the Salesforce ecosystem</p>
+            </div>
+            
+            <div class="about-grid">
+                <div class="about-image glass-card fade-in">
+                    <div class="about-image-placeholder">👨‍💻</div>
+                </div>
+                
+                <div class="about-content slide-in-right">
+                    <h3>Building the Future of Customer Success</h3>
+                    <p>With over 7 years of experience at Salesforce, I've dedicated my career to ensuring enterprise customers receive world-class support and innovative solutions. My journey from Developer Support Engineer to Production Support Engineer reflects my commitment to continuous growth and excellence in the Salesforce ecosystem.</p>
+                    <p>I specialize in troubleshooting complex technical issues, optimizing Salesforce implementations, and mentoring teams on best practices. My deep understanding of Salesforce architecture, combined with my problem-solving skills, enables me to deliver solutions that drive business success.</p>
+                    
+                    <div class="about-stats">
+                        <div class="stat-item">
+                            <div class="stat-number">7+</div>
+                            <div class="stat-label">Years at Salesforce</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">4</div>
+                            <div class="stat-label">Salesforce Certifications</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-number">10+</div>
+                            <div class="stat-label">Years Volunteer Work</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Skills Section -->
+    <section id="skills" class="section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">
+                    <span>⚡</span>
+                    <span>Skills & Expertise</span>
+                </div>
+                <h2 class="section-title">Technical Proficiency</h2>
+                <p class="section-description">Comprehensive skill set developed through years of hands-on Salesforce experience</p>
+            </div>
+            
+            <div class="skills-grid">
+                <div class="skill-category glass-card scale-in">
+                    <h3 class="skill-category-title">
+                        <span>🔧</span>
+                        Salesforce Development
+                    </h3>
+                    <div class="skills-list">
+                        <span class="skill-tag">Apex</span>
+                        <span class="skill-tag">Lightning Web Components</span>
+                        <span class="skill-tag">Visualforce</span>
+                        <span class="skill-tag">SOQL</span>
+                        <span class="skill-tag">Salesforce APIs</span>
+                        <span class="skill-tag">Trigger Frameworks</span>
+                    </div>
+                </div>
+                
+                <div class="skill-category glass-card scale-in">
+                    <h3 class="skill-category-title">
+                        <span>🛠️</span>
+                        Administration & Configuration
+                    </h3>
+                    <div class="skills-list">
+                        <span class="skill-tag">Salesforce Admin</span>
+                        <span class="skill-tag">Process Builder</span>
+                        <span class="skill-tag">Flow Builder</span>
+                        <span class="skill-tag">Validation Rules</span>
+                        <span class="skill-tag">Sharing Rules</span>
+                        <span class="skill-tag">Security Controls</span>
+                    </div>
+                </div>
+                
+                <div class="skill-category glass-card scale-in">
+                    <h3 class="skill-category-title">
+                        <span>📊</span>
+                        Data & Analytics
+                    </h3>
+                    <div class="skills-list">
+                        <span class="skill-tag">Reports & Dashboards</span>
+                        <span class="skill-tag">Data Management</span>
+                        <span class="skill-tag">Data Import/Export</span>
+                        <span class="skill-tag">Analytics Studio</span>
+                        <span class="skill-tag">Einstein Analytics</span>
+                    </div>
+                </div>
+                
+                <div class="skill-category glass-card scale-in">
+                    <h3 class="skill-category-title">
+                        <span>🌐</span>
+                        Integration & DevOps
+                    </h3>
+                    <div class="skills-list">
+                        <span class="skill-tag">REST API</span>
+                        <span class="skill-tag">SOAP API</span>
+                        <span class="skill-tag">Salesforce DX</span>
+                        <span class="skill-tag">CI/CD</span>
+                        <span class="skill-tag">Change Management</span>
+                        <span class="skill-tag">Production Support</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Experience Section -->
+    <section id="experience" class="section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">
+                    <span>💼</span>
+                    <span>Professional Journey</span>
+                </div>
+                <h2 class="section-title">Work Experience</h2>
+                <p class="section-description">A timeline of professional growth and achievements</p>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item fade-in">
+                    <div class="timeline-dot">🚀</div>
+                    <div class="timeline-content glass-card">
+                        <span class="timeline-date">Aug 2021 - Present • 4 years 5 months</span>
+                        <h3 class="timeline-title">Production Support Engineer</h3>
+                        <div class="timeline-company">Salesforce</div>
+                        <p class="timeline-description">Leading enterprise-level production support for Salesforce's largest customers. Responsible for troubleshooting critical issues, implementing solutions, and ensuring platform stability. Collaborating with cross-functional teams to deliver exceptional customer success.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item fade-in">
+                    <div class="timeline-dot">⚙️</div>
+                    <div class="timeline-content glass-card">
+                        <span class="timeline-date">Feb 2017 - Jul 2021 • 4 years 5 months</span>
+                        <h3 class="timeline-title">Developer Support Engineer, Tier 3</h3>
+                        <div class="timeline-company">Salesforce</div>
+                        <p class="timeline-description">Provided advanced technical support for Salesforce developers. Specialized in troubleshooting complex Apex code, Lightning components, and integration issues. Mentored junior engineers and developed training materials for common technical challenges.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item fade-in">
+                    <div class="timeline-dot">💻</div>
+                    <div class="timeline-content glass-card">
+                        <span class="timeline-date">2015 - 2017 • 2 years</span>
+                        <h3 class="timeline-title">Software Engineer</h3>
+                        <div class="timeline-company">Technology Company (1001-5000 employees)</div>
+                        <p class="timeline-description">Developed and maintained enterprise software solutions. Worked on full-stack development projects using modern technologies. Contributed to product architecture decisions and code reviews.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item fade-in">
+                    <div class="timeline-dot">🎓</div>
+                    <div class="timeline-content glass-card">
+                        <span class="timeline-date">2011 - 2015 • 4 years</span>
+                        <h3 class="timeline-title">Bachelor of Science in Computer Science</h3>
+                        <div class="timeline-company">Taylor University</div>
+                        <p class="timeline-description">Focused on software engineering, database systems, and web development. Completed capstone project on enterprise application development. Active member of computer science club and participated in hackathons.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Certifications Section -->
+    <section id="certifications" class="section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">
+                    <span>🏆</span>
+                    <span>Certifications</span>
+                </div>
+                <h2 class="section-title">Professional Credentials</h2>
+                <p class="section-description">Industry-recognized certifications validating expertise</p>
+            </div>
+            
+            <div class="certifications-grid">
+                <div class="certification-card glass-card scale-in">
+                    <div class="certification-icon">🏅</div>
+                    <h3 class="certification-title">Salesforce Certified Platform Developer II</h3>
+                    <div class="certification-issuer">Salesforce</div>
+                    <div class="certification-date">Issued Jul 2019</div>
+                </div>
+                
+                <div class="certification-card glass-card scale-in">
+                    <div class="certification-icon">⚙️</div>
+                    <h3 class="certification-title">Salesforce Certified Platform App Builder</h3>
+                    <div class="certification-issuer">Salesforce</div>
+                    <div class="certification-date">Issued Apr 2016</div>
+                </div>
+                
+                <div class="certification-card glass-card scale-in">
+                    <div class="certification-icon">💻</div>
+                    <h3 class="certification-title">Salesforce Certified Platform Developer I</h3>
+                    <div class="certification-issuer">Salesforce</div>
+                    <div class="certification-date">Issued Jan 2016</div>
+                </div>
+                
+                <div class="certification-card glass-card scale-in">
+                    <div class="certification-icon">🔐</div>
+                    <h3 class="certification-title">Salesforce Certified Administrator</h3>
+                    <div class="certification-issuer">Salesforce</div>
+                    <div class="certification-date">Issued Jul 2015</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Volunteer Section -->
+    <section class="section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">
+                    <span>❤️</span>
+                    <span>Community Impact</span>
+                </div>
+                <h2 class="section-title">Volunteer Experience</h2>
+                <p class="section-description">Making a difference beyond the workplace</p>
+            </div>
+            
+            <div class="volunteer-card glass-card scale-in">
+                <div class="volunteer-icon">🌟</div>
+                <h3 class="volunteer-title">Assistant</h3>
+                <div class="volunteer-organization">Special Olympics</div>
+                <div class="volunteer-date" style="color: var(--slate-400); margin-bottom: 1rem;">Sep 2014 - Present • 11 years 7 months</div>
+                <p class="volunteer-description">Working with children and adults with special needs, assisting them in participating in competitive sports. Dedicated to creating an inclusive environment where every athlete can experience the joy of sports and competition. This long-term commitment reflects my passion for community service and making a positive impact.</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <div class="section-header">
+                <div class="section-label">
+                    <span>✉️</span>
+                    <span>Get in Touch</span>
+                </div>
+                <h2 class="section-title">Let's Connect</h2>
+                <p class="section-description">Interested in collaboration or have a question? I'd love to hear from you.</p>
+            </div>
+            
+            <div class="contact-content">
+                <div class="contact-info slide-in-left">
+                    <h3>Ready to make an impact?</h3>
+                    <p>Whether you're looking for a Production Support Engineer, Salesforce expert, or simply want to connect, I'm always open to discussing new opportunities, challenges, and ideas in the Salesforce ecosystem.</p>
+                    
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <div class="contact-item-icon">📍</div>
+                            <div>
+                                <strong>Location</strong>
+                                <p>Indianapolis, Indiana, United States</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-item-icon">💼</div>
+                            <div>
+                                <strong>Current Role</strong>
+                                <p>Production Support Engineer at Salesforce</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <div class="contact-item-icon">🎓</div>
+                            <div>
+                                <strong>Education</strong>
+                                <p>Taylor University (2011-2015)</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="contact-form glass-card slide-in-right">
+                    <form>
+                        <div class="form-group">
+                            <label class="form-label" for="name">Your Name</label>
+                            <input type="text" id="name" class="form-input" placeholder="Enter your name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email Address</label>
+                            <input type="email" id="email" class="form-input" placeholder="Enter your email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="subject">Subject</label>
+                            <input type="text" id="subject" class="form-input" placeholder="What's this about?">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label" for="message">Message</label>
+                            <textarea id="message" class="form-textarea" placeholder="Your message..." required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary" style="width: 100%;">
+                            <span>🚀</span>
+                            <span>Send Message</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="logo">
+                    <div class="logo-icon">💼</div>
+                    <span>Josh Wilhelm</span>
+                </div>
+                
+                <div class="footer-links">
+                    <a href="#home" class="footer-link">Home</a>
+                    <a href="#about" class="footer-link">About</a>
+                    <a href="#skills" class="footer-link">Skills</a>
+                    <a href="#experience" class="footer-link">Experience</a>
+                    <a href="#contact" class="footer-link">Contact</a>
+                </div>
+                
+                <div class="footer-copyright">
+                    <p>© 2026 Josh Wilhelm. All rights reserved.</p>
+                    <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--slate-600);">Built with passion and precision</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Scroll to Top Button -->
+    <button class="scroll-top" aria-label="Scroll to top">↑</button>
+    
+    <!-- JavaScript for Interactivity -->
+    <script>
+        // Navbar scroll effect
+        const navbar = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Mobile menu toggle
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const navLinks = document.querySelector('.nav-links');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            const isExpanded = mobileMenuBtn.getAttribute('aria-expanded') === 'true';
+            mobileMenuBtn.setAttribute('aria-expanded', !isExpanded);
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.textContent = isExpanded ? '☰' : '✕';
+        });
+        
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                mobileMenuBtn.textContent = '☰';
+            });
+        });
+        
+        // Active navigation state based on scroll position
+        const sections = document.querySelectorAll('section[id]');
+        const navLinksItems = document.querySelectorAll('.nav-link');
+        
+        function updateActiveNav() {
+            const scrollPosition = window.scrollY + 100;
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionId = section.getAttribute('id');
+                
+                if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                    navLinksItems.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === `#${sectionId}`) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+        }
+        
+        window.addEventListener('scroll', updateActiveNav);
+        updateActiveNav(); // Initialize on load
+        
+        // Scroll to top button
+        const scrollTopBtn = document.querySelector('.scroll-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                scrollTopBtn.classList.add('visible');
+            } else {
+                scrollTopBtn.classList.remove('visible');
+            }
+        });
+        
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.1
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        
+        // Observe all animated elements
+        document.querySelectorAll('.section, .fade-in, .slide-in-left, .slide-in-right, .scale-in').forEach(el => {
+            observer.observe(el);
+        });
+        
+        // Form submission handling
+        const contactForm = document.querySelector('form');
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            
+            // Simple validation
+            if (!name || !email || !message) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('Please enter a valid email address.');
+                return;
+            }
+            
+            // Simulate form submission
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<span>⏳</span><span>Sending...</span>';
+            submitBtn.disabled = true;
+            
+            setTimeout(() => {
+                alert(`Thank you, ${name}! Your message has been sent successfully. I'll get back to you soon.`);
+                contactForm.reset();
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }, 1500);
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Add keyboard navigation support
+        document.addEventListener('keydown', (e) => {
+            // Close mobile menu with Escape key
+            if (e.key === 'Escape' && navLinks.classList.contains('active')) {
+                navLinks.classList.remove('active');
+                mobileMenuBtn.setAttribute('aria-expanded', 'false');
+                mobileMenuBtn.textContent = '☰';
+            }
+        });
+        
+        // Add touch support for mobile devices
+        let touchStartY = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        });
+        
+        document.addEventListener('touchend', (e) => {
+            const touchEndY = e.changedTouches[0].clientY;
+            const diff = touchStartY - touchEndY;
+            
+            // If scrolling up quickly, show scroll to top button
+            if (diff > 100 && window.scrollY > 300) {
+                scrollTopBtn.classList.add('visible');
+            }
+        });
+        
+        // Performance optimization: Throttle scroll events
+        function throttle(func, limit) {
+            let inThrottle;
+            return function() {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            }
+        }
+        
+        // Apply throttling to scroll events for better performance
+        window.addEventListener('scroll', throttle(updateActiveNav, 100));
+        
+        // Add loading animation
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '1';
+        });
+    </script>
+</body>
+</html>
