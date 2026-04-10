@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>Business & Markets Bookmarks</title>
+    <link rel="stylesheet" href="../../assets/styles.css">
+  </head>
+  <body data-folder-slug="business-markets">
+    <div class="site-shell">
+      <header class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">X Bookmark Archive</p>
+          <h1>Business & Markets Bookmarks</h1>
+          <p class="hero-text">A static view of the full bookmark set, grouped into context-aware folders and searchable in the browser.</p>
+        </div>
+        <div class="hero-meta">
+          <label class="search">
+            <span>Search posts, authors, and quoted tweets</span>
+            <input id="search-input" type="search" placeholder="Try: Starship, recipes, Babylon Bee, diff tool">
+          </label>
+          <div class="stats-row">
+            <div class="stat-card">
+              <span class="stat-label">Visible</span>
+              <strong id="visible-count">0</strong>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Folders</span>
+              <strong id="folder-count">0</strong>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main class="layout">
+        <aside class="sidebar">
+          <div class="sidebar-panel">
+            <div class="panel-header">
+              <h2>Folders</h2>
+              <a class="home-link" href="../../index.html">All bookmarks</a>
+            </div>
+            <nav id="folder-nav" class="folder-nav" aria-label="Folders"></nav>
+          </div>
+        </aside>
+
+        <section class="content">
+          <div id="folder-summary" class="folder-summary"></div>
+          <div id="posts" class="posts" aria-live="polite"></div>
+          <button id="load-more" class="load-more" type="button" hidden>Load more</button>
+          <p id="empty-state" class="empty-state" hidden>No bookmarks matched the current filter.</p>
+        </section>
+      </main>
+    </div>
+
+    <script src="../../data/bookmarks.js"></script>
+    <script src="../../assets/app.js"></script>
+  </body>
+</html>
