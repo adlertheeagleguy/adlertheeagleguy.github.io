@@ -1,0 +1,329 @@
+{
+  "generatedFrom": "Call AND Recieve!Josh Calls",
+  "rows": [
+    {
+      "week": "Week 1",
+      "date": "2026-07-10",
+      "toCall": [
+        "Matt",
+        "Steve",
+        "Brett"
+      ]
+    },
+    {
+      "week": "Week 2",
+      "date": "2026-07-17",
+      "toCall": [
+        "Matt",
+        "Steve",
+        "John"
+      ]
+    },
+    {
+      "week": "Week 3",
+      "date": "2026-07-24",
+      "toCall": [
+        "Matt",
+        "Steve",
+        "Evan"
+      ]
+    },
+    {
+      "week": "Week 4",
+      "date": "2026-07-31",
+      "toCall": [
+        "Matt",
+        "Steve",
+        "Ethan"
+      ]
+    },
+    {
+      "week": "Week 5",
+      "date": "2026-08-07",
+      "toCall": [
+        "Matt",
+        "Steve",
+        "Ryan"
+      ]
+    },
+    {
+      "week": "Week 6",
+      "date": "2026-08-14",
+      "toCall": [
+        "Matt",
+        "Brett",
+        "John"
+      ]
+    },
+    {
+      "week": "Week 7",
+      "date": "2026-08-21",
+      "toCall": [
+        "Matt",
+        "Brett",
+        "Evan"
+      ]
+    },
+    {
+      "week": "Week 8",
+      "date": "2026-08-28",
+      "toCall": [
+        "Matt",
+        "Brett",
+        "Ethan"
+      ]
+    },
+    {
+      "week": "Week 9",
+      "date": "2026-09-04",
+      "toCall": [
+        "Matt",
+        "Brett",
+        "Ryan"
+      ]
+    },
+    {
+      "week": "Week 10",
+      "date": "2026-09-11",
+      "toCall": [
+        "Matt",
+        "John",
+        "Evan"
+      ]
+    },
+    {
+      "week": "Week 11",
+      "date": "2026-09-18",
+      "toCall": [
+        "Matt",
+        "John",
+        "Ethan"
+      ]
+    },
+    {
+      "week": "Week 12",
+      "date": "2026-09-25",
+      "toCall": [
+        "Matt",
+        "John",
+        "Ryan"
+      ]
+    },
+    {
+      "week": "Week 13",
+      "date": "2026-10-02",
+      "toCall": [
+        "Matt",
+        "Evan",
+        "Ethan"
+      ]
+    },
+    {
+      "week": "Week 14",
+      "date": "2026-10-09",
+      "toCall": [
+        "Matt",
+        "Evan",
+        "Ryan"
+      ]
+    },
+    {
+      "week": "Week 15",
+      "date": "2026-10-16",
+      "toCall": [
+        "Matt",
+        "Ethan",
+        "Ryan"
+      ]
+    },
+    {
+      "week": "Week 16",
+      "date": "2026-10-23",
+      "toCall": [
+        "Matt",
+        "Ryan",
+        "Brett"
+      ]
+    },
+    {
+      "week": "Week 17",
+      "date": "2026-10-30",
+      "toCall": [
+        "Steve",
+        "Brett",
+        "John"
+      ]
+    },
+    {
+      "week": "Week 18",
+      "date": "2026-11-06",
+      "toCall": [
+        "Steve",
+        "Brett",
+        "Evan"
+      ]
+    },
+    {
+      "week": "Week 19",
+      "date": "2026-11-13",
+      "toCall": [
+        "Steve",
+        "Brett",
+        "Ethan"
+      ]
+    },
+    {
+      "week": "Week 20",
+      "date": "2026-11-20",
+      "toCall": [
+        "Steve",
+        "Brett",
+        "Ryan"
+      ]
+    },
+    {
+      "week": "Week 21",
+      "date": "2026-11-27",
+      "toCall": [
+        "Steve",
+        "John",
+        "Evan"
+      ]
+    },
+    {
+      "week": "Week 22",
+      "date": "2026-12-04",
+      "toCall": [
+        "Steve",
+        "John",
+        "Ethan"
+      ]
+    },
+    {
+      "week": "Week 23",
+      "date": "2026-12-11",
+      "toCall": [
+        "Steve",
+        "John",
+        "Ryan"
+      ]
+    },
+    {
+      "week": "Week 24",
+      "date": "2026-12-18",
+      "toCall": [
+        "Steve",
+        "Evan",
+        "Ethan"
+      ]
+    },
+    {
+      "week": "Week 25",
+      "date": "2026-12-25",
+      "toCall": [
+        "Steve",
+        "Evan",
+        "Ryan"
+      ]
+    },
+    {
+      "week": "Week 26",
+      "date": "2027-01-01",
+      "toCall": [
+        "Steve",
+        "Ethan",
+        "Ryan"
+      ]
+    },
+    {
+      "week": "Week 27",
+      "date": "2027-01-08",
+      "toCall": [
+        "Steve",
+        "Ryan",
+        "Matt"
+      ]
+    },
+    {
+      "week": "Week 28",
+      "date": "2027-01-15",
+      "toCall": [
+        "Brett",
+        "John",
+        "Evan"
+      ]
+    },
+    {
+      "week": "Week 29",
+      "date": "2027-01-22",
+      "toCall": [
+        "Brett",
+        "John",
+        "Ethan"
+      ]
+    },
+    {
+      "week": "Week 30",
+      "date": "2027-01-29",
+      "toCall": [
+        "Brett",
+        "John",
+        "Ryan"
+      ]
+    },
+    {
+      "week": "Week 31",
+      "date": "2027-02-05",
+      "toCall": [
+        "Brett",
+        "Evan",
+        "Ethan"
+      ]
+    },
+    {
+      "week": "Week 32",
+      "date": "2027-02-12",
+      "toCall": [
+        "Brett",
+        "Evan",
+        "Ryan"
+      ]
+    },
+    {
+      "week": "Week 33",
+      "date": "2027-02-19",
+      "toCall": [
+        "Brett",
+        "Ethan",
+        "Ryan"
+      ]
+    },
+    {
+      "week": "Week 34",
+      "date": "2027-02-26",
+      "toCall": [
+        "Brett",
+        "Ryan",
+        "Matt"
+      ]
+    },
+    {
+      "week": "Week 35",
+      "date": "2027-03-05",
+      "toCall": [
+        "John",
+        "Evan",
+        "Ethan"
+      ]
+    },
+    {
+      "week": "Week 36",
+      "date": "2027-03-12",
+      "toCall": [
+        "John",
+        "Evan",
+        "Ryan"
+      ]
+    }
+  ]
+}

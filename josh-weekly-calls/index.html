@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Josh Weekly Calls</title>
+  <style>
+    :root{
+      --bg:#0b0f17;
+      --card:rgba(255,255,255,.06);
+      --stroke:rgba(255,255,255,.12);
+      --text:#e8eefc;
+      --muted:#a7b2d6;
+      --accent:#7c5cff;
+      --accent2:#22c55e;
+    }
+    body{
+      margin:0;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(124,92,255,.25), transparent 60%),
+                  radial-gradient(900px 500px at 90% 20%, rgba(34,197,94,.15), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    .wrap{max-width:980px;margin:0 auto;padding:28px 18px 56px;}
+    .card{
+      background:var(--card);
+      border:1px solid var(--stroke);
+      border-radius:16px;
+      padding:18px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.35);
+      backdrop-filter: blur(10px);
+    }
+    h1{margin:0 0 8px;font-size:1.6rem;letter-spacing:.2px;}
+    p{margin:.3rem 0;color:var(--muted)}
+    .row{display:flex;gap:12px;flex-wrap:wrap;align-items:end; margin-top:14px;}
+    label{display:flex;flex-direction:column;gap:6px;color:var(--muted);font-size:.9rem}
+    input[type="date"]{
+      background: rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.12);
+      color:var(--text);
+      border-radius:12px;
+      padding:10px 12px;
+      outline:none;
+      min-width: 190px;
+    }
+    button{
+      background: linear-gradient(135deg, rgba(124,92,255,.95), rgba(34,197,94,.75));
+      border:0;
+      color:#071018;
+      font-weight:800;
+      padding:11px 14px;
+      border-radius:12px;
+      cursor:pointer;
+    }
+    .meta{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+    .pill{
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      border-radius:999px;
+      padding:8px 10px;
+      color:var(--muted);
+      font-size:.9rem;
+    }
+    .people{
+      margin-top:16px;
+      display:flex;gap:10px;flex-wrap:wrap;
+    }
+    .person{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.05);
+      border-radius:14px;
+      padding:10px 12px;
+      min-width: 170px;
+    }
+    .person b{display:block; font-size:1rem;}
+    .person span{color:var(--muted); font-size:.9rem;}
+    .help{margin-top:14px; color:var(--muted); font-size:.92rem;}
+    .navlink{margin-top:18px; display:flex; gap:10px; flex-wrap:wrap;}
+    .navlink a{
+      color: var(--text);
+      text-decoration: none;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.04);
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:700;
+    }
+    .navlink a:hover{border-color: rgba(124,92,255,.65)}
+
+    .error{color:#ffb4b4;}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>🦅 Josh Weekly Calls</h1>
+      <p>Pick a date. This page shows who <b>Josh</b> should call for that week.</p>
+
+      <div class="row">
+        <label>
+          Date
+          <input id="dateInput" type="date" />
+        </label>
+        <button id="goBtn" type="button">Show calls</button>
+      </div>
+
+      <div id="meta" class="meta" style="display:none"></div>
+      <div id="people" class="people" aria-live="polite"></div>
+      <div id="status" class="help"></div>
+
+      <div id="nav" class="navlink" style="display:none"></div>
+    </div>
+
+    <div class="help" style="margin-top:16px">
+      Tip: you can deep-link like <code>?date=2026-07-17</code>.
+    </div>
+  </div>
+
+  <script>
+    const DATA_URL = './data.json';
+
+    function pad2(n){ return String(n).padStart(2,'0'); }
+    function toISODateLocal(d){
+      // d is Date in local tz; convert to YYYY-MM-DD using local components
+      return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`;
+    }
+    function parseISODateLocal(iso){
+      // Create a Date at local midnight
+      const [y,m,d] = iso.split('-').map(Number);
+      return new Date(y, m-1, d);
+    }
+
+    function getQueryDate(){
+      const u = new URL(window.location.href);
+      return u.searchParams.get('date');
+    }
+
+    function bestMatch(rows, targetISO){
+      // exact match first; otherwise pick latest row with date <= target
+      const exact = rows.find(r => r.date === targetISO);
+      if(exact) return {match: exact, mode:'exact'};
+      const target = parseISODateLocal(targetISO).getTime();
+      const candidates = rows
+        .map(r => ({r, t: parseISODateLocal(r.date).getTime()}))
+        .filter(x => x.t <= target)
+        .sort((a,b)=>b.t-a.t);
+      if(candidates.length){
+        return {match: candidates[0].r, mode:'previous'};
+      }
+      // otherwise earliest
+      const earliest = rows.slice().sort((a,b)=>a.date.localeCompare(b.date))[0];
+      return {match: earliest, mode:'earliest'};
+    }
+
+    function setMeta(el, match, mode){
+      const meta = [];
+      meta.push(`<div class="pill"><b>Week:</b> ${match.week}</div>`);
+      meta.push(`<div class="pill"><b>Week start date:</b> ${match.date}</div>`);
+      if(mode !== 'exact'){
+        meta.push(`<div class="pill"><b>Shown for:</b> closest available week</div>`);
+      }
+      el.innerHTML = meta.join('');
+      el.style.display = 'flex';
+    }
+
+    function renderPeople(el, match){
+      el.innerHTML = '';
+      const names = (match.toCall || []);
+      if(!names.length){
+        el.innerHTML = `<div class="error">No entries for this week.</div>`;
+        return;
+      }
+      for(const name of names){
+        const div = document.createElement('div');
+        div.className = 'person';
+        div.innerHTML = `<b>${escapeHtml(name)}</b><span>Josh should call</span>`;
+        el.appendChild(div);
+      }
+    }
+
+    function escapeHtml(s){
+      return String(s)
+        .replaceAll('&','&amp;')
+        .replaceAll('<','&lt;')
+        .replaceAll('>','&gt;')
+        .replaceAll('"','&quot;')
+        .replaceAll("'",'&#039;');
+    }
+
+    function renderNav(navEl, match){
+      const base = parseISODateLocal(match.date);
+      const prev = new Date(base.getTime() - 7*24*60*60*1000);
+      const next = new Date(base.getTime() + 7*24*60*60*1000);
+      const prevISO = toISODateLocal(prev);
+      const nextISO = toISODateLocal(next);
+      navEl.style.display = 'flex';
+      navEl.innerHTML = `
+        <a href="?date=${prevISO}">← Previous week</a>
+        <a href="?date=${nextISO}">Next week →</a>
+      `;
+    }
+
+    async function load(){
+      const dateParam = getQueryDate();
+      const todayISO = toISODateLocal(new Date());
+      const initialISO = dateParam || todayISO;
+      document.getElementById('dateInput').value = initialISO;
+
+      const rows = await (await fetch(DATA_URL)).json().then(j => j.rows || []);
+      if(!rows.length){
+        document.getElementById('status').innerText = 'No data found in data.json.';
+        return;
+      }
+
+      function showForISO(iso){
+        const {match, mode} = bestMatch(rows, iso);
+        document.getElementById('status').innerHTML = '';
+        document.getElementById('meta').style.display = 'none';
+        setMeta(document.getElementById('meta'), match, mode);
+        renderPeople(document.getElementById('people'), match);
+        renderNav(document.getElementById('nav'), match);
+
+        // status line
+        const target = iso;
+        if(mode === 'exact'){
+          document.getElementById('status').innerHTML = `Loaded calls for <b>${target}</b>.`;
+        } else if(mode === 'previous'){
+          document.getElementById('status').innerHTML = `Loaded the closest available week starting <b>${match.date}</b> (on/before ${target}).`;
+        } else {
+          document.getElementById('status').innerHTML = `No earlier match found; showing earliest available week starting <b>${match.date}</b>.`;
+        }
+      }
+
+      showForISO(initialISO);
+
+      document.getElementById('goBtn').addEventListener('click', () => {
+        const iso = document.getElementById('dateInput').value;
+        if(!iso) return;
+        showForISO(iso);
+      });
+
+      document.getElementById('dateInput').addEventListener('keydown', (e) => {
+        if(e.key === 'Enter') document.getElementById('goBtn').click();
+      });
+    }
+
+    load().catch(err => {
+      console.error(err);
+      document.getElementById('status').innerText = 'Something went wrong loading the data.';
+    });
+  </script>
+</body>
+</html>
